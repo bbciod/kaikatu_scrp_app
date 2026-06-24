@@ -15,9 +15,6 @@
 <main>
   <section class="filters">
     <div class="filter-row">
-      <label>都道府県
-        <select id="prefSelect"><option value="">すべて</option></select>
-      </label>
       <label>キーワード（店舗名・市区町村）
         <input type="text" id="keyword" placeholder="例: 渋谷 / 大阪市">
       </label>
@@ -33,9 +30,68 @@
       </label>
       <span id="resultCount" class="result-count"></span>
     </div>
-    <div class="filter-row" id="facilityFilters">
-      <!-- 設備チェックボックスがJSで挿入される -->
+    <div class="filter-group">
+      <p class="filter-group-label">都道府県（複数選択可）</p>
+      <div class="filter-row" id="prefFilters">
+        <!-- 都道府県チェックボックスがJSで挿入される -->
+      </div>
     </div>
+    <div class="filter-group">
+      <p class="filter-group-label">設備・サービス（複数選択でAND条件）</p>
+      <div class="filter-row" id="facilityFilters">
+        <!-- 設備チェックボックスがJSで挿入される -->
+      </div>
+    </div>
+  </section>
+
+  <section class="filters detail-price-search">
+    <h2>詳細条件で料金検索</h2>
+    <p class="section-note">座席タイプ・利用時間・曜日プランを指定して、対象料金が安い順に並べ替えます（数値料金を取得できている437店舗が対象）。</p>
+    <div class="filter-row">
+      <label>座席タイプ
+        <select id="seatCategory">
+          <option value="">指定なし（最安カテゴリ）</option>
+          <option value="open">オープンシート</option>
+          <option value="booth">ブース</option>
+          <option value="amuse">アミューズシート</option>
+          <option value="private">個室</option>
+        </select>
+      </label>
+      <label>利用時間・プラン
+        <select id="durationSelect">
+          <option value="night_pack">ナイトパック</option>
+          <option value="3">3時間パック</option>
+          <option value="6">6時間パック</option>
+          <option value="9">9時間パック</option>
+          <option value="12">12時間パック</option>
+          <option value="15">15時間パック</option>
+          <option value="18">18時間パック</option>
+          <option value="21">21時間パック</option>
+          <option value="24">24時間パック</option>
+        </select>
+      </label>
+      <label>曜日プラン
+        <select id="dayTypeSelect">
+          <option value="weekday">平日</option>
+          <option value="weekend">休日（土日・祝日）</option>
+        </select>
+      </label>
+      <span id="detailResultCount" class="result-count"></span>
+    </div>
+    <table id="detailPriceTable">
+      <thead>
+        <tr>
+          <th>比較</th>
+          <th>店舗名</th>
+          <th>都道府県</th>
+          <th>市区町村</th>
+          <th>座席タイプ</th>
+          <th>料金</th>
+          <th>詳細</th>
+        </tr>
+      </thead>
+      <tbody id="detailPriceTableBody"></tbody>
+    </table>
   </section>
 
   <section>
