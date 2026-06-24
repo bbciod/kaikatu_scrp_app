@@ -23,30 +23,46 @@ async function init() {
 
   document.getElementById("updatedAt").textContent = new Date().toLocaleDateString("ja-JP");
 
-  populatePrefSelect();
+  populatePrefFilters();
   populateFacilityFilters();
   render();
+  renderDetailPriceSearch();
 
-  document.getElementById("prefSelect").addEventListener("change", render);
-  document.getElementById("keyword").addEventListener("input", render);
+  document.getElementById("keyword").addEventListener("input", () => {
+    render();
+    renderDetailPriceSearch();
+  });
   document.getElementById("priceMax").addEventListener("input", render);
   document.getElementById("sortSelect").addEventListener("change", render);
   document.getElementById("clearCompare").addEventListener("click", () => {
     compareSet.clear();
     renderCompare();
     render();
+    renderDetailPriceSearch();
   });
+
+  document.getElementById("seatCategory").addEventListener("change", renderDetailPriceSearch);
+  document.getElementById("durationSelect").addEventListener("change", renderDetailPriceSearch);
+  document.getElementById("dayTypeSelect").addEventListener("change", renderDetailPriceSearch);
 }
 
-function populatePrefSelect() {
+function populatePrefFilters() {
   const prefs = [...new Set(allStores.map(s => s.pref))].sort();
-  const select = document.getElementById("prefSelect");
-  for (const p of prefs) {
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    select.appendChild(opt);
+  const wrap = document.getElementById("prefFilters");
+  for (const pref of prefs) {
+    const label = document.createElement("label");
+    label.className = "facility-chip";
+    label.innerHTML = `<input type="checkbox" value="${escapeHtml(pref)}"> ${escapeHtml(pref)}`;
+    label.querySelector("input").addEventListener("change", () => {
+      render();
+      renderDetailPriceSearch();
+    });
+    wrap.appendChild(label);
   }
+}
+
+function getSelectedPrefs() {
+  return [...document.querySelectorAll("#prefFilters input:checked")].map(el => el.value);
 }
 
 function populateFacilityFilters() {
@@ -75,7 +91,7 @@ function storeFacilities(store) {
 }
 
 function filterStores() {
-  const pref = document.getElementById("prefSelect").value;
+  const prefs = getSelectedPrefs();
   const keyword = document.getElementById("keyword").value.trim();
   const facilities = getSelectedFacilities();
   const priceMaxRaw = document.getElementById("priceMax").value.trim();
@@ -83,7 +99,7 @@ function filterStores() {
   const sortKey = document.getElementById("sortSelect").value;
 
   let result = allStores.filter(s => {
-    if (pref && s.pref !== pref) return false;
+    if (prefs.length && !prefs.includes(s.pref)) return false;
     if (keyword && !(s.store_name.includes(keyword) || (s.city || "").includes(keyword))) return false;
     if (facilities.length) {
       const have = new Set(storeFacilities(s));
@@ -216,6 +232,78 @@ function renderCompare() {
       ${renderPriceDetail(s)}
     </div>
   `).join("");
+}
+
+function getCategoryPrice(category, duration, dayType) {
+  if (duration === "night_pack") {
+    const packs = dayType === "weekend" ? category.weekend_night_pack_taxfee : category.weekday_night_pack_taxfee;
+    const values = Object.values(packs);
+    return values.length ? Math.min(...values) : null;
+  }
+  const hourly = dayType === "weekend" ? category.weekend_hourly_taxfee : category.weekday_hourly_taxfee;
+  return hourly[duration] != null ? hourly[duration] : null;
+}
+
+function getDetailPrice(store, seatCategory, duration, dayType) {
+  if (store.price_source !== "json" || !store.price) return null;
+  const categories = seatCategory
+    ? store.price.categories.filter(c => c.category === seatCategory)
+    : store.price.categories;
+  let best = null;
+  let bestCategory = null;
+  for (const c of categories) {
+    const price = getCategoryPrice(c, duration, dayType);
+    if (price != null && (best == null || price < best)) {
+      best = price;
+      bestCategory = c;
+    }
+  }
+  return best != null ? { price: best, category: bestCategory } : null;
+}
+
+function renderDetailPriceSearch() {
+  const seatCategory = document.getElementById("seatCategory").value;
+  const duration = document.getElementById("durationSelect").value;
+  const dayType = document.getElementById("dayTypeSelect").value;
+  const prefs = getSelectedPrefs();
+  const keyword = document.getElementById("keyword").value.trim();
+
+  const rows = [];
+  for (const s of allStores) {
+    if (prefs.length && !prefs.includes(s.pref)) continue;
+    if (keyword && !(s.store_name.includes(keyword) || (s.city || "").includes(keyword))) continue;
+    const result = getDetailPrice(s, seatCategory, duration, dayType);
+    if (result == null) continue;
+    rows.push({ store: s, price: result.price, category: result.category });
+  }
+  rows.sort((a, b) => a.price - b.price);
+
+  document.getElementById("detailResultCount").textContent = `${rows.length} 件（料金が取得できている店舗のみ）`;
+
+  const tbody = document.getElementById("detailPriceTableBody");
+  tbody.innerHTML = "";
+  for (const row of rows.slice(0, 300)) {
+    const s = row.store;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="checkbox" data-code="${s.store_code}" ${compareSet.has(s.store_code) ? "checked" : ""}></td>
+      <td>${escapeHtml(s.store_name)}</td>
+      <td>${escapeHtml(s.pref)}</td>
+      <td>${escapeHtml(s.city || "")}</td>
+      <td>${escapeHtml(row.category.label)}</td>
+      <td>¥${row.price.toLocaleString()}</td>
+      <td><a href="${s.detail_url}" target="_blank" rel="noopener">公式</a></td>
+    `;
+    tr.querySelector("input[type=checkbox]").addEventListener("change", (e) => {
+      if (e.target.checked) {
+        compareSet.set(s.store_code, s);
+      } else {
+        compareSet.delete(s.store_code);
+      }
+      renderCompare();
+    });
+    tbody.appendChild(tr);
+  }
 }
 
 function escapeHtml(str) {
