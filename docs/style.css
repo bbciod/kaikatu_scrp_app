@@ -82,5 +82,9 @@ tr:hover td { background: #fff7ef; }
 .price-card h3 { font-size: 0.9rem; margin: 0 0 0.4rem; }
 .price-card img { max-width: 100%; border-radius: 4px; }
 .price-card .ocr { font-size: 0.7rem; color: #555; white-space: pre-wrap; max-height: 120px; overflow-y: auto; margin-top: 0.4rem; }
+.price-card { width: 320px; }
+.price-detail-table { width: 100%; font-size: 0.72rem; margin-top: 0.3rem; }
+.price-detail-table th, .price-detail-table td { padding: 0.25rem 0.3rem; border-bottom: 1px solid #eee; }
+.price-note { font-size: 0.68rem; color: #888; margin: 0.4rem 0 0; }
 
 footer { padding: 1rem 1.5rem; font-size: 0.75rem; color: #777; max-width: 1200px; margin: 0 auto; }

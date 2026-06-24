@@ -9,6 +9,14 @@ const FACILITY_GROUPS = [
 let allStores = [];
 const compareSet = new Map(); // store_code -> store
 
+function getMinNightPack(store) {
+  return store.price && store.price.min_night_pack_taxfee != null ? store.price.min_night_pack_taxfee : null;
+}
+
+function getMinBasic(store) {
+  return store.price && store.price.min_basic_taxfee != null ? store.price.min_basic_taxfee : null;
+}
+
 async function init() {
   const res = await fetch("data/stores.json");
   allStores = await res.json();
@@ -21,6 +29,8 @@ async function init() {
 
   document.getElementById("prefSelect").addEventListener("change", render);
   document.getElementById("keyword").addEventListener("input", render);
+  document.getElementById("priceMax").addEventListener("input", render);
+  document.getElementById("sortSelect").addEventListener("change", render);
   document.getElementById("clearCompare").addEventListener("click", () => {
     compareSet.clear();
     renderCompare();
@@ -68,16 +78,36 @@ function filterStores() {
   const pref = document.getElementById("prefSelect").value;
   const keyword = document.getElementById("keyword").value.trim();
   const facilities = getSelectedFacilities();
+  const priceMaxRaw = document.getElementById("priceMax").value.trim();
+  const priceMax = priceMaxRaw ? Number(priceMaxRaw) : null;
+  const sortKey = document.getElementById("sortSelect").value;
 
-  return allStores.filter(s => {
+  let result = allStores.filter(s => {
     if (pref && s.pref !== pref) return false;
     if (keyword && !(s.store_name.includes(keyword) || (s.city || "").includes(keyword))) return false;
     if (facilities.length) {
       const have = new Set(storeFacilities(s));
       if (!facilities.every(f => have.has(f))) return false;
     }
+    if (priceMax != null) {
+      const nightPack = getMinNightPack(s);
+      if (nightPack == null || nightPack > priceMax) return false;
+    }
     return true;
   });
+
+  if (sortKey === "price_asc" || sortKey === "price_desc") {
+    result = result.slice().sort((a, b) => {
+      const pa = getMinNightPack(a);
+      const pb = getMinNightPack(b);
+      if (pa == null && pb == null) return 0;
+      if (pa == null) return 1; // 料金不明は末尾
+      if (pb == null) return -1;
+      return sortKey === "price_asc" ? pa - pb : pb - pa;
+    });
+  }
+
+  return result;
 }
 
 function render() {
@@ -94,6 +124,7 @@ function render() {
       <td>${escapeHtml(s.store_name)}</td>
       <td>${escapeHtml(s.pref)}</td>
       <td>${escapeHtml(s.city || "")}</td>
+      <td>${formatPriceCell(s)}</td>
       <td><div class="tag-list">${mainFacilities.map(f => `<span class="tag">${escapeHtml(f)}</span>`).join("")}</div></td>
       <td><a href="${s.detail_url}" target="_blank" rel="noopener">公式</a></td>
     `;
@@ -107,6 +138,50 @@ function render() {
     });
     tbody.appendChild(tr);
   }
+}
+
+function formatPriceCell(store) {
+  if (store.price_source === "json") {
+    const nightPack = getMinNightPack(store);
+    const basic = getMinBasic(store);
+    const parts = [];
+    if (nightPack != null) parts.push(`ナイトパック ¥${nightPack.toLocaleString()}〜`);
+    else if (basic != null) parts.push(`基本料金 ¥${basic.toLocaleString()}〜`);
+    return parts.join(" / ") || "—";
+  }
+  if (store.price_source === "image") return "画像のみ（数値化不可）";
+  return "情報なし";
+}
+
+function renderPriceDetail(store) {
+  if (store.price_source === "json" && store.price && store.price.categories.length) {
+    const rows = store.price.categories.map(c => {
+      const nightWeekday = Object.values(c.weekday_night_pack_taxfee)[0];
+      const nightWeekend = Object.values(c.weekend_night_pack_taxfee)[0];
+      return `
+        <tr>
+          <td>${escapeHtml(c.label)}</td>
+          <td>¥${c.weekday_basic_taxfee ?? "-"}（${c.weekday_basic_time ?? "?"}分）</td>
+          <td>¥${c.weekday_hourly_taxfee["24"] ?? "-"}</td>
+          <td>${nightWeekday != null ? "¥" + nightWeekday : "-"}</td>
+          <td>${nightWeekend != null ? "¥" + nightWeekend : "-"}</td>
+        </tr>`;
+    }).join("");
+    return `
+      <table class="price-detail-table">
+        <thead><tr><th>座席</th><th>基本料金(平日)</th><th>24時間(平日)</th><th>ナイトパック(平日)</th><th>ナイトパック(休日)</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p class="price-note">${store.price.night_pack_start_time ?? ""}〜${store.price.night_pack_end_time ?? ""} の利用が対象（店舗・座席により異なる場合があります）</p>
+    `;
+  }
+  if (store.price_source === "image") {
+    return `
+      ${store.price_image_url ? `<img src="${store.price_image_url}" alt="${escapeHtml(store.store_name)}の料金表" loading="lazy">` : ""}
+      ${store.price_ocr_text ? `<div class="ocr">${escapeHtml(store.price_ocr_text)}</div>` : "<p class=\"price-note\">OCRテキストなし</p>"}
+    `;
+  }
+  return "<p>料金情報を取得できませんでした</p>";
 }
 
 function renderCompare() {
@@ -138,8 +213,7 @@ function renderCompare() {
   pricesWrap.innerHTML = stores.map(s => `
     <div class="price-card">
       <h3>${escapeHtml(s.store_name)}</h3>
-      ${s.price_image_url ? `<img src="${s.price_image_url}" alt="${escapeHtml(s.store_name)}の料金表" loading="lazy">` : "<p>料金画像なし</p>"}
-      ${s.price_ocr_text ? `<div class="ocr">${escapeHtml(s.price_ocr_text)}</div>` : ""}
+      ${renderPriceDetail(s)}
     </div>
   `).join("");
 }

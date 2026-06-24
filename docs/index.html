@@ -21,6 +21,16 @@
       <label>キーワード（店舗名・市区町村）
         <input type="text" id="keyword" placeholder="例: 渋谷 / 大阪市">
       </label>
+      <label>ナイトパック予算（円以下）
+        <input type="number" id="priceMax" min="0" step="100" placeholder="例: 2000">
+      </label>
+      <label>並び替え
+        <select id="sortSelect">
+          <option value="default">指定なし</option>
+          <option value="price_asc">料金が安い順</option>
+          <option value="price_desc">料金が高い順</option>
+        </select>
+      </label>
       <span id="resultCount" class="result-count"></span>
     </div>
     <div class="filter-row" id="facilityFilters">
@@ -36,6 +46,7 @@
           <th>店舗名</th>
           <th>都道府県</th>
           <th>市区町村</th>
+          <th>料金（参考）</th>
           <th>主な設備</th>
           <th>詳細</th>
         </tr>
