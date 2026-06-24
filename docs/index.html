@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快活CLUB 店舗比較</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>快活CLUB 店舗比較</h1>
+  <p class="subtitle">全店舗の設備・サービス・料金画像を比較できる非公式の個人用ツールです</p>
+</header>
+
+<main>
+  <section class="filters">
+    <div class="filter-row">
+      <label>都道府県
+        <select id="prefSelect"><option value="">すべて</option></select>
+      </label>
+      <label>キーワード（店舗名・市区町村）
+        <input type="text" id="keyword" placeholder="例: 渋谷 / 大阪市">
+      </label>
+      <span id="resultCount" class="result-count"></span>
+    </div>
+    <div class="filter-row" id="facilityFilters">
+      <!-- 設備チェックボックスがJSで挿入される -->
+    </div>
+  </section>
+
+  <section>
+    <table id="storeTable">
+      <thead>
+        <tr>
+          <th>比較</th>
+          <th>店舗名</th>
+          <th>都道府県</th>
+          <th>市区町村</th>
+          <th>主な設備</th>
+          <th>詳細</th>
+        </tr>
+      </thead>
+      <tbody id="storeTableBody"></tbody>
+    </table>
+  </section>
+
+  <section id="compareSection" class="hidden">
+    <h2>店舗比較 <button id="clearCompare">クリア</button></h2>
+    <div id="compareTableWrap"></div>
+    <div id="comparePrices"></div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    データは <a href="https://www.kaikatsu.jp/" target="_blank" rel="noopener">快活CLUB公式サイト</a>
+    から取得した公開情報を元にした非公式の参考情報です。料金画像はOCRによる自動読み取りのため誤りを含む場合があります。
+    正確な情報は必ず公式サイト・各店舗にご確認ください。最終更新: <span id="updatedAt"></span>
+  </p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

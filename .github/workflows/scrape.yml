@@ -1,0 +1,46 @@
+name: Scrape kaikatsu store data
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "動作確認用に件数を絞る場合に指定（空欄なら全店舗）"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install OCR engine
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-jpn
+
+      - name: Install Python dependencies
+        run: pip install -r scraper/requirements.txt
+
+      - name: Run scraper
+        run: |
+          if [ -n "${{ github.event.inputs.limit }}" ]; then
+            python scraper/scrape.py --limit "${{ github.event.inputs.limit }}"
+          else
+            python scraper/scrape.py
+          fi
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/stores.json
+          git diff --cached --quiet && echo "No changes" || git commit -m "chore: update store data ($(date -u +%Y-%m-%d))"
+          git push
