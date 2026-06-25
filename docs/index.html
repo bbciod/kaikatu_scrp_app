@@ -68,12 +68,14 @@
     <div class="results-header">
       <h2>検索結果</h2>
       <span id="resultCount" class="result-count"></span>
+      <button id="clearCompareTop" class="select-all-btn secondary">比較をクリア</button>
     </div>
+    <p class="select-all-hint">表の左上のチェックボックスで、表示中の行をまとめて比較に追加/解除できます。</p>
     <div class="table-scroll">
       <table id="storeTable">
         <thead>
           <tr>
-            <th>比較</th>
+            <th><input type="checkbox" id="selectAllCheckbox" title="表示中の行を全選択/全解除"></th>
             <th>店舗名</th>
             <th>都道府県</th>
             <th>市区町村</th>

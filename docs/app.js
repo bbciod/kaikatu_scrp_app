@@ -37,6 +37,7 @@ const DURATION_OPTIONS = [
 
 let allStores = [];
 const compareSet = new Map(); // store_code -> store
+let visibleStores = []; // 現在表示中（フィルタ後・最大300件）の店舗。全選択チェックボックスの対象。
 
 async function init() {
   const res = await fetch("data/stores.json");
@@ -58,11 +59,24 @@ async function init() {
     document.getElementById(id).addEventListener("change", render);
   }
 
-  document.getElementById("clearCompare").addEventListener("click", () => {
-    compareSet.clear();
-    renderCompare();
+  document.getElementById("clearCompare").addEventListener("click", clearAllCompare);
+  document.getElementById("clearCompareTop").addEventListener("click", clearAllCompare);
+
+  document.getElementById("selectAllCheckbox").addEventListener("change", (e) => {
+    if (e.target.checked) {
+      for (const s of visibleStores) compareSet.set(s.store_code, s);
+    } else {
+      for (const s of visibleStores) compareSet.delete(s.store_code);
+    }
     render();
+    renderCompare();
   });
+}
+
+function clearAllCompare() {
+  compareSet.clear();
+  renderCompare();
+  render();
 }
 
 function populateDurationFilters() {
@@ -200,10 +214,12 @@ function buildResultRows() {
 function render() {
   const rows = buildResultRows();
   document.getElementById("resultCount").textContent = `${rows.length} 件 / 全${allStores.length}件`;
+  const visibleRows = rows.slice(0, 300);
+  visibleStores = visibleRows.map(r => r.store);
 
   const tbody = document.getElementById("storeTableBody");
   tbody.innerHTML = "";
-  for (const { store: s, priced } of rows.slice(0, 300)) {
+  for (const { store: s, priced } of visibleRows) {
     const tr = document.createElement("tr");
     const mainFacilities = storeFacilities(s).slice(0, 5);
     tr.innerHTML = `
@@ -223,10 +239,20 @@ function render() {
       } else {
         compareSet.delete(s.store_code);
       }
+      updateSelectAllCheckboxState();
       renderCompare();
     });
     tbody.appendChild(tr);
   }
+  updateSelectAllCheckboxState();
+}
+
+function updateSelectAllCheckboxState() {
+  const checkbox = document.getElementById("selectAllCheckbox");
+  const visibleCount = visibleStores.length;
+  const checkedCount = visibleStores.filter(s => compareSet.has(s.store_code)).length;
+  checkbox.checked = visibleCount > 0 && checkedCount === visibleCount;
+  checkbox.indeterminate = checkedCount > 0 && checkedCount < visibleCount;
 }
 
 function formatPriceCell(store, priced) {
