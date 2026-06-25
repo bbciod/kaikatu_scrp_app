@@ -23183,8 +23183,55 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20897.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 340,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1250,
+            "6": 1980,
+            "9": 2640,
+            "12": 3190,
+            "15": 3960,
+            "18": 4730,
+            "21": 5060,
+            "24": 5290
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1470,
+            "6": 2200,
+            "9": 2860,
+            "12": 3410,
+            "15": 4180,
+            "18": 4950,
+            "21": 5280,
+            "24": 5510
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2640,
+              "weekend_taxfee": 2860
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 340,
+      "min_night_pack_taxfee": 2640,
+      "min_24h_taxfee": 5290
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20897_20260218.png",
     "price_ocr_text": "\\\nHEeOCERA\nCLUB has\nSap | aus\nCAAMMBIEOCORRESRMUUELET. x (MAS ALGER DH i) DES (FRA) CH\n— FBR Biixclh=\n6RHNyZ 1,980\nORY? 2,6405\n12H\\Yy 2 3,1905\nte): Aad 3,960\n1882 4,730\n21H\\y 2 5.0605\n245h\\y7 5.2905\nto kK1l2BRNYZ ? 640\n\"CAD 5244 C-BECRRBZSRUUC LED. RRBMReSSHRMCIAOEMECSRBAMCFWET.\nEls. 18SRAMSEKVUEREODAICHAUEEWECA.\n",
     "price_rows": [
@@ -23253,8 +23300,45 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20949.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 850,
+          "weekend_basic_taxfee": 1220,
+          "weekday_basic_time": 60,
+          "weekend_basic_time": 60,
+          "weekday_hourly_taxfee": {
+            "3": 1560,
+            "6": 2570,
+            "12": 4150
+          },
+          "weekend_hourly_taxfee": {
+            "3": 2450,
+            "6": 4900,
+            "12": 9800
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 3430,
+              "weekend_taxfee": 8570
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 850,
+      "min_night_pack_taxfee": 3430,
+      "min_24h_taxfee": null
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2025/20949_20250728.png",
     "price_ocr_text": "\\\nMe Or EA\nCLUB |\nSBCHZI ADD E!!\n4b CHARBBEO ORREERMUUELET. <M ISIBSRETLOOHS (HA) CT\nfe Det oe ES\n—#) FAST\nre\n3H 1,560 2,4505\nOns 2,570 4,900\n1255 4,150 9,800\nMiler 3,430r 8,570n\nCARD S125\nng\n&° BVA PM6:00~C+4 *- *MAlsKAASCROET.\n® CAKD'512RM C-BRORBZERUWELET,\noO F HAAS, CHBHSICSSON (BUA) HMBEHES.\neoRTRSMESSHBCIDOSMECSBSMCLUET.\nols. 1ISRAMEKLUBREODAIMCHAUELEWECA.\n",
     "price_rows": [
@@ -23725,8 +23809,55 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20964.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 290,
+          "weekend_basic_taxfee": 340,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1290,
+            "6": 1890,
+            "9": 2490,
+            "12": 2990,
+            "15": 3390,
+            "18": 3990,
+            "21": 4590,
+            "24": 5190
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1540,
+            "6": 2260,
+            "9": 2980,
+            "12": 3580,
+            "15": 4060,
+            "18": 4780,
+            "21": 5500,
+            "24": 6220
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2490,
+              "weekend_taxfee": 2980
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 290,
+      "min_night_pack_taxfee": 2490,
+      "min_24h_taxfee": 5190
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20964_20260126.png",
     "price_ocr_text": ". ® ee\noe\nCLUB Cas\nSail CHARIOT RRESRMUUKLES. KM ISIB ARH EOONS (PIA) TT\nbi 4 Deg 2 |\nc#l Fabia\na= kA\nARE1ONSTL 1105 : 1305\nSHR 1,290: 1,540\nGHZ 1,8905 : 2.2605\nOY 2,490r 2,980\n1258 2,9905 3 3,5805\n157 3,3905 3 4,060-\n185Hty7 3,990 4,780\n21 R\\Yy 4,590- : 5,5005\n455K 51908: 6,220.\n\"CAD 5245 C-BRCRRZERMUULC LED. ROBRCSSHMICIADOEMECSERBSEDCIWET.\nEls. 18mAMSE KUBREDAICHRBUKEWECA.\n",
     "price_rows": [
@@ -60220,8 +60351,127 @@
       "ビリヤード"
     ],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20643.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 650,
+            "6": 1050,
+            "9": 1380,
+            "12": 1640,
+            "15": 2040,
+            "18": 2400,
+            "21": 2700,
+            "24": 2820
+          },
+          "weekend_hourly_taxfee": {
+            "3": 650,
+            "6": 1050,
+            "9": 1380,
+            "12": 1640,
+            "15": 2040,
+            "18": 2400,
+            "21": 2700,
+            "24": 2820
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 1380,
+              "weekend_taxfee": 1380
+            }
+          ]
+        },
+        {
+          "category": "booth",
+          "label": "ブース",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 1150,
+            "6": 1760,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1150,
+            "6": 1760,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2310,
+              "weekend_taxfee": 2310
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 1420,
+            "6": 2110,
+            "9": 2770,
+            "12": 3300,
+            "15": 4100,
+            "18": 4880,
+            "21": 5390,
+            "24": 5680
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1420,
+            "6": 2110,
+            "9": 2770,
+            "12": 3300,
+            "15": 4100,
+            "18": 4880,
+            "21": 5390,
+            "24": 5680
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2770,
+              "weekend_taxfee": 2770
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": null,
+      "min_night_pack_taxfee": 1380,
+      "min_24h_taxfee": 2820
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/2c76adbbdbdef317fff71b7caa7f9bfa.png",
     "price_ocr_text": "\\\nios Gino = . —\nCLUB ac Cas\nfam\nKAAMRBEOCRRESMUUELET. MAB ISLA RS 7 O OHS (FGA) CF\ngy -EUY—K-\n— FRR RAMA 7 x JFI—-Zz N547-°-9YY- RKRITLBS\nno47\n2,300\n126m\\»7| 1,6405 2,/505 3,3005\n1SeH\\y7|) 2,0405 3,410 4,100\n18687) 2,400 4,0705 4,880\n3,450\n216m%¥9| 2,7005 4,510- 9,390m\n246m/\\77) 2,8205 4,730 5,680\nPa bl2Riliy? | 4 3805 2.3108 2.0008 | 2,770\nCAD 51255\n\"CAD 5245 C-EOMBZSRUUCLED. RIAPMCSSHMICINOZMECSRAMTIFWET.\n*18SRAMSEFUBREOAI. RAHKLBSS CMHABWEEWECA.\nRIL BSOHOSEO CBHI. -BORBZSERMUWUELET.\nLFO@SISMBASeRRMUELES.\n(+B-MA)LARCAIAT(DYY—-APATIAR<S DSTO, 2ARDOTAUBHBE\n",
     "price_rows": [
@@ -60318,8 +60568,127 @@
       "ビリヤード"
     ],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20645.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 650,
+            "6": 1050,
+            "9": 1380,
+            "12": 1640,
+            "15": 2040,
+            "18": 2400,
+            "21": 2700,
+            "24": 2820
+          },
+          "weekend_hourly_taxfee": {
+            "3": 650,
+            "6": 1050,
+            "9": 1380,
+            "12": 1640,
+            "15": 2040,
+            "18": 2400,
+            "21": 2700,
+            "24": 2820
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 1380,
+              "weekend_taxfee": 1380
+            }
+          ]
+        },
+        {
+          "category": "booth",
+          "label": "ブース",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 1150,
+            "6": 1760,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1150,
+            "6": 1760,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2310,
+              "weekend_taxfee": 2310
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 1420,
+            "6": 2110,
+            "9": 2770,
+            "12": 3300,
+            "15": 4100,
+            "18": 4880,
+            "21": 5390,
+            "24": 5680
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1420,
+            "6": 2110,
+            "9": 2770,
+            "12": 3300,
+            "15": 4100,
+            "18": 4880,
+            "21": 5390,
+            "24": 5680
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2770,
+              "weekend_taxfee": 2770
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": null,
+      "min_night_pack_taxfee": 1380,
+      "min_24h_taxfee": 2820
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/1a225ff088d3657bdd30208211d65a57.png",
     "price_ocr_text": "\\\nis os . =e\nCLUB has\nfan i —|\nCRAMELIED CORTE SMU LET. XB IS IB RSE ORS (HA) TT\nCARRE mame FR OFTEN EK: gattseome\n6em/ty7) 1,050- 1,7605 24108\n9Rm\\y7) 1,3805 2.3108 2,770\n2,3005\n126a\\»7| 1,6405 2,/505 3,300\nSeay?) 2,0405 3,4105 4,100\n188m/\\y7| 2,4005 4,0705 4,880\n3,450\n216m») 2,700 4.5105 9,090r\n246m%77| 2,8205 4,730 0,680\nP4PLORRINY? | 4 3800 2.3108 2,0005 | 2,770R\nTAD 5125518\n‘CAD 524M C-KECORBZERUUCLET. RARMCSSHMICIDOZMECSRAMOTWET.\n18mAMEFLVUBREOAMS. RAIKLOZE CMBUKEWECA.\n‘RITLASOHOSHO CBHlS. -BOMRZERMUUELES.\nSKFORSISMBASeAMUELEF.\n(+H -*RA)LARMCHIAT SE CMAOWMS, 24RRO CAMA\n",
     "price_rows": [
@@ -60408,8 +60777,107 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20653.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 990,
+            "9": 1980,
+            "18": 3270
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1210,
+            "9": 2200,
+            "18": 3490
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 1500,
+              "weekend_taxfee": 1720
+            }
+          ]
+        },
+        {
+          "category": "booth",
+          "label": "ブース",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 1150,
+            "6": 1760,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1370,
+            "6": 1980,
+            "9": 2530,
+            "12": 2970,
+            "15": 3630,
+            "18": 4290,
+            "21": 4730,
+            "24": 4950
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2310,
+              "weekend_taxfee": 2530
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 1250,
+            "9": 2450,
+            "18": 3650
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1470,
+            "9": 2670,
+            "18": 3870
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2000,
+              "weekend_taxfee": 2220
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": null,
+      "min_night_pack_taxfee": 1500,
+      "min_24h_taxfee": 4730
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2025/20653_20251125.png",
     "price_ocr_text": "\\\nIRE 7 7 A ny el\nCLUB |\n&-RAPM6:00~C +A RAINY THSIC2200NAMBSHET.\ndam 2\nCHKAMMBEOTRTRESMUUKLES. THIEL ESTE O OES (PIA) OFT\nCARRE manhBoox I-z HIAT BHzS =\n990m\n6BHty2 1,760\n11,9805 2,300 2,450\nL2BH\\y2 2,150\nLORRY? 3,410\nL8H? 4,070\n3,2/0R 3,450 3,650\n212 4.5105\n24 Ny 7 4.7305\ntr bLRAIY) 45008 | 1,8505 2.3108 2,000:\nCARED 512631\n\"CAD 524M C—-ECRARZSRUUCLES. RIABMeSSHMICIAOEDSECABADTIFWET.\n*18SRAMELUBREOAI. BIRLA OSS CMAUCEWECA.\nBITES ES=OHOSHOCBH4. -BCRAZSERUUELET.\nSL FORMSISMBAS ZAM LET.\n(SB) LBARCIT FIL—LE THROWS. 24RD OTARBHAE\n(S-taj BPM6:00~C +H RA) LSRCAISATECABOBA, 2GRSDOCARBHE\n",
     "price_rows": [
@@ -61121,8 +61589,91 @@
       "ビリヤード"
     ],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20663.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 650,
+            "6": 1050,
+            "9": 1380,
+            "12": 1640,
+            "15": 2040,
+            "18": 2400,
+            "21": 2700,
+            "24": 2820
+          },
+          "weekend_hourly_taxfee": {
+            "3": 650,
+            "6": 1050,
+            "9": 1380,
+            "12": 1640,
+            "15": 2040,
+            "18": 2400,
+            "21": 2700,
+            "24": 2820
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 1380,
+              "weekend_taxfee": 1380
+            }
+          ]
+        },
+        {
+          "category": "booth",
+          "label": "ブース",
+          "weekday_basic_taxfee": null,
+          "weekend_basic_taxfee": null,
+          "weekday_basic_time": null,
+          "weekend_basic_time": null,
+          "weekday_hourly_taxfee": {
+            "3": 1150,
+            "6": 1760,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1150,
+            "6": 1760,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "night_packs": [
+            {
+              "key": "12",
+              "hours": 12,
+              "weekday_taxfee": 2310,
+              "weekend_taxfee": 2310
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": null,
+      "min_night_pack_taxfee": 1380,
+      "min_24h_taxfee": 2820
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/a35cc0feafa13d4141779f07980abb31.png",
     "price_ocr_text": "\\\nHeEOCRA\nCLUB has\nSap | ;\nCAAMRREO ORR SMU LET. < MB ISLA RD 7 ORS (PUA) CT\n_ F—Y-EVUV—E->\noF FBS Tal ERA EAII 7 I es a ’ \" TT O47 -DYY-\nDIAT\n6GHRNy 1,050 1,760\nORY? 1,380 2.8108\n2,300\nL2HN 7 1,6405 2,150\nISBN y 7 2,040 3,410\n18BRNy7 2,400 4,070\n3,450\n21 H/\\y7 2,/005 4,510\n245 RNY 7 2,8205 4,730\n+{b12aM77) 4.380, | 2,310n | 2,000\nTARD 51255)\n*CAISD' 5245 C-ECRMRZSRUUECLET.\n\"RNPMCSRHMICIAOERMDECSMAMCIEWET.\nKFORSISMBAS AMULET.\n(tia APM6:00~¢ +H A) LYROEN-—F 4 IL DIAT(IYVY—-ADIAT ISS DST CHABOWMSA, 24%\nHAO THBRE\n",
     "price_rows": [
