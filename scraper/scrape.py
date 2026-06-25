@@ -286,19 +286,31 @@ class GeminiExtractionError(Exception):
     pass
 
 
+class GeminiQuotaExhausted(Exception):
+    """無料枠の日次リクエスト数上限に達した。リトライしても無駄なため、
+    呼び出し側（backfill_vision_prices）はこれを受けて即座に実行全体を停止する。"""
+    pass
+
+
 def _gemini_request(body: dict[str, Any]) -> dict[str, Any] | None:
-    """Gemini APIにリクエストを送り、JSONテキストをパースして返す共通処理。"""
+    """Gemini APIにリクエストを送り、JSONテキストをパースして返す共通処理。
+
+    429（クォータ超過）はリトライしない。1日のリクエスト数上限に達している場合、
+    リトライは成功する見込みがなく、かえって貴重な残りクォータを消費するだけだから。
+    """
     url = GEMINI_URL_TMPL.format(model=GEMINI_MODEL, key=GEMINI_API_KEY)
     last_exc: Exception | None = None
     for attempt in range(GEMINI_RETRY_COUNT):
         try:
             res = requests.post(url, json=body, timeout=120)
             if res.status_code == 429:
-                raise GeminiExtractionError(f"rate limited: {res.text[:300]}")
+                raise GeminiQuotaExhausted(res.text[:300])
             res.raise_for_status()
             data = res.json()
             text = data["candidates"][0]["content"]["parts"][0]["text"]
             return json.loads(text)
+        except GeminiQuotaExhausted:
+            raise
         except (requests.RequestException, GeminiExtractionError, KeyError, ValueError, json.JSONDecodeError) as exc:
             last_exc = exc
             if attempt < GEMINI_RETRY_COUNT - 1:
@@ -338,11 +350,16 @@ GEMINI_BATCH_PRICE_PROMPT = """これから複数枚の日本のネットカフ�
    - 表が平日料金のみで、「土日・祝日はパック料金にXXX円が加算されます」のような注記がある場合は、
      weekend = weekday + XXX円 を自分で計算して両方埋めてください。
    - 加算の注記がどこにも見当たらない場合は weekend は weekday と同額にしてください。
-4. category は座席タイプの実態に合わせて以下にマッピング:
+4. category は座席タイプの実態に合わせて以下にマッピング。表の列見出しの文言に
+   正確に対応させ、異なる列見出しを同じcategoryに重複させないこと
+   （例えば「ブース」列と「ダーツ・ビリヤード・カラオケ」列が別々に存在する場合、
+   両方をbooth扱いにしてはいけない）:
    「オープンシート」「飲み放題カフェ」→ open
-   「ブース」「ブース・ダーツ・ビリヤード・カラオケ」など複合名称で個室ではないもの → booth
-   「アミューズシート」→ amuse
+   「ブース」（単独の見出し。ダーツ等の言及が無いもの）→ booth
+   「ダーツ・ビリヤード・カラオケ」「アミューズシート」など、ダーツ/ビリヤード/
+   カラオケ等のアミューズメント利用が前面に出た見出し → amuse
    「個室」「鍵付完全個室」「完全個室」→ private
+   1枚の画像内で同じcategory値を複数回出力してはいけない（列ごとに一意のcategoryを割り当てる）。
 5. night_packs はナイトパック（「ナイトX時間パック」等）の時間数(hours)と平日/休日料金。複数ある場合は全て列挙してください。
 6. 金額は全て税込の数値のみ（円マークやカンマは含めない）。読み取れない項目は省略して構いません。
 """
@@ -430,7 +447,28 @@ def genai_result_to_categories(genai_result: dict[str, Any]) -> list[dict[str, A
             "weekend_hourly_taxfee": weekend_hourly,
             "night_packs": night_packs,
         })
-    return categories
+    return _dedupe_categories(categories)
+
+
+def _category_richness(c: dict[str, Any]) -> int:
+    """カテゴリが持つ実データの量を雑に数値化する（重複時にどちらを残すか判定するため）。"""
+    return (
+        len(c["weekday_hourly_taxfee"]) + len(c["weekend_hourly_taxfee"]) + len(c["night_packs"])
+        + bool(c["weekday_basic_taxfee"]) + bool(c["weekend_basic_taxfee"])
+    )
+
+
+def _dedupe_categories(categories: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """同じcategory値が複数列として重複抽出された場合、データ量が多い方を残す。
+
+    モデルが列見出しを誤って同じcategoryに分類してしまうことがあるための安全策。
+    """
+    best_by_category: dict[str, dict[str, Any]] = {}
+    for c in categories:
+        existing = best_by_category.get(c["category"])
+        if existing is None or _category_richness(c) > _category_richness(existing):
+            best_by_category[c["category"]] = c
+    return list(best_by_category.values())
 
 
 def parse_price_rows(ocr_text: str) -> list[dict[str, str]]:
@@ -583,7 +621,15 @@ def backfill_vision_prices(
         if not valid_indices:
             continue
 
-        results = extract_prices_with_genai_batch([images[i] for i in valid_indices])
+        try:
+            results = extract_prices_with_genai_batch([images[i] for i in valid_indices])
+        except GeminiQuotaExhausted as exc:
+            print(
+                f"1日のリクエスト数上限に達したため終了します ({exc})。"
+                f" 残り {len(targets) - batch_start} 件は翌日以降の再実行で処理してください。",
+                file=sys.stderr,
+            )
+            break
         request_count += 1
 
         for local_i, genai_result in zip(valid_indices, results):
