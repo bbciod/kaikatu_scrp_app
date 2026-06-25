@@ -139,7 +139,7 @@ function getCategoryPrice(category, durationOption, dayType) {
 }
 
 function getConditionPrice(store, seatCategory, durationOptions, dayType) {
-  if (store.price_source !== "json" || !store.price) return null;
+  if ((store.price_source !== "json" && store.price_source !== "vision_ai") || !store.price) return null;
   const categories = seatCategory
     ? store.price.categories.filter(c => c.category === seatCategory)
     : store.price.categories;
@@ -230,13 +230,16 @@ function render() {
 }
 
 function formatPriceCell(store, priced) {
-  if (priced) return `¥${priced.price.toLocaleString()}`;
+  if (priced) {
+    const aiTag = store.price_source === "vision_ai" ? ' <span class="ai-badge" title="AI画像読み取り（参考値）">AI</span>' : "";
+    return `¥${priced.price.toLocaleString()}${aiTag}`;
+  }
   if (store.price_source === "image") return "画像のみ（数値化不可）";
   return "情報なし";
 }
 
 function renderPriceDetail(store) {
-  if (store.price_source === "json" && store.price && store.price.categories.length) {
+  if ((store.price_source === "json" || store.price_source === "vision_ai") && store.price && store.price.categories.length) {
     const rows = store.price.categories.map(c => {
       const cell8 = c.night_packs.find(np => np.hours === 8);
       const cell12 = c.night_packs.find(np => np.hours === 12);
@@ -250,7 +253,11 @@ function renderPriceDetail(store) {
           <td>${fmt(cell12)}</td>
         </tr>`;
     }).join("");
+    const aiNotice = store.price_source === "vision_ai"
+      ? `<p class="price-note ai-notice">⚠ この料金はAI（Gemini）が料金画像から自動で読み取った参考値です。誤りを含む可能性があるため、正式な料金は<a href="${store.price_image_url}" target="_blank" rel="noopener">元の料金画像</a>または公式サイトでご確認ください。</p>`
+      : "";
     return `
+      ${aiNotice}
       <table class="price-detail-table">
         <thead><tr><th>座席</th><th>基本料金(平日)</th><th>24時間(平日)</th><th>8hパック(平日/休日)</th><th>12hパック(平日/休日)</th></tr></thead>
         <tbody>${rows}</tbody>

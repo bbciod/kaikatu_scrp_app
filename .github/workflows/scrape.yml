@@ -30,6 +30,10 @@ jobs:
         run: pip install -r scraper/requirements.txt
 
       - name: Run scraper
+        env:
+          # 任意。設定すると、料金画像のみの店舗をGemini Vision APIで数値化する。
+          # 未設定の場合はOCRテキストのみ（数値検索の対象外）にフォールバックする。
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if [ -n "${{ github.event.inputs.limit }}" ]; then
             python scraper/scrape.py --limit "${{ github.event.inputs.limit }}"

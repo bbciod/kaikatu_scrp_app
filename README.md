@@ -14,10 +14,25 @@
   - `/public/{店舗コード}.json` … 座席タイプ別・平日/休日別・時間帯別の**数値の**料金マスタ
     （498店舗中437店舗で取得可能。これを使って料金検索・並び替えができる）
   - 上記JSONが存在しない61店舗のみ、`/shop/detail/{店舗コード}.html` から料金画像URLを取得し、
-    Tesseract OCR（日本語）でテキスト化を試みる。装飾フォントのため数字の誤読が多く、
-    **このOCR結果は参考表示のみで、料金検索・並び替えの対象には含めていない**。
-- `.github/workflows/scrape.yml` — `workflow_dispatch`（手動実行）でスクレイパーを実行し、
-  結果を `docs/data/stores.json` としてコミットするワークフロー。定期実行は行わない。
+    Tesseract OCR（日本語）でテキスト化する（`price_source: "image"`）。装飾フォントのため
+    数字の誤読が多く、**このOCR結果は参考表示のみで、料金検索・並び替えの対象には含めない**。
+- `scraper/scrape.py --vision-backfill` — 画像のみの店舗（`price_source: "image"`）を対象に、
+  Gemini Vision API（無料枠）で座席タイプ別・平日/休日別・時間帯別の数値料金へ変換する
+  （`price_source: "vision_ai"`、料金検索・並び替えの対象に含める）。公式サイト調査の結果、
+  これら61店舗には数値料金データそのものが存在しないことを確認済み（画像のみで提供する古い
+  テンプレートの店舗ページ）。画像から読み取れない・不鮮明な値は0円などの推測値で埋めず必ず
+  欠損として省略する。
+  **無料枠は「1日あたりのリクエスト数」がプロジェクトによって極端に少ない場合があり（実測で
+  1日20回程度のケースを確認）、61店舗を1回では処理しきれないことがある。** そのため
+  `--batch-size`（デフォルト4）枚の画像を1リクエストにまとめて送ることでリクエスト数を圧縮し、
+  さらに `--max-requests`（デフォルト15）に達したら安全に中断して `docs/data/stores.json` を
+  保存する設計にしている。既に `vision_ai` 化済みの店舗は次回実行時にスキップされるため、
+  日をまたいで何度か実行すれば未処理分から順に処理が進む。
+- `.github/workflows/scrape.yml` — `workflow_dispatch`（手動実行）で通常のスクレイピングを行う
+  ワークフロー（Gemini呼び出しは行わない）。定期実行は行わない。
+- `.github/workflows/vision_backfill.yml` — `workflow_dispatch`（手動実行）で上記の
+  `--vision-backfill` を実行するワークフロー。無料枠の日次上限に応じて`batch_size`/`max_requests`
+  を調整しながら、必要なら複数日に分けて手動実行する想定。
 - `docs/` — GitHub Pagesで配信する静的フロントエンド（都道府県・キーワード・設備での絞り込み、
   複数店舗の設備比較表、料金画像の並列表示）。
 
@@ -36,18 +51,26 @@
 4. **公式リンク** — 各行の「公式」リンクから、その店舗の公式詳細ページに飛べます。
    最新情報や正式な料金は必ずそちらでご確認ください。
 
-注意: 数値料金（437店舗）は公式サイトの料金APIから取得した値です。残り61店舗は
-料金画像のみのためOCRテキストを参考表示していますが、装飾フォントの影響で数字が
-誤読される場合があり、料金検索・並び替えの対象には含めていません。最終確認は
-必ず公式サイト・各店舗で行ってください。
+注意: 数値料金（437店舗）は公式サイトの料金APIから取得した値です。残り61店舗のうち
+Gemini Vision APIで抽出できた店舗（`price_source: "vision_ai"`）は数値検索の対象に
+含めていますが、画像からのAI読み取りのため誤りを含む可能性があります。抽出に失敗した
+店舗は画像＋OCR参考テキストのみの表示とし、料金検索・並び替えの対象には含めていません。
+最終確認は必ず公式サイト・各店舗で行ってください。
 
 ## セットアップ
 
 1. このリポジトリをGitHubに作成・push
 2. **Settings → Pages** で Source を `Deploy from a branch`、Branch を `main` / `docs` に設定
-3. データを更新したい時は **Actions → Scrape kaikatsu store data → Run workflow** を手動実行
+3. （任意）料金画像のみの店舗をAIで数値化したい場合: [Google AI Studio](https://aistudio.google.com/apikey)
+   で無料のAPIキーを取得し、リポジトリの **Settings → Secrets and variables → Actions** で
+   `GEMINI_API_KEY` という名前のSecretとして登録する（未設定でも動作する。その場合は
+   OCR参考表示のみになる）
+4. データを更新したい時は **Actions → Scrape kaikatsu store data → Run workflow** を手動実行
    （`limit` を指定すると動作確認用に件数を絞れる）
-4. 数分後、`docs/data/stores.json` が自動コミットされ、Pagesに反映される
+5. （任意）画像のみの店舗をAI数値化したい場合: **Actions → Backfill prices with Gemini Vision
+   (image-only stores) → Run workflow** を手動実行。無料枠の日次上限に達した場合は途中で
+   安全に止まるので、翌日以降に同じワークフローを再実行すれば残りが処理される
+6. 数分後、`docs/data/stores.json` が自動コミットされ、Pagesに反映される
 
 ローカルで試す場合:
 
@@ -58,6 +81,12 @@ pip install -r scraper/requirements.txt
 #   macOS:   brew install tesseract tesseract-lang
 #   Linux:   apt install tesseract-ocr tesseract-ocr-jpn
 python scraper/scrape.py --limit 5   # まず少数件で動作確認
+
+# Gemini Vision APIで画像のみの店舗を数値化する場合（任意）
+export GEMINI_API_KEY=取得したキー   # Windows PowerShellなら $env:GEMINI_API_KEY="..."
+python scraper/scrape.py --vision-backfill --batch-size 4 --max-requests 15
+# 無料枠の日次上限に達したら自動で安全に停止する。翌日以降に同じコマンドを再実行すれば続きから処理される。
+
 python -m http.server 8080 -d docs   # http://localhost:8080 で確認
 ```
 

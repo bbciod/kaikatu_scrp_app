@@ -8,7 +8,11 @@
                                  時間帯別の税込料金が数値で入っている）
 - /shop/detail/{store_code}.html … 上記の料金JSONを持たない店舗向けの
                                  フォールバック。料金画像のURLを取得し、
-                                 Tesseract OCR でテキスト化を試みる。
+                                 GEMINI_API_KEY が設定されていれば Gemini Vision API
+                                 で構造化数値データへの変換を試みる
+                                 (price_source="vision_ai")。キー未設定時や
+                                 抽出失敗時は Tesseract OCR でのテキスト化のみを
+                                 行う(price_source="image"、数値検索の対象外)。
 
 実行頻度は手動(workflow_dispatch)のみを想定。サーバー負荷を抑えるため、
 リクエスト間に SLEEP_SECONDS の間隔を空ける。
@@ -108,6 +112,36 @@ def _num(value: Any) -> int | None:
         return int(digits) if digits else None
 
 
+def finalize_price_schema(
+    categories: list[dict[str, Any]],
+    night_pack_start_time: str | None = None,
+    night_pack_end_time: str | None = None,
+) -> dict[str, Any]:
+    """座席カテゴリ別の料金リストから、検索・並び替え用の集計値を付与する。
+
+    /public/{code}.json 由来・Gemini Vision由来のどちらの座席カテゴリリストでも
+    共通して使う集計ロジック。
+    """
+    all_basic = [c["weekday_basic_taxfee"] for c in categories if c.get("weekday_basic_taxfee")]
+    all_night_pack = [
+        np["weekday_taxfee"] for c in categories for np in c["night_packs"] if np.get("weekday_taxfee")
+    ]
+    all_24h = [c["weekday_hourly_taxfee"].get("24") for c in categories if c["weekday_hourly_taxfee"].get("24")]
+    available_night_pack_hours = sorted({
+        np["hours"] for c in categories for np in c["night_packs"] if np.get("hours")
+    })
+
+    return {
+        "categories": categories,
+        "available_night_pack_hours": available_night_pack_hours,
+        "night_pack_start_time": night_pack_start_time,
+        "night_pack_end_time": night_pack_end_time,
+        "min_basic_taxfee": min(all_basic) if all_basic else None,
+        "min_night_pack_taxfee": min(all_night_pack) if all_night_pack else None,
+        "min_24h_taxfee": min(all_24h) if all_24h else None,
+    }
+
+
 def parse_structured_price(entry: dict[str, Any]) -> dict[str, Any]:
     """/public/{code}.json の1エントリを座席カテゴリ別の料金表に変換する。
 
@@ -160,24 +194,11 @@ def parse_structured_price(entry: dict[str, Any]) -> dict[str, Any]:
             "night_packs": night_packs,
         })
 
-    all_basic = [c["weekday_basic_taxfee"] for c in categories if c["weekday_basic_taxfee"]]
-    all_night_pack = [
-        np["weekday_taxfee"] for c in categories for np in c["night_packs"] if np["weekday_taxfee"]
-    ]
-    all_24h = [c["weekday_hourly_taxfee"].get("24") for c in categories if c["weekday_hourly_taxfee"].get("24")]
-    available_night_pack_hours = sorted({
-        np["hours"] for c in categories for np in c["night_packs"] if np["hours"]
-    })
-
-    return {
-        "categories": categories,
-        "available_night_pack_hours": available_night_pack_hours,
-        "night_pack_start_time": entry.get("night_pack_start_time") or None,
-        "night_pack_end_time": entry.get("night_pack_end_time") or None,
-        "min_basic_taxfee": min(all_basic) if all_basic else None,
-        "min_night_pack_taxfee": min(all_night_pack) if all_night_pack else None,
-        "min_24h_taxfee": min(all_24h) if all_24h else None,
-    }
+    return finalize_price_schema(
+        categories,
+        night_pack_start_time=entry.get("night_pack_start_time") or None,
+        night_pack_end_time=entry.get("night_pack_end_time") or None,
+    )
 
 
 def extract_price_image_url(detail_html: str) -> str | None:
@@ -211,6 +232,207 @@ def ocr_price_image(image_bytes: bytes) -> str:
         return pytesseract.image_to_string(image, config="--psm 6")
 
 
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_URL_TMPL = (
+    "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+)
+GEMINI_HOUR_KEYS = ["3", "6", "9", "12", "15", "18", "21", "24"]
+GEMINI_RETRY_COUNT = 3
+GEMINI_RETRY_SLEEP_SECONDS = 8
+
+GEMINI_PRICE_SCHEMA = {
+    "type": "OBJECT",
+    "properties": {
+        "categories": {
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "category": {"type": "STRING", "enum": list(SEAT_CATEGORIES.keys())},
+                    "weekday_basic_taxfee": {"type": "INTEGER"},
+                    "weekend_basic_taxfee": {"type": "INTEGER"},
+                    "weekday_basic_time": {"type": "INTEGER"},
+                    "weekday_hourly_taxfee": {
+                        "type": "OBJECT",
+                        "properties": {h: {"type": "INTEGER"} for h in GEMINI_HOUR_KEYS},
+                        "required": GEMINI_HOUR_KEYS,
+                    },
+                    "weekend_hourly_taxfee": {
+                        "type": "OBJECT",
+                        "properties": {h: {"type": "INTEGER"} for h in GEMINI_HOUR_KEYS},
+                        "required": GEMINI_HOUR_KEYS,
+                    },
+                    "night_packs": {
+                        "type": "ARRAY",
+                        "items": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "hours": {"type": "INTEGER"},
+                                "weekday_taxfee": {"type": "INTEGER"},
+                                "weekend_taxfee": {"type": "INTEGER"},
+                            },
+                        },
+                    },
+                },
+                "required": ["category", "weekday_hourly_taxfee", "weekend_hourly_taxfee"],
+            },
+        },
+    },
+    "required": ["categories"],
+}
+
+class GeminiExtractionError(Exception):
+    pass
+
+
+def _gemini_request(body: dict[str, Any]) -> dict[str, Any] | None:
+    """Gemini APIにリクエストを送り、JSONテキストをパースして返す共通処理。"""
+    url = GEMINI_URL_TMPL.format(model=GEMINI_MODEL, key=GEMINI_API_KEY)
+    last_exc: Exception | None = None
+    for attempt in range(GEMINI_RETRY_COUNT):
+        try:
+            res = requests.post(url, json=body, timeout=120)
+            if res.status_code == 429:
+                raise GeminiExtractionError(f"rate limited: {res.text[:300]}")
+            res.raise_for_status()
+            data = res.json()
+            text = data["candidates"][0]["content"]["parts"][0]["text"]
+            return json.loads(text)
+        except (requests.RequestException, GeminiExtractionError, KeyError, ValueError, json.JSONDecodeError) as exc:
+            last_exc = exc
+            if attempt < GEMINI_RETRY_COUNT - 1:
+                time.sleep(GEMINI_RETRY_SLEEP_SECONDS)
+    print(f"  警告: Gemini抽出に失敗しました ({last_exc})", file=sys.stderr)
+    return None
+
+
+GEMINI_BATCH_PRICE_SCHEMA = {
+    "type": "OBJECT",
+    "properties": {
+        "results": {
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "image_index": {"type": "INTEGER"},
+                    "categories": GEMINI_PRICE_SCHEMA["properties"]["categories"],
+                },
+                "required": ["image_index", "categories"],
+            },
+        },
+    },
+    "required": ["results"],
+}
+
+GEMINI_BATCH_PRICE_PROMPT = """これから複数枚の日本のネットカフェ「快活CLUB」の料金表画像を渡します。
+各画像の直前に "=== image_index: N ===" というテキストが入っているので、その画像はN番として
+結果の results 配列に1要素として出力してください（画像の枚数と同じ件数を出力すること。
+1枚も結合・混同しないこと。各imageは完全に別の店舗の独立した料金表です）。
+
+各画像ごとの抽出ルール（1枚の画像を解析する場合と同じ）:
+1. 表には通常「3時間パック」から「24時間パック」まで3時間刻みで8段階（3,6,9,12,15,18,21,24）の料金が記載されています。見える場合は必ず8キー全部を埋めてください。
+2. 数値が不鮮明・潰れていて確信が持てない場合は、絶対に0や推測値を入れてはいけません。そのキー自体を省略してください（0円という料金は実在しません）。
+3. 平日(weekday)と休日/土日祝(weekend)の両方の料金を必ず出力してください。
+   - 表に「平日」「休日」の2列が別々に記載されている場合は、それぞれの列の値をそのまま使ってください。
+   - 表が平日料金のみで、「土日・祝日はパック料金にXXX円が加算されます」のような注記がある場合は、
+     weekend = weekday + XXX円 を自分で計算して両方埋めてください。
+   - 加算の注記がどこにも見当たらない場合は weekend は weekday と同額にしてください。
+4. category は座席タイプの実態に合わせて以下にマッピング:
+   「オープンシート」「飲み放題カフェ」→ open
+   「ブース」「ブース・ダーツ・ビリヤード・カラオケ」など複合名称で個室ではないもの → booth
+   「アミューズシート」→ amuse
+   「個室」「鍵付完全個室」「完全個室」→ private
+5. night_packs はナイトパック（「ナイトX時間パック」等）の時間数(hours)と平日/休日料金。複数ある場合は全て列挙してください。
+6. 金額は全て税込の数値のみ（円マークやカンマは含めない）。読み取れない項目は省略して構いません。
+"""
+
+
+def extract_prices_with_genai_batch(images: list[bytes]) -> list[dict[str, Any] | None]:
+    """複数枚の料金画像を1回のAPIリクエストにまとめて送信する（1日のリクエスト数枠を節約する）。
+
+    日本のGemini無料枠はプロジェクトによって「1日のリクエスト数」が極端に少ない
+    （実測で1日20回程度）場合があり、画像1枚=1リクエストでは61店舗を捌けない。
+    1リクエストに複数画像を載せることでリクエスト数を 1/batch_size に圧縮する。
+
+    戻り値は images と同じ長さのリストで、各要素はその画像に対応するGemini結果
+    （抽出失敗時は None）。image_index を使って入力順とのズレを補正する。
+    """
+    if not GEMINI_API_KEY or not images:
+        return [None] * len(images)
+
+    import base64
+
+    parts: list[dict[str, Any]] = [{"text": GEMINI_BATCH_PRICE_PROMPT}]
+    for i, image_bytes in enumerate(images):
+        parts.append({"text": f"=== image_index: {i} ==="})
+        parts.append({"inline_data": {"mime_type": "image/png", "data": base64.b64encode(image_bytes).decode()}})
+
+    body = {
+        "contents": [{"parts": parts}],
+        "generationConfig": {
+            "responseMimeType": "application/json",
+            "responseSchema": GEMINI_BATCH_PRICE_SCHEMA,
+            "temperature": 0,
+        },
+    }
+    parsed = _gemini_request(body)
+    output: list[dict[str, Any] | None] = [None] * len(images)
+    if parsed is None:
+        return output
+
+    for item in parsed.get("results", []):
+        idx = item.get("image_index")
+        if isinstance(idx, int) and 0 <= idx < len(images):
+            output[idx] = {"categories": item.get("categories", [])}
+    return output
+
+
+def _genai_num(value: Any) -> int | None:
+    """Geminiの出力値を数値化する。0円という料金は実在しないため、モデルが読み取り
+    不能時に紛れ込ませた0は不正値として弾き、欠損(None)として扱う。"""
+    n = _num(value)
+    return n if n and n > 0 else None
+
+
+def genai_result_to_categories(genai_result: dict[str, Any]) -> list[dict[str, Any]]:
+    """Geminiが返したJSONを内部の座席カテゴリスキーマに変換する。"""
+    categories = []
+    for c in genai_result.get("categories", []):
+        cat_key = c.get("category")
+        if cat_key not in SEAT_CATEGORIES:
+            continue
+        weekday_hourly = {h: _genai_num(c.get("weekday_hourly_taxfee", {}).get(h)) for h in GEMINI_HOUR_KEYS}
+        weekend_hourly = {h: _genai_num(c.get("weekend_hourly_taxfee", {}).get(h)) for h in GEMINI_HOUR_KEYS}
+        weekday_hourly = {h: v for h, v in weekday_hourly.items() if v is not None}
+        weekend_hourly = {h: v for h, v in weekend_hourly.items() if v is not None}
+
+        night_packs = []
+        for np in c.get("night_packs", []):
+            hours = _genai_num(np.get("hours"))
+            if hours is None:
+                continue
+            night_packs.append({
+                "key": str(hours),
+                "hours": hours,
+                "weekday_taxfee": _genai_num(np.get("weekday_taxfee")),
+                "weekend_taxfee": _genai_num(np.get("weekend_taxfee")),
+            })
+
+        categories.append({
+            "category": cat_key,
+            "label": SEAT_CATEGORIES[cat_key],
+            "weekday_basic_taxfee": _genai_num(c.get("weekday_basic_taxfee")),
+            "weekend_basic_taxfee": _genai_num(c.get("weekend_basic_taxfee")),
+            "weekday_basic_time": _genai_num(c.get("weekday_basic_time")),
+            "weekend_basic_time": _genai_num(c.get("weekday_basic_time")),
+            "weekday_hourly_taxfee": weekday_hourly,
+            "weekend_hourly_taxfee": weekend_hourly,
+            "night_packs": night_packs,
+        })
+    return categories
+
+
 def parse_price_rows(ocr_text: str) -> list[dict[str, str]]:
     rows = []
     for raw_line in ocr_text.splitlines():
@@ -232,7 +454,7 @@ def parse_price_rows(ocr_text: str) -> list[dict[str, str]]:
 class StoreRecord:
     pref: str
     raw: dict[str, Any]
-    price_source: str = "none"  # "json" | "image" | "none"
+    price_source: str = "none"  # "json" | "vision_ai" | "image" | "none"
     price: dict[str, Any] | None = None
     price_image_url: str | None = None
     price_ocr_text: str = ""
@@ -295,6 +517,9 @@ def collect(limit: int | None = None) -> list[dict[str, Any]]:
                     time.sleep(SLEEP_SECONDS)
                     img_res = requests.get(record.price_image_url, headers=HEADERS, timeout=20)
                     img_res.raise_for_status()
+                    # Gemini Vision APIによる数値化は別途 `--vision-backfill` で行う
+                    # （無料枠の日次リクエスト数上限が低いプロジェクトでは、通常の
+                    # スクレイピング中に毎回呼ぶと枠を使い切ってしまうため）。
                     ocr_text = ocr_price_image(img_res.content)
                     record.price_ocr_text = ocr_text
                     record.price_rows = parse_price_rows(ocr_text)
@@ -307,24 +532,112 @@ def collect(limit: int | None = None) -> list[dict[str, Any]]:
     return results
 
 
+def backfill_vision_prices(
+    stores_path: Path,
+    batch_size: int = 4,
+    max_requests: int = 15,
+    batch_sleep_seconds: float = 10.0,
+) -> None:
+    """既存の docs/data/stores.json のうち price_source=="image" の店舗だけを対象に、
+    複数画像まとめてのGemini Vision抽出を行い、その都度ファイルへ保存する。
+
+    無料枠の「1日あたりのリクエスト数」上限が低いプロジェクトでも、複数日に分けて
+    本関数を再実行すれば取り残しなく徐々に置き換えられるよう、以下の設計にしている。
+    - 既に price_source=="vision_ai"/"json" の店舗は対象にしない（再実行のたびに
+      重複してAPIを消費しない）
+    - 1バッチ処理するたびにファイルへ保存する（quota切れで中断しても進捗が残る）
+    - max_requests 件のバッチを送ったら自動的に終了する（1日の上限を超えないよう
+      呼び出し側で日の上限より少し小さい値を指定する想定）
+    """
+    if not GEMINI_API_KEY:
+        print("GEMINI_API_KEY が設定されていないため backfill を実行できません。", file=sys.stderr)
+        return
+
+    data: list[dict[str, Any]] = json.loads(stores_path.read_text(encoding="utf-8"))
+    targets = [s for s in data if s.get("price_source") == "image" and s.get("price_image_url")]
+    print(f"対象店舗数(画像のみ): {len(targets)} 件 / バッチサイズ: {batch_size} / 最大リクエスト数: {max_requests}", file=sys.stderr)
+
+    by_code = {s["store_code"]: s for s in data}
+    request_count = 0
+
+    for batch_start in range(0, len(targets), batch_size):
+        if request_count >= max_requests:
+            print(f"最大リクエスト数({max_requests})に達したため終了します。残り {len(targets) - batch_start} 件は次回実行で処理してください。", file=sys.stderr)
+            break
+
+        batch = targets[batch_start:batch_start + batch_size]
+        print(f"バッチ {batch_start // batch_size + 1}: {[s['store_name'] for s in batch]}", file=sys.stderr)
+
+        images = []
+        for s in batch:
+            try:
+                res = requests.get(s["price_image_url"], headers=HEADERS, timeout=20)
+                res.raise_for_status()
+                images.append(res.content)
+            except requests.RequestException as exc:
+                print(f"  警告: {s['store_name']} の画像取得に失敗 ({exc})", file=sys.stderr)
+                images.append(b"")
+            time.sleep(SLEEP_SECONDS)
+
+        valid_indices = [i for i, img in enumerate(images) if img]
+        if not valid_indices:
+            continue
+
+        results = extract_prices_with_genai_batch([images[i] for i in valid_indices])
+        request_count += 1
+
+        for local_i, genai_result in zip(valid_indices, results):
+            store = by_code[batch[local_i]["store_code"]]
+            if genai_result is None:
+                continue
+            categories = genai_result_to_categories(genai_result)
+            if categories:
+                store["price_source"] = "vision_ai"
+                store["price"] = finalize_price_schema(categories)
+
+        stores_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"  保存しました（バッチ内成功: {sum(1 for r in results if r)}/{len(results)}）", file=sys.stderr)
+
+        if batch_start + batch_size < len(targets) and request_count < max_requests:
+            time.sleep(batch_sleep_seconds)
+
+    remaining = sum(1 for s in data if s.get("price_source") == "image")
+    vision_total = sum(1 for s in data if s.get("price_source") == "vision_ai")
+    print(f"backfill完了: AI画像読取 合計{vision_total}件 / 画像のみ残り{remaining}件", file=sys.stderr)
+
+
 def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="快活CLUB 店舗データ収集")
     parser.add_argument("--limit", type=int, default=None, help="動作確認用に件数を絞る")
     parser.add_argument("--out", type=Path, default=OUTPUT_PATH, help="出力先JSONパス")
+    parser.add_argument(
+        "--vision-backfill",
+        action="store_true",
+        help="新規スクレイピングは行わず、既存の --out のデータのうち画像のみの店舗を"
+             "Gemini Vision APIで数値化するbackfillのみ実行する（無料枠の日次上限に"
+             "合わせて複数回に分けて実行することを想定）",
+    )
+    parser.add_argument("--batch-size", type=int, default=4, help="vision-backfill時に1リクエストへまとめる画像枚数")
+    parser.add_argument("--max-requests", type=int, default=15, help="vision-backfill時の1回の実行で送る最大リクエスト数")
     args = parser.parse_args()
+
+    if args.vision_backfill:
+        backfill_vision_prices(args.out, batch_size=args.batch_size, max_requests=args.max_requests)
+        return
 
     data = collect(limit=args.limit)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
     json_count = sum(1 for s in data if s["price_source"] == "json")
+    vision_count = sum(1 for s in data if s["price_source"] == "vision_ai")
     image_count = sum(1 for s in data if s["price_source"] == "image")
     none_count = sum(1 for s in data if s["price_source"] == "none")
     print(
-        f"出力完了: {args.out} ({len(data)} 件 / 数値料金: {json_count} 件,"
-        f" 画像のみ: {image_count} 件, 取得不可: {none_count} 件)",
+        f"出力完了: {args.out} ({len(data)} 件 / 公式API数値料金: {json_count} 件,"
+        f" AI画像読取: {vision_count} 件, 画像のみ(OCR参考): {image_count} 件, 取得不可: {none_count} 件)",
         file=sys.stderr,
     )
 

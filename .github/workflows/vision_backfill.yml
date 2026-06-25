@@ -1,0 +1,45 @@
+name: Backfill prices with Gemini Vision (image-only stores)
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: "1リクエストにまとめる画像枚数"
+        required: false
+        default: "4"
+      max_requests:
+        description: "1回の実行で送る最大リクエスト数（無料枠の日次上限に応じて調整）"
+        required: false
+        default: "15"
+
+permissions:
+  contents: write
+
+jobs:
+  vision-backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r scraper/requirements.txt
+
+      - name: Run vision backfill
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scraper/scrape.py --vision-backfill \
+            --batch-size "${{ github.event.inputs.batch_size }}" \
+            --max-requests "${{ github.event.inputs.max_requests }}"
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/stores.json
+          git diff --cached --quiet && echo "No changes" || git commit -m "chore: vision backfill for image-only stores ($(date -u +%Y-%m-%d))"
+          git push
