@@ -32,19 +32,6 @@
               <option value="private">個室</option>
             </select>
           </label>
-          <label>利用時間・プラン
-            <select id="durationSelect">
-              <option value="night_pack">ナイトパック</option>
-              <option value="3">3時間パック</option>
-              <option value="6">6時間パック</option>
-              <option value="9">9時間パック</option>
-              <option value="12">12時間パック</option>
-              <option value="15">15時間パック</option>
-              <option value="18">18時間パック</option>
-              <option value="21">21時間パック</option>
-              <option value="24">24時間パック</option>
-            </select>
-          </label>
           <label>曜日プラン
             <select id="dayTypeSelect">
               <option value="weekday">平日</option>
@@ -55,6 +42,8 @@
             <input type="number" id="priceMax" min="0" step="100" placeholder="例: 2000">
           </label>
         </div>
+        <p class="filter-group-label sub">利用時間・プラン（複数選択可。選んだ中で最安のプランを表示）</p>
+        <div class="chip-row" id="durationFilters"></div>
       </div>
 
       <div class="filter-group">
@@ -90,6 +79,7 @@
             <th>市区町村</th>
             <th>座席タイプ</th>
             <th>料金</th>
+            <th>プラン</th>
             <th>主な設備</th>
             <th>詳細</th>
           </tr>
