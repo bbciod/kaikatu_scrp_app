@@ -54,9 +54,13 @@ async function init() {
   for (const id of rerenderInputs) {
     document.getElementById(id).addEventListener("input", render);
   }
+  // 比較表の列(座席タイプ・曜日)もこれらに依存するため、両方再描画する
   const rerenderSelects = ["sortSelect", "seatCategory", "dayTypeSelect"];
   for (const id of rerenderSelects) {
-    document.getElementById(id).addEventListener("change", render);
+    document.getElementById(id).addEventListener("change", () => {
+      render();
+      renderCompare();
+    });
   }
 
   document.getElementById("clearCompare").addEventListener("click", clearAllCompare);
@@ -85,7 +89,7 @@ function populateDurationFilters() {
     const label = document.createElement("label");
     label.className = "chip";
     label.innerHTML = `<input type="checkbox" value="${escapeHtml(opt.value)}"> ${escapeHtml(opt.label)}`;
-    label.querySelector("input").addEventListener("change", render);
+    label.querySelector("input").addEventListener("change", () => { render(); renderCompare(); });
     wrap.appendChild(label);
   }
 }
@@ -124,7 +128,7 @@ function populateFacilityFilters() {
     const label = document.createElement("label");
     label.className = "chip";
     label.innerHTML = `<input type="checkbox" value="${escapeHtml(facility)}"> ${escapeHtml(facility)}`;
-    label.querySelector("input").addEventListener("change", render);
+    label.querySelector("input").addEventListener("change", () => { render(); renderCompare(); });
     wrap.appendChild(label);
   }
 }
@@ -264,40 +268,48 @@ function formatPriceCell(store, priced) {
   return "情報なし";
 }
 
-function renderPriceDetail(store) {
-  if ((store.price_source === "json" || store.price_source === "vision_ai") && store.price && store.price.categories.length) {
-    const rows = store.price.categories.map(c => {
-      const cell8 = c.night_packs.find(np => np.hours === 8);
-      const cell12 = c.night_packs.find(np => np.hours === 12);
-      const fmt = np => np ? `¥${np.weekday_taxfee ?? "-"} / ¥${np.weekend_taxfee ?? "-"}` : "-";
-      return `
-        <tr>
-          <td>${escapeHtml(c.label)}</td>
-          <td>¥${c.weekday_basic_taxfee ?? "-"}（${c.weekday_basic_time ?? "?"}分）</td>
-          <td>¥${c.weekday_hourly_taxfee["24"] ?? "-"}</td>
-          <td>${fmt(cell8)}</td>
-          <td>${fmt(cell12)}</td>
-        </tr>`;
-    }).join("");
-    const aiNotice = store.price_source === "vision_ai"
-      ? `<p class="price-note ai-notice">⚠ この料金はAI（Gemini）が料金画像から自動で読み取った参考値です。誤りを含む可能性があるため、正式な料金は<a href="${store.price_image_url}" target="_blank" rel="noopener">元の料金画像</a>または公式サイトでご確認ください。</p>`
-      : "";
-    return `
-      ${aiNotice}
-      <table class="price-detail-table">
-        <thead><tr><th>座席</th><th>基本料金(平日)</th><th>24時間(平日)</th><th>8hパック(平日/休日)</th><th>12hパック(平日/休日)</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-      <p class="price-note">${store.price.night_pack_start_time ?? ""}〜${store.price.night_pack_end_time ?? ""} の利用が対象（店舗・座席により異なる場合があります）</p>
-    `;
+function getDurationPriceForStore(store, durationOption, seatCategory, dayType) {
+  if ((store.price_source !== "json" && store.price_source !== "vision_ai") || !store.price) return null;
+  const categories = seatCategory
+    ? store.price.categories.filter(c => c.category === seatCategory)
+    : store.price.categories;
+  let best = null;
+  for (const c of categories) {
+    const price = getCategoryPrice(c, durationOption, dayType);
+    if (price != null && (best == null || price < best)) best = price;
   }
-  if (store.price_source === "image") {
-    return `
-      ${store.price_image_url ? `<img src="${store.price_image_url}" alt="${escapeHtml(store.store_name)}の料金表" loading="lazy">` : ""}
-      ${store.price_ocr_text ? `<div class="ocr">${escapeHtml(store.price_ocr_text)}</div>` : "<p class=\"price-note\">OCRテキストなし</p>"}
-    `;
-  }
-  return "<p>料金情報を取得できませんでした</p>";
+  return best;
+}
+
+function buildComparePriceColumns() {
+  const seatCategory = document.getElementById("seatCategory").value;
+  const dayType = document.getElementById("dayTypeSelect").value;
+  const selectedValues = [...document.querySelectorAll("#durationFilters input:checked")].map(el => el.value);
+  // 何も選んでいない場合は代表的なプラン（ナイトパック2種・24時間パック）をデフォルト表示する
+  const durations = selectedValues.length
+    ? DURATION_OPTIONS.filter(o => selectedValues.includes(o.value))
+    : DURATION_OPTIONS.filter(o => ["night_pack_8", "night_pack_12", "24"].includes(o.value));
+  return durations.map(d => ({
+    key: `price:${d.value}`,
+    label: d.label,
+    selected: selectedValues.includes(d.value),
+    isPrice: true,
+    getValue: store => getDurationPriceForStore(store, d, seatCategory, dayType),
+  }));
+}
+
+function buildCompareFacilityColumns(stores) {
+  const selectedFacilities = getSelectedFacilities();
+  const allFacilities = new Set(stores.flatMap(storeFacilities));
+  const otherFacilities = [...allFacilities].filter(f => !selectedFacilities.includes(f)).sort();
+  const ordered = [...selectedFacilities, ...otherFacilities];
+  return ordered.map(f => ({
+    key: `facility:${f}`,
+    label: f,
+    selected: selectedFacilities.includes(f),
+    isPrice: false,
+    getValue: store => storeFacilities(store).includes(f),
+  }));
 }
 
 function renderCompare() {
@@ -309,29 +321,50 @@ function renderCompare() {
   }
   section.classList.remove("hidden");
 
-  const allFacilities = [...new Set(stores.flatMap(storeFacilities))].sort();
-  const tableWrap = document.getElementById("compareTableWrap");
-  let html = "<table><thead><tr><th>項目</th>";
-  for (const s of stores) html += `<th>${escapeHtml(s.store_name)}<br><small>${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</small></th>`;
+  const priceColumns = buildComparePriceColumns();
+  const facilityColumns = buildCompareFacilityColumns(stores);
+  const columns = [...priceColumns, ...facilityColumns];
+
+  let html = "<table class=\"compare-grid\"><thead><tr><th>店舗</th>";
+  for (const col of columns) {
+    html += `<th class="${col.selected ? "col-selected" : ""}">${escapeHtml(col.label)}</th>`;
+  }
   html += "</tr></thead><tbody>";
-  for (const f of allFacilities) {
-    html += `<tr><td>${escapeHtml(f)}</td>`;
-    for (const s of stores) {
-      const has = storeFacilities(s).includes(f);
-      html += `<td class="${has ? "yes" : "no"}">${has ? "○" : "−"}</td>`;
+
+  for (const s of stores) {
+    html += `<tr><th class="row-store-name">${escapeHtml(s.store_name)}<br><small>${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</small>${renderStoreSourceBadge(s)}</th>`;
+    for (const col of columns) {
+      const cls = col.selected ? "col-selected" : "";
+      if (col.isPrice) {
+        const price = col.getValue(s);
+        html += `<td class="${cls}">${price != null ? "¥" + price.toLocaleString() : "<span class=\"na\">-</span>"}</td>`;
+      } else {
+        const has = col.getValue(s);
+        html += `<td class="${cls} ${has ? "yes" : "no"}">${has ? "○" : "−"}</td>`;
+      }
     }
     html += "</tr>";
   }
   html += "</tbody></table>";
-  tableWrap.innerHTML = html;
+  document.getElementById("compareTableWrap").innerHTML = html;
 
-  const pricesWrap = document.getElementById("comparePrices");
-  pricesWrap.innerHTML = stores.map(s => `
+  const imageOnlyStores = stores.filter(s => s.price_source === "image" || s.price_source === "vision_ai");
+  document.getElementById("comparePrices").innerHTML = imageOnlyStores.map(s => `
     <div class="price-card">
       <h3>${escapeHtml(s.store_name)}</h3>
-      ${renderPriceDetail(s)}
+      ${s.price_source === "vision_ai"
+        ? `<p class="price-note ai-notice">⚠ 上の表の料金はAI（Gemini）が料金画像から自動で読み取った参考値です。誤りを含む可能性があるため、正式な料金は<a href="${s.price_image_url}" target="_blank" rel="noopener">元の料金画像</a>または公式サイトでご確認ください。</p>`
+        : `<img src="${s.price_image_url}" alt="${escapeHtml(s.store_name)}の料金表" loading="lazy">
+           ${s.price_ocr_text ? `<div class="ocr">${escapeHtml(s.price_ocr_text)}</div>` : "<p class=\"price-note\">OCRテキストなし</p>"}`
+      }
     </div>
   `).join("");
+}
+
+function renderStoreSourceBadge(store) {
+  if (store.price_source === "vision_ai") return ' <span class="ai-badge" title="AI画像読み取り（参考値）">AI</span>';
+  if (store.price_source === "image") return ' <span class="ai-badge image-badge" title="料金は画像のみ。下部参照">画像</span>';
+  return "";
 }
 
 function escapeHtml(str) {
