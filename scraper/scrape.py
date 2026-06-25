@@ -103,11 +103,23 @@ def _num(value: Any) -> int | None:
     try:
         return int(value)
     except (TypeError, ValueError):
-        return None
+        # 全角数字など int() で直接変換できない表記のフォールバック
+        digits = re.sub(r"[^\d]", "", str(value).translate(str.maketrans("０１２３４５６７８９", "0123456789")))
+        return int(digits) if digits else None
 
 
 def parse_structured_price(entry: dict[str, Any]) -> dict[str, Any]:
-    """/public/{code}.json の1エントリを座席カテゴリ別の料金表に変換する。"""
+    """/public/{code}.json の1エントリを座席カテゴリ別の料金表に変換する。
+
+    ナイトパックは8時間("8"キー)と12時間("A"キー)の2種類が存在し、店舗によって
+    片方のみ・両方・どちらも無し、と提供状況が異なる。"B"/"C"キーは実データ上
+    使われていないが、将来の追加プランに備えてスキーマ上は残す。
+    各バリエーションは時間数(hours)付きの個別エントリとして区別できるようにする。
+    """
+    night_pack_hours_by_key = {
+        k: _num(entry.get(f"night_pack_{k}_time")) for k in NIGHT_PACK_KEYS
+    }
+
     categories = []
     for cat_key, cat_label in SEAT_CATEGORIES.items():
         basic_weekday = _num(entry.get(f"{cat_key}_weekday_basic_taxfee"))
@@ -118,19 +130,21 @@ def parse_structured_price(entry: dict[str, Any]) -> dict[str, Any]:
         hourly_weekday = {h: v for h, v in hourly_weekday.items() if v is not None}
         hourly_weekend = {h: v for h, v in hourly_weekend.items() if v is not None}
 
-        night_pack_weekday = {
-            k: _num(entry.get(f"{cat_key}_weekday_night{k}_taxfee")) for k in NIGHT_PACK_KEYS
-        }
-        night_pack_weekend = {
-            k: _num(entry.get(f"{cat_key}_weekend_night{k}_taxfee")) for k in NIGHT_PACK_KEYS
-        }
-        night_pack_weekday = {k: v for k, v in night_pack_weekday.items() if v is not None}
-        night_pack_weekend = {k: v for k, v in night_pack_weekend.items() if v is not None}
+        night_packs = []
+        for k in NIGHT_PACK_KEYS:
+            hours = night_pack_hours_by_key.get(k)
+            weekday_fee = _num(entry.get(f"{cat_key}_weekday_night{k}_taxfee"))
+            weekend_fee = _num(entry.get(f"{cat_key}_weekend_night{k}_taxfee"))
+            if hours is None or (weekday_fee is None and weekend_fee is None):
+                continue
+            night_packs.append({
+                "key": k,
+                "hours": hours,
+                "weekday_taxfee": weekday_fee,
+                "weekend_taxfee": weekend_fee,
+            })
 
-        has_data = any([
-            basic_weekday, basic_weekend, hourly_weekday, hourly_weekend,
-            night_pack_weekday, night_pack_weekend,
-        ])
+        has_data = any([basic_weekday, basic_weekend, hourly_weekday, hourly_weekend, night_packs])
         if not has_data:
             continue
 
@@ -143,17 +157,21 @@ def parse_structured_price(entry: dict[str, Any]) -> dict[str, Any]:
             "weekend_basic_time": _num(entry.get("weekend_basic_time")),
             "weekday_hourly_taxfee": hourly_weekday,
             "weekend_hourly_taxfee": hourly_weekend,
-            "weekday_night_pack_taxfee": night_pack_weekday,
-            "weekend_night_pack_taxfee": night_pack_weekend,
+            "night_packs": night_packs,
         })
 
     all_basic = [c["weekday_basic_taxfee"] for c in categories if c["weekday_basic_taxfee"]]
-    all_night_pack = [v for c in categories for v in c["weekday_night_pack_taxfee"].values()]
+    all_night_pack = [
+        np["weekday_taxfee"] for c in categories for np in c["night_packs"] if np["weekday_taxfee"]
+    ]
     all_24h = [c["weekday_hourly_taxfee"].get("24") for c in categories if c["weekday_hourly_taxfee"].get("24")]
+    available_night_pack_hours = sorted({
+        np["hours"] for c in categories for np in c["night_packs"] if np["hours"]
+    })
 
     return {
         "categories": categories,
-        "night_pack_hours": _num(entry.get("night_pack_8_time")),
+        "available_night_pack_hours": available_night_pack_hours,
         "night_pack_start_time": entry.get("night_pack_start_time") or None,
         "night_pack_end_time": entry.get("night_pack_end_time") or None,
         "min_basic_taxfee": min(all_basic) if all_basic else None,

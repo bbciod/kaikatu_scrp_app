@@ -20,6 +20,21 @@ const PREF_ORDER = [
   "沖縄県",
 ];
 
+// ナイトパックは8時間("8"キー)と12時間("A"キー)の2種類が別プランとして存在する。
+// 利用時間・プランは複数選択可能（チェックした中から最安のものを各店舗ごとに採用する）。
+const DURATION_OPTIONS = [
+  { value: "night_pack_8", label: "ナイトパック(8時間)", type: "night_pack", hours: 8 },
+  { value: "night_pack_12", label: "ナイトパック(12時間)", type: "night_pack", hours: 12 },
+  { value: "3", label: "3時間パック", type: "hourly" },
+  { value: "6", label: "6時間パック", type: "hourly" },
+  { value: "9", label: "9時間パック", type: "hourly" },
+  { value: "12", label: "12時間パック", type: "hourly" },
+  { value: "15", label: "15時間パック", type: "hourly" },
+  { value: "18", label: "18時間パック", type: "hourly" },
+  { value: "21", label: "21時間パック", type: "hourly" },
+  { value: "24", label: "24時間パック", type: "hourly" },
+];
+
 let allStores = [];
 const compareSet = new Map(); // store_code -> store
 
@@ -31,13 +46,14 @@ async function init() {
 
   populatePrefFilters();
   populateFacilityFilters();
+  populateDurationFilters();
   render();
 
   const rerenderInputs = ["keyword", "priceMax"];
   for (const id of rerenderInputs) {
     document.getElementById(id).addEventListener("input", render);
   }
-  const rerenderSelects = ["sortSelect", "seatCategory", "durationSelect", "dayTypeSelect"];
+  const rerenderSelects = ["sortSelect", "seatCategory", "dayTypeSelect"];
   for (const id of rerenderSelects) {
     document.getElementById(id).addEventListener("change", render);
   }
@@ -47,6 +63,23 @@ async function init() {
     renderCompare();
     render();
   });
+}
+
+function populateDurationFilters() {
+  const wrap = document.getElementById("durationFilters");
+  for (const opt of DURATION_OPTIONS) {
+    const label = document.createElement("label");
+    label.className = "chip";
+    label.innerHTML = `<input type="checkbox" value="${escapeHtml(opt.value)}"> ${escapeHtml(opt.label)}`;
+    label.querySelector("input").addEventListener("change", render);
+    wrap.appendChild(label);
+  }
+}
+
+function getSelectedDurations() {
+  const values = [...document.querySelectorAll("#durationFilters input:checked")].map(el => el.value);
+  // 未選択時はすべてのプランの中から最安を採用する
+  return values.length ? DURATION_OPTIONS.filter(o => values.includes(o.value)) : DURATION_OPTIONS;
 }
 
 function populatePrefFilters() {
@@ -94,37 +127,38 @@ function storeFacilities(store) {
   return FACILITY_GROUPS.flatMap(g => store[g.key] || []);
 }
 
-function getCategoryPrice(category, duration, dayType) {
-  if (duration === "night_pack") {
-    const packs = dayType === "weekend" ? category.weekend_night_pack_taxfee : category.weekday_night_pack_taxfee;
-    const values = Object.values(packs);
-    return values.length ? Math.min(...values) : null;
+function getCategoryPrice(category, durationOption, dayType) {
+  if (durationOption.type === "night_pack") {
+    const pack = category.night_packs.find(np => np.hours === durationOption.hours);
+    if (!pack) return null;
+    const fee = dayType === "weekend" ? pack.weekend_taxfee : pack.weekday_taxfee;
+    return fee != null ? fee : null;
   }
   const hourly = dayType === "weekend" ? category.weekend_hourly_taxfee : category.weekday_hourly_taxfee;
-  return hourly[duration] != null ? hourly[duration] : null;
+  return hourly[durationOption.value] != null ? hourly[durationOption.value] : null;
 }
 
-function getConditionPrice(store, seatCategory, duration, dayType) {
+function getConditionPrice(store, seatCategory, durationOptions, dayType) {
   if (store.price_source !== "json" || !store.price) return null;
   const categories = seatCategory
     ? store.price.categories.filter(c => c.category === seatCategory)
     : store.price.categories;
   let best = null;
-  let bestCategory = null;
-  for (const c of categories) {
-    const price = getCategoryPrice(c, duration, dayType);
-    if (price != null && (best == null || price < best)) {
-      best = price;
-      bestCategory = c;
+  for (const durationOption of durationOptions) {
+    for (const c of categories) {
+      const price = getCategoryPrice(c, durationOption, dayType);
+      if (price != null && (best == null || price < best.price)) {
+        best = { price, category: c, duration: durationOption };
+      }
     }
   }
-  return best != null ? { price: best, category: bestCategory } : null;
+  return best;
 }
 
 function getConditions() {
   return {
     seatCategory: document.getElementById("seatCategory").value,
-    duration: document.getElementById("durationSelect").value,
+    durations: getSelectedDurations(),
     dayType: document.getElementById("dayTypeSelect").value,
   };
 }
@@ -136,7 +170,7 @@ function buildResultRows() {
   const priceMaxRaw = document.getElementById("priceMax").value.trim();
   const priceMax = priceMaxRaw ? Number(priceMaxRaw) : null;
   const sortKey = document.getElementById("sortSelect").value;
-  const { seatCategory, duration, dayType } = getConditions();
+  const { seatCategory, durations, dayType } = getConditions();
 
   const rows = [];
   for (const s of allStores) {
@@ -146,7 +180,7 @@ function buildResultRows() {
       const have = new Set(storeFacilities(s));
       if (!facilities.every(f => have.has(f))) continue;
     }
-    const priced = getConditionPrice(s, seatCategory, duration, dayType);
+    const priced = getConditionPrice(s, seatCategory, durations, dayType);
     if (priceMax != null && (priced == null || priced.price > priceMax)) continue;
     rows.push({ store: s, priced });
   }
@@ -179,6 +213,7 @@ function render() {
       <td>${escapeHtml(s.city || "")}</td>
       <td>${priced ? escapeHtml(priced.category.label) : "—"}</td>
       <td>${formatPriceCell(s, priced)}</td>
+      <td>${priced ? escapeHtml(priced.duration.label) : "—"}</td>
       <td><div class="tag-list">${mainFacilities.map(f => `<span class="tag">${escapeHtml(f)}</span>`).join("")}</div></td>
       <td><a href="${s.detail_url}" target="_blank" rel="noopener">公式</a></td>
     `;
@@ -203,20 +238,21 @@ function formatPriceCell(store, priced) {
 function renderPriceDetail(store) {
   if (store.price_source === "json" && store.price && store.price.categories.length) {
     const rows = store.price.categories.map(c => {
-      const nightWeekday = Object.values(c.weekday_night_pack_taxfee)[0];
-      const nightWeekend = Object.values(c.weekend_night_pack_taxfee)[0];
+      const cell8 = c.night_packs.find(np => np.hours === 8);
+      const cell12 = c.night_packs.find(np => np.hours === 12);
+      const fmt = np => np ? `¥${np.weekday_taxfee ?? "-"} / ¥${np.weekend_taxfee ?? "-"}` : "-";
       return `
         <tr>
           <td>${escapeHtml(c.label)}</td>
           <td>¥${c.weekday_basic_taxfee ?? "-"}（${c.weekday_basic_time ?? "?"}分）</td>
           <td>¥${c.weekday_hourly_taxfee["24"] ?? "-"}</td>
-          <td>${nightWeekday != null ? "¥" + nightWeekday : "-"}</td>
-          <td>${nightWeekend != null ? "¥" + nightWeekend : "-"}</td>
+          <td>${fmt(cell8)}</td>
+          <td>${fmt(cell12)}</td>
         </tr>`;
     }).join("");
     return `
       <table class="price-detail-table">
-        <thead><tr><th>座席</th><th>基本料金(平日)</th><th>24時間(平日)</th><th>ナイトパック(平日)</th><th>ナイトパック(休日)</th></tr></thead>
+        <thead><tr><th>座席</th><th>基本料金(平日)</th><th>24時間(平日)</th><th>8hパック(平日/休日)</th><th>12hパック(平日/休日)</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
       <p class="price-note">${store.price.night_pack_start_time ?? ""}〜${store.price.night_pack_end_time ?? ""} の利用が対象（店舗・座席により異なる場合があります）</p>
