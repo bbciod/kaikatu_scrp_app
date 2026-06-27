@@ -360,24 +360,72 @@ function renderCardResults(rows) {
     return;
   }
   wrap.innerHTML = top.map((r, i) => `
-    <div class="result-card">
-      <div class="rank-badge">${i + 1}</div>
-      <div class="card-body">
-        <h3>${escapeHtml(r.store_name)}${renderStatusBadge(r.status)}</h3>
-        <p class="card-sub">${escapeHtml(r.pref)}${escapeHtml(r.city)}</p>
-        <div class="tag-list">
-          <span class="tag tag-emphasis">${escapeHtml(r.seat_label)}</span>
-          <span class="tag tag-emphasis">${escapeHtml(r.plan_label)}</span>
-          ${r.facilities.slice(0, 4).map(f => `<span class="tag">${escapeHtml(f)}</span>`).join("")}
+    <div class="result-card-outer">
+      <div class="result-card">
+        <div class="rank-badge">${i + 1}</div>
+        <div class="card-body">
+          <h3>${escapeHtml(r.store_name)}${renderStatusBadge(r.status)}</h3>
+          <p class="card-sub">${escapeHtml(r.pref)}${escapeHtml(r.city)}</p>
+          <div class="tag-list">
+            <span class="tag tag-emphasis">${escapeHtml(r.seat_label)}</span>
+            <span class="tag tag-emphasis">${escapeHtml(r.plan_label)}</span>
+            ${r.facilities.slice(0, 4).map(f => `<span class="tag">${escapeHtml(f)}</span>`).join("")}
+          </div>
+        </div>
+        <div class="card-price">
+          <div class="price-main">¥${r.weekday_price.toLocaleString()}</div>
+          ${r.weekend_surcharge != null && r.weekend_surcharge !== 0 ? `<div class="price-sub">休日 +¥${r.weekend_surcharge.toLocaleString()}</div>` : ""}
+          <a href="${r.detail_url}" target="_blank" rel="noopener">公式サイト</a>
         </div>
       </div>
-      <div class="card-price">
-        <div class="price-main">¥${r.weekday_price.toLocaleString()}</div>
-        ${r.weekend_surcharge != null && r.weekend_surcharge !== 0 ? `<div class="price-sub">休日 +¥${r.weekend_surcharge.toLocaleString()}</div>` : ""}
-        <a href="${r.detail_url}" target="_blank" rel="noopener">公式サイト</a>
-      </div>
+      <details class="card-detail">
+        <summary>詳しく見る</summary>
+        ${buildStoreDetailHtml(r.store_code)}
+      </details>
     </div>
   `).join("");
+}
+
+// カードの「詳しく見る」展開部分: 住所・電話番号・全設備・座席タイプ別の料金表を表示する。
+function buildStoreDetailHtml(storeCode) {
+  const store = allStores.find(s => s.store_code === storeCode);
+  if (!store) return "";
+
+  const facilities = storeFacilities(store);
+  const facilitiesHtml = facilities.length
+    ? `<div class="tag-list">${facilities.map(f => `<span class="tag">${escapeHtml(f)}</span>`).join("")}</div>`
+    : "<p class=\"empty-note\">設備情報なし</p>";
+
+  let priceTableHtml = "<p class=\"empty-note\">料金情報なし</p>";
+  if (store.price && store.price.categories.length) {
+    const planSet = PLAN_OPTIONS.filter(p => ["night_pack_8", "night_pack_12", "3", "24"].includes(p.value));
+    const rowsHtml = store.price.categories.map(cat => {
+      const seatOpt = SEAT_OPTIONS.find(o => o.value === cat.category);
+      const cells = planSet.map(plan => {
+        const price = getPlanPrice(cat, plan, "weekday");
+        return `<td>${price != null ? "¥" + price.toLocaleString() : "<span class=\"na\">-</span>"}</td>`;
+      }).join("");
+      return `<tr><th>${escapeHtml(seatOpt ? seatOpt.label : cat.category)}</th>${cells}</tr>`;
+    }).join("");
+    priceTableHtml = `
+      <table class="card-detail-table">
+        <thead><tr><th>座席</th>${planSet.map(p => `<th>${escapeHtml(p.shortLabel)}</th>`).join("")}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+  }
+
+  const aiNotice = store.price_source === "vision_ai"
+    ? '<p class="price-note ai-notice">⚠ 料金はAI（Gemini）が料金画像から自動で読み取った参考値です。誤りを含む可能性があります。</p>'
+    : "";
+
+  return `
+    <p class="card-detail-meta">${escapeHtml(store.address || "")}${store.tel ? " ／ TEL: " + escapeHtml(store.tel) : ""}</p>
+    ${aiNotice}
+    ${priceTableHtml}
+    <p class="card-detail-label">設備・サービス</p>
+    ${facilitiesHtml}
+  `;
 }
 
 // 一覧表モード: 選択操作なしで、条件に合う店舗をそのまま比較表（縦=店舗、横=プラン別価格+設備）として表示する。
