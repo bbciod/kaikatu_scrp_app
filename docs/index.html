@@ -75,39 +75,14 @@
     <div class="results-header">
       <h2>検索結果</h2>
       <span id="resultCount" class="result-count"></span>
-      <button id="clearCompareTop" class="select-all-btn secondary">比較をクリア</button>
     </div>
 
     <div id="cardResults" class="card-results"></div>
 
     <div id="tableResults" class="hidden">
-      <p class="select-all-hint">表の左上のチェックボックスで、表示中の店舗をまとめて比較に追加/解除できます。</p>
-      <div class="table-scroll">
-        <table id="storeTable">
-          <thead>
-            <tr>
-              <th><input type="checkbox" id="selectAllCheckbox" title="表示中の店舗を全選択/全解除"></th>
-              <th>店舗名</th>
-              <th>都道府県</th>
-              <th>市区町村</th>
-              <th>座席タイプ</th>
-              <th>プラン</th>
-              <th>平日価格</th>
-              <th>休日加算</th>
-              <th>主な設備</th>
-              <th>詳細</th>
-            </tr>
-          </thead>
-          <tbody id="storeTableBody"></tbody>
-        </table>
-      </div>
+      <p class="select-all-hint">条件に合う店舗を、座席・プラン別の価格と設備の有無を並べた表で表示しています（選択操作は不要です）。</p>
+      <div class="table-scroll"></div>
     </div>
-  </section>
-
-  <section id="compareSection" class="hidden">
-    <h2>選択した店舗を比較 <button id="clearCompare">クリア</button></h2>
-    <div id="compareTableWrap"></div>
-    <div id="comparePrices"></div>
   </section>
 </main>
 
