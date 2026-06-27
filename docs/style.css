@@ -121,17 +121,17 @@ tr:hover td { background: #fff7ef; }
 .tag.tag-emphasis { background: #fdeee3; color: var(--accent); font-weight: bold; }
 
 .card-results { display: flex; flex-direction: column; gap: 0.6rem; }
+.result-card-outer { border: 1px solid var(--border); border-radius: 8px; background: white; overflow: hidden; }
 .result-card {
-  display: flex; align-items: center; gap: 0.8rem; border: 1px solid var(--border);
-  border-radius: 8px; padding: 0.7rem 0.9rem; background: white;
+  display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 0.9rem;
 }
 .rank-badge {
   flex: 0 0 auto; width: 2rem; height: 2rem; border-radius: 50%; background: #444; color: white;
   display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;
 }
-.result-card:nth-child(1) .rank-badge { background: #d4a017; }
-.result-card:nth-child(2) .rank-badge { background: #9aa0a6; }
-.result-card:nth-child(3) .rank-badge { background: #b5651d; }
+.result-card-outer:nth-child(1) .rank-badge { background: #d4a017; }
+.result-card-outer:nth-child(2) .rank-badge { background: #9aa0a6; }
+.result-card-outer:nth-child(3) .rank-badge { background: #b5651d; }
 .card-body { flex: 1; min-width: 0; }
 .card-body h3 { font-size: 0.95rem; margin: 0 0 0.1rem; }
 .card-sub { font-size: 0.76rem; color: #777; margin: 0 0 0.35rem; }
@@ -140,6 +140,22 @@ tr:hover td { background: #fff7ef; }
 .price-sub { font-size: 0.7rem; color: #888; }
 .card-price a { font-size: 0.78rem; }
 .empty-note { color: #888; font-size: 0.85rem; }
+
+.card-detail { border-top: 1px solid var(--border); background: #fafaf8; }
+.card-detail summary {
+  cursor: pointer; font-size: 0.78rem; color: var(--accent); padding: 0.4rem 0.9rem;
+  font-weight: bold; list-style: none; user-select: none;
+}
+.card-detail summary::-webkit-details-marker { display: none; }
+.card-detail summary::before { content: "▸ "; }
+.card-detail[open] summary::before { content: "▾ "; }
+.card-detail-meta { font-size: 0.76rem; color: #555; margin: 0 0.9rem 0.5rem; }
+.card-detail-label { font-size: 0.74rem; color: #777; margin: 0.5rem 0.9rem 0.3rem; font-weight: bold; }
+.card-detail .tag-list { margin: 0 0.9rem 0.6rem; }
+.card-detail-table { width: calc(100% - 1.8rem); margin: 0 0.9rem 0.6rem; font-size: 0.76rem; }
+.card-detail-table th, .card-detail-table td { padding: 0.3rem 0.4rem; text-align: center; border-bottom: 1px solid #eee; }
+.card-detail-table thead th:first-child, .card-detail-table tbody th { text-align: left; }
+.card-detail .ai-notice { margin: 0 0.9rem 0.5rem; }
 
 @media (max-width: 700px) {
   .result-card { flex-wrap: wrap; }
