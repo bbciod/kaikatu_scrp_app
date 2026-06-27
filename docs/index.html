@@ -48,7 +48,13 @@
       </div>
 
       <div class="filter-group">
-        <p class="filter-group-label sub">設備・サービス（補足の絞り込み・複数選択でAND条件）</p>
+        <p class="filter-group-label sub">
+          設備・サービス（補足の絞り込み）
+          <span class="and-or-toggle">
+            <label><input type="radio" name="facilityMode" value="and" checked> すべて満たす（かつ）</label>
+            <label><input type="radio" name="facilityMode" value="or"> いずれか満たす（または）</label>
+          </span>
+        </p>
         <div class="chip-row" id="facilityFilters"></div>
       </div>
     </div>
