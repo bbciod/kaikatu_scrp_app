@@ -13,56 +13,63 @@
 </header>
 
 <main>
-  <section class="filters">
-    <div class="filter-grid">
-      <div class="filter-group">
-        <p class="filter-group-label">都道府県（複数選択可・未選択なら全国）</p>
-        <div class="chip-row" id="prefFilters"></div>
+  <div class="mode-toggle-row">
+    <div class="mode-toggle">
+      <button id="modeCardBtn" class="mode-btn active" type="button">カード表示</button>
+      <button id="modeTableBtn" class="mode-btn" type="button">一覧表表示</button>
+    </div>
+  </div>
+
+  <details class="filters" open>
+    <summary>検索条件（クリックで開閉）</summary>
+    <div class="filter-body">
+      <div class="filter-row condition-row condition-row-primary">
+        <label>予算（平日価格・円以下・任意）
+          <input type="number" id="priceMax" min="0" step="100" placeholder="例: 2000">
+        </label>
+        <label>キーワード（店舗名・市区町村）
+          <input type="text" id="keyword" placeholder="例: 渋谷 / 大阪市">
+        </label>
+      </div>
+
+      <div class="filter-grid">
+        <div class="filter-group">
+          <p class="filter-group-label">都道府県</p>
+          <div class="chip-row" id="prefFilters"></div>
+        </div>
+        <div class="filter-group">
+          <p class="filter-group-label">座席タイプ</p>
+          <div class="chip-row" id="seatFilters"></div>
+        </div>
+        <div class="filter-group">
+          <p class="filter-group-label">利用時間・プラン</p>
+          <div class="chip-row" id="planFilters"></div>
+        </div>
       </div>
 
       <div class="filter-group">
-        <p class="filter-group-label">料金プラン</p>
-        <div class="filter-row condition-row">
-          <label>座席タイプ
-            <select id="seatCategory">
-              <option value="">指定なし（最安カテゴリ）</option>
-              <option value="open">オープンシート</option>
-              <option value="booth">ブース</option>
-              <option value="amuse">アミューズシート</option>
-              <option value="private">個室</option>
-            </select>
-          </label>
-          <label>曜日プラン
-            <select id="dayTypeSelect">
-              <option value="weekday">平日</option>
-              <option value="weekend">休日（土日・祝日）</option>
-            </select>
-          </label>
-          <label>予算（円以下・任意）
-            <input type="number" id="priceMax" min="0" step="100" placeholder="例: 2000">
-          </label>
-        </div>
-        <p class="filter-group-label sub">利用時間・プラン（複数選択可。選んだ中で最安のプランを表示）</p>
-        <div class="chip-row" id="durationFilters"></div>
-      </div>
-
-      <div class="filter-group">
-        <p class="filter-group-label">キーワード・設備</p>
-        <div class="filter-row condition-row">
-          <label>キーワード（店舗名・市区町村）
-            <input type="text" id="keyword" placeholder="例: 渋谷 / 大阪市">
-          </label>
-          <label>並び替え
-            <select id="sortSelect">
-              <option value="price_asc">料金が安い順</option>
-              <option value="price_desc">料金が高い順</option>
-            </select>
-          </label>
-        </div>
+        <p class="filter-group-label sub">設備・サービス（補足の絞り込み・複数選択でAND条件）</p>
         <div class="chip-row" id="facilityFilters"></div>
       </div>
     </div>
-  </section>
+  </details>
+
+  <div id="conditionChips" class="condition-chips"></div>
+
+  <div class="summary-row">
+    <div class="summary-box">
+      <p class="summary-label">最安値</p>
+      <p class="summary-value" id="summaryMin">—</p>
+    </div>
+    <div class="summary-box">
+      <p class="summary-label">件数</p>
+      <p class="summary-value" id="summaryCount">—</p>
+    </div>
+    <div class="summary-box">
+      <p class="summary-label">平均</p>
+      <p class="summary-value" id="summaryAvg">—</p>
+    </div>
+  </div>
 
   <section class="results">
     <div class="results-header">
@@ -70,24 +77,30 @@
       <span id="resultCount" class="result-count"></span>
       <button id="clearCompareTop" class="select-all-btn secondary">比較をクリア</button>
     </div>
-    <p class="select-all-hint">表の左上のチェックボックスで、表示中の行をまとめて比較に追加/解除できます。</p>
-    <div class="table-scroll">
-      <table id="storeTable">
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="selectAllCheckbox" title="表示中の行を全選択/全解除"></th>
-            <th>店舗名</th>
-            <th>都道府県</th>
-            <th>市区町村</th>
-            <th>座席タイプ</th>
-            <th>料金</th>
-            <th>プラン</th>
-            <th>主な設備</th>
-            <th>詳細</th>
-          </tr>
-        </thead>
-        <tbody id="storeTableBody"></tbody>
-      </table>
+
+    <div id="cardResults" class="card-results"></div>
+
+    <div id="tableResults" class="hidden">
+      <p class="select-all-hint">表の左上のチェックボックスで、表示中の店舗をまとめて比較に追加/解除できます。</p>
+      <div class="table-scroll">
+        <table id="storeTable">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAllCheckbox" title="表示中の店舗を全選択/全解除"></th>
+              <th>店舗名</th>
+              <th>都道府県</th>
+              <th>市区町村</th>
+              <th>座席タイプ</th>
+              <th>プラン</th>
+              <th>平日価格</th>
+              <th>休日加算</th>
+              <th>主な設備</th>
+              <th>詳細</th>
+            </tr>
+          </thead>
+          <tbody id="storeTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -101,8 +114,8 @@
 <footer>
   <p>
     データは <a href="https://www.kaikatsu.jp/" target="_blank" rel="noopener">快活CLUB公式サイト</a>
-    から取得した公開情報を元にした非公式の参考情報です。料金画像はOCRによる自動読み取りのため誤りを含む場合があります。
-    正確な情報は必ず公式サイト・各店舗にご確認ください。最終更新: <span id="updatedAt"></span>
+    から取得した公開情報を元にした非公式の参考情報です。料金画像はAI（Gemini）またはOCRによる自動読み取りのため
+    誤りを含む場合があります。正確な情報は必ず公式サイト・各店舗にご確認ください。最終更新: <span id="updatedAt"></span>
   </p>
 </footer>
 

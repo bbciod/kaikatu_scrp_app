@@ -24,13 +24,23 @@ header .subtitle { margin: 0; font-size: 0.85rem; opacity: 0.9; }
 
 main { padding: 1.2rem 1.5rem; max-width: 1300px; margin: 0 auto; }
 
+.mode-toggle-row { margin-bottom: 0.8rem; }
+.mode-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.mode-btn { padding: 0.45rem 1rem; font-size: 0.85rem; border: none; background: white; cursor: pointer; }
+.mode-btn + .mode-btn { border-left: 1px solid var(--border); }
+.mode-btn.active { background: var(--accent); color: white; font-weight: bold; }
+
 .filters {
   background: white;
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0 1rem 1rem;
   margin-bottom: 1rem;
 }
+.filters summary { padding: 0.8rem 0; font-size: 0.92rem; font-weight: bold; cursor: pointer; color: #444; }
+.filter-body { padding-top: 0.2rem; }
+
+.condition-row-primary { background: #fff8f0; border: 1px solid #f0d9a8; border-radius: 6px; padding: 0.6rem 0.7rem; margin-bottom: 0.8rem; }
 
 .filter-grid {
   display: grid;
@@ -67,6 +77,25 @@ main { padding: 1.2rem 1.5rem; max-width: 1300px; margin: 0 auto; }
 }
 .chip input { margin: 0; }
 .chip:has(input:checked) { background: #fdeee3; border-color: var(--accent); }
+.chip.chip-all { font-weight: bold; }
+.chip.chip-all:has(input:checked) { background: #444; border-color: #444; color: white; }
+
+.condition-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; min-height: 1.6rem; }
+.condition-chip {
+  display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.76rem;
+  background: #fff3e6; border: 1px solid var(--accent); color: var(--accent);
+  border-radius: 14px; padding: 0.2rem 0.3rem 0.2rem 0.6rem;
+}
+.condition-chip button {
+  border: none; background: none; color: var(--accent); cursor: pointer; font-size: 0.85rem;
+  line-height: 1; padding: 0 0.2rem;
+}
+.no-condition { font-size: 0.78rem; color: #999; }
+
+.summary-row { display: flex; gap: 0.8rem; margin-bottom: 1rem; }
+.summary-box { flex: 1; background: white; border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 1rem; text-align: center; }
+.summary-label { font-size: 0.74rem; color: #777; margin: 0 0 0.2rem; }
+.summary-value { font-size: 1.3rem; font-weight: bold; margin: 0; color: var(--accent); }
 
 .results { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
 .results-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.6rem; }
@@ -90,6 +119,33 @@ tr:hover td { background: #fff7ef; }
 
 .tag-list { display: flex; flex-wrap: wrap; gap: 0.25rem; }
 .tag { background: #eef2f6; border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.72rem; white-space: nowrap; }
+.tag.tag-emphasis { background: #fdeee3; color: var(--accent); font-weight: bold; }
+
+.card-results { display: flex; flex-direction: column; gap: 0.6rem; }
+.result-card {
+  display: flex; align-items: center; gap: 0.8rem; border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.7rem 0.9rem; background: white;
+}
+.rank-badge {
+  flex: 0 0 auto; width: 2rem; height: 2rem; border-radius: 50%; background: #444; color: white;
+  display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;
+}
+.result-card:nth-child(1) .rank-badge { background: #d4a017; }
+.result-card:nth-child(2) .rank-badge { background: #9aa0a6; }
+.result-card:nth-child(3) .rank-badge { background: #b5651d; }
+.card-body { flex: 1; min-width: 0; }
+.card-body h3 { font-size: 0.95rem; margin: 0 0 0.1rem; }
+.card-sub { font-size: 0.76rem; color: #777; margin: 0 0 0.35rem; }
+.card-price { flex: 0 0 auto; text-align: right; }
+.price-main { font-size: 1.25rem; font-weight: bold; color: var(--accent); }
+.price-sub { font-size: 0.7rem; color: #888; }
+.card-price a { font-size: 0.78rem; }
+.empty-note { color: #888; font-size: 0.85rem; }
+
+@media (max-width: 700px) {
+  .result-card { flex-wrap: wrap; }
+  .card-price { text-align: left; margin-left: 2.8rem; }
+}
 
 #compareSection {
   margin-top: 1.5rem; background: white; border: 1px solid var(--border);
