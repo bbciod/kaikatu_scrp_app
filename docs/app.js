@@ -67,9 +67,16 @@ async function init() {
 
   document.getElementById("priceMax").addEventListener("input", onFilterChange);
   document.getElementById("keyword").addEventListener("input", onFilterChange);
+  for (const radio of document.querySelectorAll('input[name="facilityMode"]')) {
+    radio.addEventListener("change", onFilterChange);
+  }
 
   document.getElementById("modeCardBtn").addEventListener("click", () => setViewMode("card"));
   document.getElementById("modeTableBtn").addEventListener("click", () => setViewMode("table"));
+}
+
+function getFacilityMode() {
+  return document.querySelector('input[name="facilityMode"]:checked').value; // "and" | "or"
 }
 
 function buildPrefOptions() {
@@ -225,6 +232,7 @@ function buildFilteredRows() {
   const seats = getSelectedValues("seatFilters");
   const plans = getSelectedValues("planFilters");
   const facilities = getSelectedFacilities();
+  const facilityMode = getFacilityMode();
   const keyword = document.getElementById("keyword").value.trim();
   const priceMaxRaw = document.getElementById("priceMax").value.trim();
   const priceMax = priceMaxRaw ? Number(priceMaxRaw) : null;
@@ -234,7 +242,12 @@ function buildFilteredRows() {
     if (seats.length && !seats.includes(r.seat_value)) return false;
     if (plans.length && !plans.includes(r.plan_value)) return false;
     if (keyword && !(r.store_name.includes(keyword) || r.city.includes(keyword))) return false;
-    if (facilities.length && !facilities.every(f => r.facilities.includes(f))) return false;
+    if (facilities.length) {
+      const matchesFacilities = facilityMode === "or"
+        ? facilities.some(f => r.facilities.includes(f))
+        : facilities.every(f => r.facilities.includes(f));
+      if (!matchesFacilities) return false;
+    }
     if (r.weekday_price == null) return false; // 表示値null除外
     if (priceMax != null && r.weekday_price > priceMax) return false; // しきい値
     return true;
@@ -281,8 +294,11 @@ function renderConditionChips() {
   addGroup("prefFilters", "都道府県");
   addGroup("seatFilters", "座席");
   addGroup("planFilters", "プラン");
-  for (const f of getSelectedFacilities()) {
-    chips.push({ text: `設備:${f}`, clear: () => uncheckFacility(f) });
+  const selectedFacilities = getSelectedFacilities();
+  const facilityModeLabel = getFacilityMode() === "or" ? "または" : "かつ";
+  for (const f of selectedFacilities) {
+    const prefix = selectedFacilities.length > 1 ? `設備(${facilityModeLabel}):` : "設備:";
+    chips.push({ text: `${prefix}${f}`, clear: () => uncheckFacility(f) });
   }
   const priceMax = document.getElementById("priceMax").value.trim();
   if (priceMax) chips.push({ text: `予算:¥${Number(priceMax).toLocaleString()}以下`, clear: () => { document.getElementById("priceMax").value = ""; onFilterChange(); } });
