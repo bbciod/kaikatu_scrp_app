@@ -31,16 +31,16 @@ const SEAT_OPTIONS = [
 
 // ナイトパックは8時間("8"キー)と12時間("A"キー)の2種類が別プランとして存在する。
 const PLAN_OPTIONS = [
-  { value: "night_pack_8", label: "ナイトパック(8時間)", type: "night_pack", hours: 8 },
-  { value: "night_pack_12", label: "ナイトパック(12時間)", type: "night_pack", hours: 12 },
-  { value: "3", label: "3時間パック", type: "hourly" },
-  { value: "6", label: "6時間パック", type: "hourly" },
-  { value: "9", label: "9時間パック", type: "hourly" },
-  { value: "12", label: "12時間パック", type: "hourly" },
-  { value: "15", label: "15時間パック", type: "hourly" },
-  { value: "18", label: "18時間パック", type: "hourly" },
-  { value: "21", label: "21時間パック", type: "hourly" },
-  { value: "24", label: "24時間パック", type: "hourly" },
+  { value: "night_pack_8", label: "ナイトパック(8時間)", shortLabel: "ナイト8h", type: "night_pack", hours: 8 },
+  { value: "night_pack_12", label: "ナイトパック(12時間)", shortLabel: "ナイト12h", type: "night_pack", hours: 12 },
+  { value: "3", label: "3時間パック", shortLabel: "3h", type: "hourly" },
+  { value: "6", label: "6時間パック", shortLabel: "6h", type: "hourly" },
+  { value: "9", label: "9時間パック", shortLabel: "9h", type: "hourly" },
+  { value: "12", label: "12時間パック", shortLabel: "12h", type: "hourly" },
+  { value: "15", label: "15時間パック", shortLabel: "15h", type: "hourly" },
+  { value: "18", label: "18時間パック", shortLabel: "18h", type: "hourly" },
+  { value: "21", label: "21時間パック", shortLabel: "21h", type: "hourly" },
+  { value: "24", label: "24時間パック", shortLabel: "24h", type: "hourly" },
 ];
 
 const TOP_N_CARDS = 50;
@@ -48,8 +48,6 @@ const TOP_N_CARDS = 50;
 let allStores = [];
 let flatRows = []; // ロング形式: 1行 = 店舗×座席タイプ×プラン
 let viewMode = "card"; // "card" | "table"
-const compareSet = new Map(); // store_code -> store
-let visibleStores = [];
 
 // ===== データ読み込み・フラット化 =====
 
@@ -72,18 +70,6 @@ async function init() {
 
   document.getElementById("modeCardBtn").addEventListener("click", () => setViewMode("card"));
   document.getElementById("modeTableBtn").addEventListener("click", () => setViewMode("table"));
-
-  document.getElementById("clearCompare").addEventListener("click", clearAllCompare);
-  document.getElementById("clearCompareTop").addEventListener("click", clearAllCompare);
-  document.getElementById("selectAllCheckbox").addEventListener("change", (e) => {
-    if (e.target.checked) {
-      for (const s of visibleStores) compareSet.set(s.store_code, s);
-    } else {
-      for (const s of visibleStores) compareSet.delete(s.store_code);
-    }
-    renderResults();
-    renderCompare();
-  });
 }
 
 function buildPrefOptions() {
@@ -266,6 +252,20 @@ function buildSummary(rows) {
   return { min, count: rows.length, avg };
 }
 
+// 行(店舗×座席×プラン)を店舗単位に重複除去する。rowsは既に価格昇順なので、
+// 各店舗の最初の出現＝その店舗内での最安行になる。
+function dedupeStoresInOrder(rows) {
+  const seen = new Set();
+  const stores = [];
+  for (const r of rows) {
+    if (seen.has(r.store_code)) continue;
+    seen.add(r.store_code);
+    const store = allStores.find(s => s.store_code === r.store_code);
+    if (store) stores.push(store);
+  }
+  return stores;
+}
+
 // ===== 条件チップ表示 =====
 
 function renderConditionChips() {
@@ -319,7 +319,6 @@ function uncheckFacility(value) {
 function renderAll() {
   renderConditionChips();
   renderResults();
-  renderCompare();
 }
 
 function renderResults() {
@@ -365,47 +364,41 @@ function renderCardResults(rows) {
   `).join("");
 }
 
+// 一覧表モード: 選択操作なしで、条件に合う店舗をそのまま比較表（縦=店舗、横=プラン別価格+設備）として表示する。
 function renderTableResults(rows) {
-  visibleStores = []; // テーブルモードでは行=店舗×座席×プランなので、店舗単位の全選択は店舗コードの重複除去で扱う
-  const seen = new Set();
-  const tbody = document.getElementById("storeTableBody");
-  tbody.innerHTML = rows.map(r => {
-    if (!seen.has(r.store_code)) {
-      seen.add(r.store_code);
-      const store = allStores.find(s => s.store_code === r.store_code);
-      if (store) visibleStores.push(store);
-    }
-    return `
-      <tr>
-        <td><input type="checkbox" data-code="${r.store_code}" ${compareSet.has(r.store_code) ? "checked" : ""}></td>
-        <td>${escapeHtml(r.store_name)}${renderStatusBadge(r.status)}</td>
-        <td>${escapeHtml(r.pref)}</td>
-        <td>${escapeHtml(r.city)}</td>
-        <td>${escapeHtml(r.seat_label)}</td>
-        <td>${escapeHtml(r.plan_label)}</td>
-        <td>¥${r.weekday_price.toLocaleString()}</td>
-        <td>${r.weekend_surcharge != null ? "+¥" + r.weekend_surcharge.toLocaleString() : "—"}</td>
-        <td><div class="tag-list">${r.facilities.slice(0, 4).map(f => `<span class="tag">${escapeHtml(f)}</span>`).join("")}</div></td>
-        <td><a href="${r.detail_url}" target="_blank" rel="noopener">公式</a></td>
-      </tr>
-    `;
-  }).join("");
+  const stores = dedupeStoresInOrder(rows);
+  document.getElementById("resultCount").textContent = `${stores.length} 件`;
 
-  document.getElementById("resultCount").textContent = `${rows.length} 行（店舗数 ${seen.size}）`;
-
-  for (const cb of tbody.querySelectorAll("input[type=checkbox]")) {
-    cb.addEventListener("change", (e) => {
-      const code = e.target.dataset.code;
-      const store = allStores.find(s => s.store_code === code);
-      if (e.target.checked) compareSet.set(code, store);
-      else compareSet.delete(code);
-      // 同じ店舗の他の行のチェックも同期させる
-      for (const other of tbody.querySelectorAll(`input[data-code="${code}"]`)) other.checked = e.target.checked;
-      updateSelectAllCheckboxState();
-      renderCompare();
-    });
+  const wrap = document.getElementById("tableResults");
+  if (stores.length === 0) {
+    wrap.querySelector(".table-scroll").innerHTML = '<p class="empty-note">条件に一致する結果がありません。</p>';
+    return;
   }
-  updateSelectAllCheckboxState();
+
+  const columns = [...buildComparePriceColumns(), ...buildCompareFacilityColumns()];
+
+  let html = '<table class="compare-grid"><thead><tr><th>店舗</th>';
+  for (const col of columns) {
+    html += `<th class="${col.selected ? "col-selected" : ""}">${col.shortLabel ? escapeHtml(col.shortLabel) : escapeHtml(col.label)}</th>`;
+  }
+  html += "</tr></thead><tbody>";
+
+  for (const s of stores) {
+    html += `<tr><th class="row-store-name"><a href="${s.detail_url}" target="_blank" rel="noopener">${escapeHtml(s.store_name)}</a>${renderStatusBadge(s.price_source)}<br><small>${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</small></th>`;
+    for (const col of columns) {
+      const cls = col.selected ? "col-selected" : "";
+      if (col.isPrice) {
+        const price = col.getValue(s);
+        html += `<td class="${cls}">${price != null ? "¥" + price.toLocaleString() : "<span class=\"na\">-</span>"}</td>`;
+      } else {
+        const has = col.getValue(s);
+        html += `<td class="${cls} ${has ? "yes" : "no"}">${has ? "○" : "−"}</td>`;
+      }
+    }
+    html += "</tr>";
+  }
+  html += "</tbody></table>";
+  wrap.querySelector(".table-scroll").innerHTML = html;
 }
 
 function renderStatusBadge(status) {
@@ -413,21 +406,7 @@ function renderStatusBadge(status) {
   return "";
 }
 
-function updateSelectAllCheckboxState() {
-  const checkbox = document.getElementById("selectAllCheckbox");
-  const visibleCount = visibleStores.length;
-  const checkedCount = visibleStores.filter(s => compareSet.has(s.store_code)).length;
-  checkbox.checked = visibleCount > 0 && checkedCount === visibleCount;
-  checkbox.indeterminate = checkedCount > 0 && checkedCount < visibleCount;
-}
-
-function clearAllCompare() {
-  compareSet.clear();
-  renderCompare();
-  renderResults();
-}
-
-// ===== 選択店舗の詳細比較（手動選択分） =====
+// ===== 一覧表の列定義（料金プラン列・設備列） =====
 
 function buildComparePriceColumns() {
   const seats = getSelectedValues("seatFilters");
@@ -438,6 +417,7 @@ function buildComparePriceColumns() {
 
   return plans.map(plan => ({
     label: plan.label,
+    shortLabel: plan.shortLabel,
     selected: planValues.includes(plan.value),
     isPrice: true,
     getValue: store => {
@@ -455,62 +435,15 @@ function buildComparePriceColumns() {
   }));
 }
 
-function buildCompareFacilityColumns(stores) {
+// 設備列は「選択中の設備」のみを表示する（未選択なら設備列は出さず、価格列だけのコンパクトな表にする）
+function buildCompareFacilityColumns() {
   const selectedFacilities = getSelectedFacilities();
-  const allFacilities = new Set(stores.flatMap(storeFacilities));
-  const otherFacilities = [...allFacilities].filter(f => !selectedFacilities.includes(f)).sort();
-  const ordered = [...selectedFacilities, ...otherFacilities];
-  return ordered.map(f => ({
+  return selectedFacilities.map(f => ({
     label: f,
-    selected: selectedFacilities.includes(f),
+    selected: true,
     isPrice: false,
     getValue: store => storeFacilities(store).includes(f),
   }));
-}
-
-function renderCompare() {
-  const section = document.getElementById("compareSection");
-  const stores = [...compareSet.values()].filter(Boolean);
-  if (stores.length === 0) {
-    section.classList.add("hidden");
-    return;
-  }
-  section.classList.remove("hidden");
-
-  const columns = [...buildComparePriceColumns(), ...buildCompareFacilityColumns(stores)];
-
-  let html = "<table class=\"compare-grid\"><thead><tr><th>店舗</th>";
-  for (const col of columns) html += `<th class="${col.selected ? "col-selected" : ""}">${escapeHtml(col.label)}</th>`;
-  html += "</tr></thead><tbody>";
-
-  for (const s of stores) {
-    html += `<tr><th class="row-store-name">${escapeHtml(s.store_name)}<br><small>${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</small>${renderStatusBadge(s.price_source)}</th>`;
-    for (const col of columns) {
-      const cls = col.selected ? "col-selected" : "";
-      if (col.isPrice) {
-        const price = col.getValue(s);
-        html += `<td class="${cls}">${price != null ? "¥" + price.toLocaleString() : "<span class=\"na\">-</span>"}</td>`;
-      } else {
-        const has = col.getValue(s);
-        html += `<td class="${cls} ${has ? "yes" : "no"}">${has ? "○" : "−"}</td>`;
-      }
-    }
-    html += "</tr>";
-  }
-  html += "</tbody></table>";
-  document.getElementById("compareTableWrap").innerHTML = html;
-
-  const imageOnlyStores = stores.filter(s => s.price_source === "image" || s.price_source === "vision_ai");
-  document.getElementById("comparePrices").innerHTML = imageOnlyStores.map(s => `
-    <div class="price-card">
-      <h3>${escapeHtml(s.store_name)}</h3>
-      ${s.price_source === "vision_ai"
-        ? `<p class="price-note ai-notice">⚠ 上の表の料金はAI（Gemini）が料金画像から自動で読み取った参考値です。誤りを含む可能性があるため、正式な料金は<a href="${s.price_image_url}" target="_blank" rel="noopener">元の料金画像</a>または公式サイトでご確認ください。</p>`
-        : `<img src="${s.price_image_url}" alt="${escapeHtml(s.store_name)}の料金表" loading="lazy">
-           ${s.price_ocr_text ? `<div class="ocr">${escapeHtml(s.price_ocr_text)}</div>` : "<p class=\"price-note\">OCRテキストなし</p>"}`
-      }
-    </div>
-  `).join("");
 }
 
 function escapeHtml(str) {
