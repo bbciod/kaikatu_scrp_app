@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 .tessdata/
 .env
+price_image_review/

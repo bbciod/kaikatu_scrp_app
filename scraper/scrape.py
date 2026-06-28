@@ -362,6 +362,19 @@ GEMINI_BATCH_PRICE_PROMPT = """これから複数枚の日本のネットカフ�
    1枚の画像内で同じcategory値を複数回出力してはいけない（列ごとに一意のcategoryを割り当てる）。
 5. night_packs はナイトパック（「ナイトX時間パック」等）の時間数(hours)と平日/休日料金。複数ある場合は全て列挙してください。
 6. 金額は全て税込の数値のみ（円マークやカンマは含めない）。読み取れない項目は省略して構いません。
+7. 表の列見出しの数が2つ以上ある場合（例:「飲み放題カフェ」「ブース・ダーツ・カラオケ」「鍵付完全個室」の3列）、
+   見える列は1つも省略せず、必ず全ての列をcategoriesに出力してください。
+   セルが複数の時間帯行（例:3時間パックと6時間パックの行）にわたって縦に結合され、
+   1つの料金しか表示されていない場合は、結合されている全ての時間帯キーに同じ料金値を設定してください
+   （例: 3時間パックと6時間パックのセルが結合されて「990円」と1つだけ表示されている場合、
+   weekday_hourly_taxfee の "3" と "6" の両方に 990 を設定する）。結合されているからといって
+   その列・その時間帯を省略してはいけません。
+8. 各行の左端に書かれている時間帯ラベル（3時間パック/6時間パック/9時間パック/12時間パック/
+   15時間パック/18時間パック/21時間パック/24時間パック）を1行ずつ正確に確認し、そのラベルと
+   完全に一致する時間キー（"3"/"6"/"9"/"12"/"15"/"18"/"21"/"24"）に値を設定してください。
+   ある行が不鮮明で読み取れない場合でも、後続の行の値を前に詰めて別の時間キーに割り当てては
+   いけません（ラベルと値がズレる原因になります）。読み取れない行はそのキーを省略するだけに
+   してください。
 """
 
 
@@ -575,6 +588,7 @@ def backfill_vision_prices(
     batch_size: int = 4,
     max_requests: int = 15,
     batch_sleep_seconds: float = 10.0,
+    force_codes: set[str] | None = None,
 ) -> None:
     """既存の docs/data/stores.json のうち price_source=="image" の店舗だけを対象に、
     複数画像まとめてのGemini Vision抽出を行い、その都度ファイルへ保存する。
@@ -582,7 +596,8 @@ def backfill_vision_prices(
     無料枠の「1日あたりのリクエスト数」上限が低いプロジェクトでも、複数日に分けて
     本関数を再実行すれば取り残しなく徐々に置き換えられるよう、以下の設計にしている。
     - 既に price_source=="vision_ai"/"json" の店舗は対象にしない（再実行のたびに
-      重複してAPIを消費しない）
+      重複してAPIを消費しない）。force_codes に store_code を指定すると、
+      vision_ai/json 済みでも強制的に再処理する（誤抽出の修正用）。
     - 1バッチ処理するたびにファイルへ保存する（quota切れで中断しても進捗が残る）
     - max_requests 件のバッチを送ったら自動的に終了する（1日の上限を超えないよう
       呼び出し側で日の上限より少し小さい値を指定する想定）
@@ -592,8 +607,12 @@ def backfill_vision_prices(
         return
 
     data: list[dict[str, Any]] = json.loads(stores_path.read_text(encoding="utf-8"))
-    targets = [s for s in data if s.get("price_source") == "image" and s.get("price_image_url")]
-    print(f"対象店舗数(画像のみ): {len(targets)} 件 / バッチサイズ: {batch_size} / 最大リクエスト数: {max_requests}", file=sys.stderr)
+    force_codes = force_codes or set()
+    targets = [
+        s for s in data
+        if s.get("price_image_url") and (s.get("price_source") == "image" or s.get("store_code") in force_codes)
+    ]
+    print(f"対象店舗数: {len(targets)} 件 / バッチサイズ: {batch_size} / 最大リクエスト数: {max_requests}", file=sys.stderr)
 
     by_code = {s["store_code"]: s for s in data}
     request_count = 0
@@ -667,10 +686,16 @@ def main() -> None:
     )
     parser.add_argument("--batch-size", type=int, default=4, help="vision-backfill時に1リクエストへまとめる画像枚数")
     parser.add_argument("--max-requests", type=int, default=15, help="vision-backfill時の1回の実行で送る最大リクエスト数")
+    parser.add_argument(
+        "--force-codes", type=str, default="",
+        help="vision-backfill時にカンマ区切りで指定した店舗コードは、既にvision_ai/json"
+             "済みでも強制的に再抽出する（誤抽出の修正用）",
+    )
     args = parser.parse_args()
 
     if args.vision_backfill:
-        backfill_vision_prices(args.out, batch_size=args.batch_size, max_requests=args.max_requests)
+        force_codes = {c.strip() for c in args.force_codes.split(",") if c.strip()}
+        backfill_vision_prices(args.out, batch_size=args.batch_size, max_requests=args.max_requests, force_codes=force_codes)
         return
 
     data = collect(limit=args.limit)
