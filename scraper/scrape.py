@@ -521,6 +521,9 @@ class StoreRecord:
             "city": r.get("cf_store_city"),
             "tel": r.get("tel"),
             "address": r.get("address"),
+            "access": extract_access(r.get("address")),  # 最寄駅からの徒歩案内（カード表示用）
+            "lat": None,  # 地図表示用。--geocode-backfill で住所からジオコーディングして埋める
+            "lng": None,
             "service": r.get("service", []),
             "roomtype": r.get("roomtype", []),
             "karaoke": r.get("karaoke", []),
@@ -671,6 +674,179 @@ def backfill_vision_prices(
     print(f"backfill完了: AI画像読取 合計{vision_total}件 / 画像のみ残り{remaining}件", file=sys.stderr)
 
 
+# 国土地理院(GSI)ジオコーディングAPI。APIキー不要・無料で、日本の住所を番地レベルまで
+# 高精度に解決できる（OSM Nominatimは日本の番地/丁目データが疎で市区中心に丸められがち）。
+# 応答は GeoJSON 風の配列で coordinates は [経度, 緯度] の順。
+GSI_URL = "https://msearch.gsi.go.jp/address-search/AddressSearch"
+NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
+# 連絡先を明示するUser-Agent（両API共通で使用。Nominatimは特に規約で要求）。
+GEOCODE_HEADERS = {
+    "User-Agent": "kaikatu-scraper/1.0 (personal research use; https://github.com/)"
+}
+# GSIは明示的なレート上限を課していないが、相手サーバ負荷を避けるため間隔を空ける。
+GEOCODE_SLEEP_SECONDS = 0.6
+
+
+def clean_address_for_geocoding(address: str | None) -> str:
+    """住所文字列からジオコーディング可能な番地部分だけを取り出し、正規化する。
+
+    公式データの address は「番地<br>ビル名 階<br>※駅より徒歩N分」のように、番地の後ろに
+    <br>区切りでビル名や最寄駅の案内が連結されていることがある。ビル名・駅案内をそのまま
+    Nominatimに渡すとヒットしない（結果0件）ため、最初の<br>より前（番地部分）だけを使う。
+
+    さらにNominatimは日本語の「丁目/番地/番/号」や全角数字を含む表記でヒット率が落ちるため、
+    全角数字→半角、丁目/番地/番→ハイフン、号→除去、と正規化し、途中の空白以降（ビル名等の
+    残り）を切り落とす。
+    """
+    if not address:
+        return ""
+    first = re.split(r"<br\s*/?>", address)[0].strip()
+    first = first.translate(str.maketrans("０１２３４５６７８９", "0123456789"))
+    first = (first.replace("丁目", "-").replace("−", "-").replace("－", "-")
+                  .replace("番地", "-").replace("番", "-").replace("号", ""))
+    # 全角/半角スペース以降（ビル名などが残っている場合）を切り落とす
+    first = re.split(r"[ 　]", first)[0]
+    first = re.sub(r"-+", "-", first).rstrip("-")
+    return first.strip()
+
+
+def chome_level_address(address: str) -> str:
+    """番地レベルでヒットしなかった時のフォールバック用に、丁目レベルまで丸めた住所を返す。
+
+    正規化済み住所（例「大阪府大阪市城東区蒲生4-22-4」）の最初の数値ブロックまで（「…蒲生4」）
+    を残す。番地まで登録が無い地域でも丁目レベルなら座標が取れることがあるため。
+    """
+    if not address:
+        return ""
+    m = re.match(r"(.+?[区市町村].*?\d+)(?:-\d+)+$", address)
+    return m.group(1) if m else ""
+
+
+def extract_access(address: str | None) -> list[str]:
+    """住所に含まれる「最寄駅から徒歩N分」の案内文を抽出する（カード表示用）。
+
+    address の <br> 区切りセグメントのうち「徒歩」を含むものを対象にし、先頭の「※」や
+    区切り記号を除いて返す。複数駅が併記されている店舗もあるためリストで返す。該当なしは空。
+    """
+    if not address:
+        return []
+    result = []
+    for seg in re.split(r"<br\s*/?>", address):
+        seg = seg.strip().lstrip("※＊*").strip()
+        if "徒歩" in seg and seg:
+            result.append(seg)
+    return result
+
+
+def _geocode_gsi(query: str) -> tuple[float, float] | None:
+    """国土地理院APIで1クエリをジオコーディングする。coordinatesは[経度,緯度]。"""
+    try:
+        res = requests.get(GSI_URL, params={"q": query}, headers=GEOCODE_HEADERS, timeout=20)
+        res.raise_for_status()
+        data = res.json()
+    except (requests.RequestException, ValueError) as exc:
+        print(f"  警告: GSIジオコーディング失敗 ({query}): {exc}", file=sys.stderr)
+        return None
+    if data:
+        try:
+            lon, lat = data[0]["geometry"]["coordinates"]
+            return float(lat), float(lon)
+        except (KeyError, ValueError, IndexError, TypeError):
+            pass
+    return None
+
+
+def _geocode_nominatim(query: str) -> tuple[float, float] | None:
+    """OSM Nominatimで1クエリをジオコーディングする（GSIが空振りした時のフォールバック）。"""
+    try:
+        res = requests.get(
+            NOMINATIM_URL,
+            params={"q": query, "format": "json", "countrycodes": "jp", "limit": 1},
+            headers=GEOCODE_HEADERS,
+            timeout=20,
+        )
+        res.raise_for_status()
+        data = res.json()
+    except (requests.RequestException, ValueError) as exc:
+        print(f"  警告: Nominatimジオコーディング失敗 ({query}): {exc}", file=sys.stderr)
+        return None
+    if data:
+        try:
+            return float(data[0]["lat"]), float(data[0]["lon"])
+        except (KeyError, ValueError, IndexError):
+            pass
+    return None
+
+
+def geocode_address(*queries: str | None) -> tuple[float, float] | None:
+    """住所文字列を緯度・経度に変換する（無料・APIキー不要）。
+
+    日本の住所は番地レベルまで高精度なGSI(国土地理院)を第一候補にし、GSIが空振りした場合のみ
+    OSM Nominatimにフォールバックする。引数の候補クエリ（番地→丁目→市区町村の順を想定）を
+    順に試し、最初にヒットしたものを返す。見つからなければ None。
+    """
+    for query in queries:
+        if not query:
+            continue
+        coords = _geocode_gsi(query)
+        time.sleep(GEOCODE_SLEEP_SECONDS)
+        if coords is None:
+            coords = _geocode_nominatim(query)
+            time.sleep(GEOCODE_SLEEP_SECONDS)
+        if coords is not None:
+            return coords
+    return None
+
+
+def backfill_geocode(stores_path: Path, max_requests: int | None = None) -> None:
+    """既存の docs/data/stores.json のうち緯度経度(lat/lng)が未設定の店舗だけを対象に、
+    住所からジオコーディングして lat/lng を書き込む（地図表示用）。
+
+    - 既に lat/lng を持つ店舗はスキップ（再実行時に無駄なリクエストを出さない）。
+    - 1リクエストごとにレート制限(約1req/sec)を守り、バッチごとにファイルへ保存する
+      （中断しても進捗が残る）。max_requests で1回の実行件数を制限できる。
+    """
+    data: list[dict[str, Any]] = json.loads(stores_path.read_text(encoding="utf-8"))
+
+    # 駅徒歩案内(access)は住所から抽出できる純粋な処理なので、ネットワーク不要。
+    # 全店舗ぶんこの場でまとめて埋める（ジオコーディング対象外の店舗も含めて）。
+    for store in data:
+        store["access"] = extract_access(store.get("address"))
+
+    targets = [s for s in data if s.get("lat") is None or s.get("lng") is None]
+    print(f"ジオコーディング対象: {len(targets)} 件", file=sys.stderr)
+
+    done = 0
+    for i, store in enumerate(targets, start=1):
+        if max_requests is not None and done >= max_requests:
+            print(f"最大リクエスト数({max_requests})に達したため終了します。残り {len(targets) - i + 1} 件は次回実行で処理してください。", file=sys.stderr)
+            break
+
+        address = clean_address_for_geocoding(store.get("address"))
+        chome = chome_level_address(address)
+        fallback = f"{store.get('pref', '')}{store.get('city', '')}".strip()
+        print(f"[{i}/{len(targets)}] {store.get('store_name')} ({address or fallback}) ...", file=sys.stderr)
+
+        coords = geocode_address(address, chome, fallback)
+        if coords:
+            store["lat"], store["lng"] = coords
+        else:
+            # 失敗を明示的にNoneで記録（次回再試行対象のまま）
+            store["lat"] = store.get("lat")
+            store["lng"] = store.get("lng")
+            print(f"  見つかりませんでした: {store.get('store_name')}", file=sys.stderr)
+        done += 1
+
+        # 10件ごと、および最後にファイル保存
+        if done % 10 == 0 or i == len(targets):
+            stores_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"  保存しました（{done}件処理）", file=sys.stderr)
+
+    stores_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    geocoded = sum(1 for s in data if s.get("lat") is not None and s.get("lng") is not None)
+    print(f"ジオコーディング完了: 座標あり {geocoded} 件 / 全 {len(data)} 件", file=sys.stderr)
+
+
 def main() -> None:
     import argparse
 
@@ -685,20 +861,45 @@ def main() -> None:
              "合わせて複数回に分けて実行することを想定）",
     )
     parser.add_argument("--batch-size", type=int, default=4, help="vision-backfill時に1リクエストへまとめる画像枚数")
-    parser.add_argument("--max-requests", type=int, default=15, help="vision-backfill時の1回の実行で送る最大リクエスト数")
+    parser.add_argument("--max-requests", type=int, default=None, help="1回の実行で送る最大リクエスト数（vision-backfillは未指定で15、geocode-backfillは未指定で無制限）")
     parser.add_argument(
         "--force-codes", type=str, default="",
         help="vision-backfill時にカンマ区切りで指定した店舗コードは、既にvision_ai/json"
              "済みでも強制的に再抽出する（誤抽出の修正用）",
     )
+    parser.add_argument(
+        "--geocode-backfill",
+        action="store_true",
+        help="新規スクレイピングは行わず、既存の --out のデータのうち緯度経度が未設定の"
+             "店舗を住所からジオコーディング(OSM Nominatim)してlat/lngを埋める（地図表示用）",
+    )
     args = parser.parse_args()
+
+    if args.geocode_backfill:
+        backfill_geocode(args.out, max_requests=args.max_requests)
+        return
 
     if args.vision_backfill:
         force_codes = {c.strip() for c in args.force_codes.split(",") if c.strip()}
-        backfill_vision_prices(args.out, batch_size=args.batch_size, max_requests=args.max_requests, force_codes=force_codes)
+        vision_max_requests = args.max_requests if args.max_requests is not None else 15
+        backfill_vision_prices(args.out, batch_size=args.batch_size, max_requests=vision_max_requests, force_codes=force_codes)
         return
 
     data = collect(limit=args.limit)
+
+    # 既存出力があれば、ジオコーディング済みの緯度経度を引き継ぐ（再スクレイプのたびに
+    # 8分かけたジオコーディングをやり直さずに済むように）。
+    if args.out.exists():
+        try:
+            prev = json.loads(args.out.read_text(encoding="utf-8"))
+            prev_coords = {s.get("store_code"): (s.get("lat"), s.get("lng")) for s in prev}
+            for s in data:
+                lat, lng = prev_coords.get(s.get("store_code"), (None, None))
+                if lat is not None and lng is not None:
+                    s["lat"], s["lng"] = lat, lng
+        except (ValueError, OSError) as exc:
+            print(f"警告: 既存の緯度経度の引き継ぎに失敗しました ({exc})", file=sys.stderr)
+
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 

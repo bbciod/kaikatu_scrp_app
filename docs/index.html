@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>快活CLUB 店舗比較</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,6 +18,7 @@
     <div class="mode-toggle">
       <button id="modeCardBtn" class="mode-btn active" type="button">カード表示</button>
       <button id="modeTableBtn" class="mode-btn" type="button">一覧表表示</button>
+      <button id="modeMapBtn" class="mode-btn" type="button">🗺️ 地図表示</button>
     </div>
   </div>
 
@@ -89,6 +91,11 @@
       <p class="select-all-hint">条件に合う店舗を、座席・プラン別の価格と設備の有無を並べた表で表示しています（選択操作は不要です）。</p>
       <div class="table-scroll"></div>
     </div>
+
+    <div id="mapResults" class="hidden">
+      <p class="select-all-hint">条件に合う店舗を地図上のピンで表示しています。ピンをクリックすると選択中プランの料金が表示されます。</p>
+      <div id="leafletMap"></div>
+    </div>
   </section>
 </main>
 
@@ -100,6 +107,7 @@
   </p>
 </footer>
 
+<script src="vendor/leaflet/leaflet.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

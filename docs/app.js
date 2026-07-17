@@ -47,7 +47,9 @@ const TOP_N_CARDS = 50;
 
 let allStores = [];
 let flatRows = []; // ロング形式: 1行 = 店舗×座席タイプ×プラン
-let viewMode = "card"; // "card" | "table"
+let viewMode = "card"; // "card" | "table" | "map"
+let leafletMap = null; // Leafletマップインスタンス（地図モード初回表示時に遅延生成）
+let mapMarkerLayer = null; // マーカーをまとめるレイヤ（再描画時にまとめて差し替える）
 
 // ===== データ読み込み・フラット化 =====
 
@@ -73,6 +75,7 @@ async function init() {
 
   document.getElementById("modeCardBtn").addEventListener("click", () => setViewMode("card"));
   document.getElementById("modeTableBtn").addEventListener("click", () => setViewMode("table"));
+  document.getElementById("modeMapBtn").addEventListener("click", () => setViewMode("map"));
 }
 
 function getFacilityMode() {
@@ -117,6 +120,7 @@ function buildFlatRows(stores) {
           store_name: s.store_name,
           pref: s.pref,
           city: s.city || "",
+          access: s.access || [],
           detail_url: s.detail_url,
           status: s.price_source,
           facilities: storeFacilities(s),
@@ -219,8 +223,10 @@ function setViewMode(mode) {
   viewMode = mode;
   document.getElementById("modeCardBtn").classList.toggle("active", mode === "card");
   document.getElementById("modeTableBtn").classList.toggle("active", mode === "table");
+  document.getElementById("modeMapBtn").classList.toggle("active", mode === "map");
   document.getElementById("cardResults").classList.toggle("hidden", mode !== "card");
   document.getElementById("tableResults").classList.toggle("hidden", mode !== "table");
+  document.getElementById("mapResults").classList.toggle("hidden", mode !== "map");
   renderResults();
 }
 
@@ -347,8 +353,10 @@ function renderResults() {
 
   if (viewMode === "card") {
     renderCardResults(rows);
-  } else {
+  } else if (viewMode === "table") {
     renderTableResults(rows);
+  } else {
+    renderMapResults(rows);
   }
 }
 
@@ -366,6 +374,7 @@ function renderCardResults(rows) {
         <div class="card-body">
           <h3>${escapeHtml(r.store_name)}${renderStatusBadge(r.status)}</h3>
           <p class="card-sub">${escapeHtml(r.pref)}${escapeHtml(r.city)}</p>
+          ${r.access && r.access.length ? `<p class="card-access">🚶 ${r.access.map(a => escapeHtml(a)).join("／")}</p>` : ""}
           <div class="tag-list">
             <span class="tag tag-emphasis">${escapeHtml(r.seat_label)}</span>
             <span class="tag tag-emphasis">${escapeHtml(r.plan_label)}</span>
@@ -465,6 +474,98 @@ function renderTableResults(rows) {
   wrap.querySelector(".table-scroll").innerHTML = html;
 }
 
+// ===== 地図モード =====
+
+// 地図・ポップアップで表示するプラン群。ユーザーが選択していればそれを、未選択(すべて)なら
+// 代表的な3プラン(ナイト8h/12h/24h)を既定表示にする（表モードの列既定と揃える）。
+function getPlansForMap() {
+  const planValues = getSelectedValues("planFilters");
+  return planValues.length
+    ? PLAN_OPTIONS.filter(p => planValues.includes(p.value))
+    : PLAN_OPTIONS.filter(p => ["night_pack_8", "night_pack_12", "24"].includes(p.value));
+}
+
+// 店舗内の全座席カテゴリ（座席フィルタ選択時はそれに限定）から、指定プランの最安平日料金を求める。
+function getStorePlanPrice(store, plan, seats) {
+  if ((store.price_source !== "json" && store.price_source !== "vision_ai") || !store.price) return null;
+  const categories = seats.length
+    ? store.price.categories.filter(c => seats.includes(c.category))
+    : store.price.categories;
+  let best = null;
+  for (const c of categories) {
+    const price = getPlanPrice(c, plan, "weekday");
+    if (price != null && (best == null || price < best)) best = price;
+  }
+  return best;
+}
+
+function renderMapResults(rows) {
+  const stores = dedupeStoresInOrder(rows);
+  document.getElementById("resultCount").textContent = `${stores.length} 件`;
+
+  // 非表示divで初期化するとサイズが0になるため、地図モードに切替わってから初期化する。
+  if (leafletMap === null) {
+    leafletMap = L.map("leafletMap").setView([36.5, 138.0], 5); // 日本全体
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(leafletMap);
+    mapMarkerLayer = L.layerGroup().addTo(leafletMap);
+  }
+  // 非表示中にリサイズされているとタイルがずれるため、表示直後にサイズ再計算する。
+  setTimeout(() => leafletMap.invalidateSize(), 0);
+
+  mapMarkerLayer.clearLayers();
+
+  const plans = getPlansForMap();
+  const seats = getSelectedValues("seatFilters");
+  const bounds = [];
+
+  for (const s of stores) {
+    if (s.lat == null || s.lng == null) continue; // 座標が無い店舗はピンを立てない
+
+    // 選択中プランごとの料金一覧を作る
+    const priceLines = [];
+    let cheapest = null;
+    for (const plan of plans) {
+      const price = getStorePlanPrice(s, plan, seats);
+      if (price != null) {
+        priceLines.push(`${plan.shortLabel}: ¥${price.toLocaleString()}`);
+        if (cheapest == null || price < cheapest) cheapest = price;
+      }
+    }
+
+    // ピンのラベルは最安1件（複数プラン選択時に密集しても読めるように）
+    const labelText = cheapest != null ? `¥${cheapest.toLocaleString()}` : "—";
+    const icon = L.divIcon({
+      className: "price-pin-wrap",
+      html: `<span class="price-pin">${escapeHtml(labelText)}</span>`,
+      iconSize: null,
+    });
+
+    const priceHtml = priceLines.length
+      ? `<ul class="map-popup-prices">${priceLines.map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul>`
+      : '<p class="map-popup-noprice">選択中プランの料金情報なし</p>';
+    const aiBadge = s.price_source === "vision_ai" ? '<span class="ai-badge" title="AI画像読み取り（参考値）">AI</span>' : "";
+    const popupHtml = `
+      <div class="map-popup">
+        <strong>${escapeHtml(s.store_name)}</strong>${aiBadge}
+        <div class="map-popup-sub">${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</div>
+        ${s.access && s.access.length ? `<div class="map-popup-access">🚶 ${s.access.map(a => escapeHtml(a)).join("／")}</div>` : ""}
+        ${priceHtml}
+        <a href="${s.detail_url}" target="_blank" rel="noopener">公式サイト</a>
+      </div>
+    `;
+
+    L.marker([s.lat, s.lng], { icon }).bindPopup(popupHtml).addTo(mapMarkerLayer);
+    bounds.push([s.lat, s.lng]);
+  }
+
+  if (bounds.length) {
+    leafletMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+  }
+}
+
 function renderStatusBadge(status) {
   if (status === "vision_ai") return ' <span class="ai-badge" title="AI画像読み取り（参考値）">AI</span>';
   return "";
@@ -484,18 +585,7 @@ function buildComparePriceColumns() {
     shortLabel: plan.shortLabel,
     selected: planValues.includes(plan.value),
     isPrice: true,
-    getValue: store => {
-      if ((store.price_source !== "json" && store.price_source !== "vision_ai") || !store.price) return null;
-      const categories = seats.length
-        ? store.price.categories.filter(c => seats.includes(c.category))
-        : store.price.categories;
-      let best = null;
-      for (const c of categories) {
-        const price = getPlanPrice(c, plan, "weekday");
-        if (price != null && (best == null || price < best)) best = price;
-      }
-      return best;
-    },
+    getValue: store => getStorePlanPrice(store, plan, seats),
   }));
 }
 
