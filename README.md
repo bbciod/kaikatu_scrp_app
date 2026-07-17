@@ -33,16 +33,28 @@
 - `.github/workflows/vision_backfill.yml` — `workflow_dispatch`（手動実行）で上記の
   `--vision-backfill` を実行するワークフロー。無料枠の日次上限に応じて`batch_size`/`max_requests`
   を調整しながら、必要なら複数日に分けて手動実行する想定。
+- `scraper/scrape.py --geocode-backfill` — 地図表示用に、各店舗の住所から緯度経度(lat/lng)を
+  ジオコーディングして `docs/data/stores.json` に書き込む。**APIキー不要・無料の国土地理院(GSI)
+  ジオコーディングAPI**を第一候補に使用する（日本の住所を番地レベルまで高精度に解決できる）。
+  GSIが空振りした場合のみOSM Nominatimにフォールバックする。相手サーバ負荷を避けるため
+  リクエスト間隔を空けている。既に座標を持つ店舗はスキップするため再実行しても無駄なリクエストを
+  出さず、通常スクレイプ後も既存座標を引き継ぐ（毎回やり直さない）。
+- `.github/workflows/geocode_backfill.yml` — `workflow_dispatch`（手動実行）で上記の
+  `--geocode-backfill` を実行するワークフロー。GSI/NominatimともキーレスなのでSecret登録は不要。
 - `docs/` — GitHub Pagesで配信する静的フロントエンド（都道府県・キーワード・設備での絞り込み、
-  複数店舗の設備比較表、料金画像の並列表示）。
+  複数店舗の設備比較表、地図表示）。地図は **Leaflet + OpenStreetMap**（APIキー不要・完全無料）で
+  実装し、ライブラリ本体は `docs/vendor/leaflet/` に同梱している（地図タイルはOSMから配信）。
 
 ## 使い方（サイトの機能）
 
 データは「店舗×座席タイプ×利用プラン」を1レコードに展開したロング形式で保持し、
 比較値（平日価格）を軸に検索・ランキングする設計です。
 
-1. **表示モード切替** — 最上部の「カード表示／一覧表表示」で切り替えます。
-   カード表示は順位バッジ付きでスマホ向け、一覧表表示はPCで全件確認・店舗比較したい場合向けです。
+1. **表示モード切替** — 最上部の「カード表示／一覧表表示／地図表示」で切り替えます。
+   カード表示は順位バッジ付きでスマホ向け、一覧表表示はPCで全件確認・店舗比較したい場合向け、
+   地図表示は位置関係を見ながら探したい場合向けです。地図では条件に合う店舗をピンで示し、
+   ピンには最安値、クリックで開くポップアップには選択中の各プランの料金（例: ナイト8h・12hを
+   両方選んでいれば両方）を表示します。座標が未取得の店舗はピンが表示されません。
 2. **検索条件パネル** — 「予算（平日価格・円以下）」「キーワード」を最前面に、
    「都道府県」「座席タイプ」「利用時間・プラン」を複数選択チップで絞り込めます。
    各グループ先頭の「すべて」は他の個別選択と排他で、個別を選ぶと自動的に外れ、
@@ -74,7 +86,9 @@ Gemini Vision APIで画像から抽出した値（`price_source: "vision_ai"`、
 5. （任意）画像のみの店舗をAI数値化したい場合: **Actions → Backfill prices with Gemini Vision
    (image-only stores) → Run workflow** を手動実行。無料枠の日次上限に達した場合は途中で
    安全に止まるので、翌日以降に同じワークフローを再実行すれば残りが処理される
-6. 数分後、`docs/data/stores.json` が自動コミットされ、Pagesに反映される
+6. （任意）地図表示用に店舗の緯度経度を埋めたい場合: **Actions → Backfill lat/lng with OSM
+   Nominatim (map view) → Run workflow** を手動実行（APIキー不要）。または後述のローカル手順でも可
+7. 数分後、`docs/data/stores.json` が自動コミットされ、Pagesに反映される
 
 ローカルで試す場合:
 
@@ -91,6 +105,10 @@ export GEMINI_API_KEY=取得したキー   # Windows PowerShellなら $env:GEMIN
 python scraper/scrape.py --vision-backfill --batch-size 4 --max-requests 15
 # 無料枠の日次上限に達したら自動で安全に停止する。翌日以降に同じコマンドを再実行すれば続きから処理される。
 
+# 地図表示用に住所から緯度経度を埋める（APIキー不要・国土地理院APIを使用、全件で約5分）
+python scraper/scrape.py --geocode-backfill              # 全件（未取得のみ処理）
+# python scraper/scrape.py --geocode-backfill --max-requests 50  # 件数を絞って試す場合
+
 python -m http.server 8080 -d docs   # http://localhost:8080 で確認
 ```
 
@@ -106,4 +124,7 @@ python -m http.server 8080 -d docs   # http://localhost:8080 で確認
 - 定期自動実行（cron）はせず、必要なときに手動実行する運用としている
 - 料金画像自体は再配布せず、公式サイト上のURLへの参照（埋め込み表示）のみを行っている
 - 料金のOCR結果は参考情報であり、誤読の可能性がある旨をサイト上に明記している
+- 地図表示のジオコーディングは国土地理院API（フォールバックでOSM Nominatim）を使い、相手サーバ
+  負荷を避けるためリクエスト間隔を空け、取得済み座標はキャッシュして再取得しない。
+  地図タイルはOpenStreetMapの帰属表示を地図上に明記している
 - 個人の学習・比較検討目的の利用を想定。商用利用や大規模再配布は想定していない

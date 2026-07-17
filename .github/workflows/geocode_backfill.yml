@@ -1,0 +1,41 @@
+name: Backfill lat/lng with OSM Nominatim (map view)
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_requests:
+        description: "1回の実行で処理する最大店舗数（未指定で全件。GSI/Nominatimへの負荷軽減のため間隔を空ける）"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  geocode-backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r scraper/requirements.txt
+
+      - name: Run geocode backfill
+        run: |
+          if [ -n "${{ github.event.inputs.max_requests }}" ]; then
+            python scraper/scrape.py --geocode-backfill --max-requests "${{ github.event.inputs.max_requests }}"
+          else
+            python scraper/scrape.py --geocode-backfill
+          fi
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/stores.json
+          git diff --cached --quiet && echo "No changes" || git commit -m "chore: geocode backfill for map view ($(date -u +%Y-%m-%d))"
+          git push
