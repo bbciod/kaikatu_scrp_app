@@ -525,26 +525,32 @@ function renderMapResults(rows) {
     if (s.lat == null || s.lng == null) continue; // 座標が無い店舗はピンを立てない
 
     // 選択中プランごとの料金一覧を作る
-    const priceLines = [];
-    let cheapest = null;
+    const priceEntries = [];
     for (const plan of plans) {
       const price = getStorePlanPrice(s, plan, seats);
       if (price != null) {
-        priceLines.push(`${plan.shortLabel}: ¥${price.toLocaleString()}`);
-        if (cheapest == null || price < cheapest) cheapest = price;
+        priceEntries.push({ label: plan.shortLabel, price });
       }
     }
 
-    // ピンのラベルは最安1件（複数プラン選択時に密集しても読めるように）
-    const labelText = cheapest != null ? `¥${cheapest.toLocaleString()}` : "—";
+    // ピンには選択中の全プランをプラン名付きで縦に積んで表示する
+    const pinHtml = priceEntries.length
+      ? priceEntries.map(e =>
+          `<span class="price-pin-row">` +
+          `<span class="price-pin-plan">${escapeHtml(e.label)}</span>` +
+          `<span class="price-pin-yen">¥${e.price.toLocaleString()}</span>` +
+          `</span>`
+        ).join("")
+      : '<span class="price-pin-row"><span class="price-pin-yen">—</span></span>';
     const icon = L.divIcon({
       className: "price-pin-wrap",
-      html: `<span class="price-pin">${escapeHtml(labelText)}</span>`,
+      html: `<span class="price-pin">${pinHtml}</span>`,
       iconSize: null,
     });
 
-    const priceHtml = priceLines.length
-      ? `<ul class="map-popup-prices">${priceLines.map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul>`
+    const priceHtml = priceEntries.length
+      ? `<ul class="map-popup-prices">${priceEntries.map(e =>
+          `<li>${escapeHtml(e.label)}: ¥${e.price.toLocaleString()}</li>`).join("")}</ul>`
       : '<p class="map-popup-noprice">選択中プランの料金情報なし</p>';
     const aiBadge = s.price_source === "vision_ai" ? '<span class="ai-badge" title="AI画像読み取り（参考値）">AI</span>' : "";
     const popupHtml = `
