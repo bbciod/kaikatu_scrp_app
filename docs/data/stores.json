@@ -2816,7 +2816,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -2983,7 +2982,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -3278,7 +3276,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -3447,7 +3444,6 @@
       "アルコール販売",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -4744,7 +4740,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -5071,7 +5066,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -5288,87 +5282,58 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20898.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
           "category": "private",
           "label": "個室",
-          "weekday_basic_taxfee": 340,
-          "weekend_basic_taxfee": 340,
+          "weekday_basic_taxfee": 410,
+          "weekend_basic_taxfee": 410,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 1250,
-            "6": 1980,
-            "9": 2640,
-            "12": 3190,
-            "15": 3960,
-            "18": 4730,
-            "21": 5060,
-            "24": 5290
+            "3": 1460,
+            "6": 2130,
+            "9": 2790,
+            "12": 3320,
+            "15": 4120,
+            "18": 4900,
+            "21": 5410,
+            "24": 5700
           },
           "weekend_hourly_taxfee": {
-            "3": 1580,
-            "6": 2310,
-            "9": 2970,
-            "12": 3520,
-            "15": 4290,
-            "18": 5060,
-            "21": 5390,
-            "24": 5620
+            "3": 1790,
+            "6": 2460,
+            "9": 3120,
+            "12": 3650,
+            "15": 4450,
+            "18": 5230,
+            "21": 5740,
+            "24": 6030
           },
           "night_packs": [
             {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 2000,
-              "weekend_taxfee": 2330
+              "key": "A",
+              "hours": 12,
+              "weekday_taxfee": 2790,
+              "weekend_taxfee": 3110
             }
           ]
         }
       ],
       "available_night_pack_hours": [
-        8
+        12
       ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
-      "min_basic_taxfee": 340,
-      "min_night_pack_taxfee": 2000,
-      "min_24h_taxfee": 5290
+      "night_pack_start_time": "PM6:00",
+      "night_pack_end_time": "AM4:00",
+      "min_basic_taxfee": 410,
+      "min_night_pack_taxfee": 2790,
+      "min_24h_taxfee": 5700
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20898_20260428.png",
-    "price_ocr_text": "も\n 料金のご案内\nCLUB                         Em\n\n会貞制                       |            vn an\nご本人様確認証のご提示をお願いいたします。                                                     ※価格は1名様あ たり の料金 (税込) です\nご利用時間                鍵付完全個室\n6時間パック                                   1.980a\n時間パック                 2,6405\n12時間パック                 39,1905\n15時間パック                 3.960n\n18時間パック                 4 730Um\n2 1時間パック                 5.060m\n24時間パック                 5 2905\nナイト8時間パック                 2 000\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n*当店は、18歳未満および高校生の方はご利用いただけません。\n",
-    "price_rows": [
-      {
-        "label": ".",
-        "price_yen": "980"
-      },
-      {
-        "label": ",",
-        "price_yen": "6405"
-      },
-      {
-        "label": "時間パック",
-        "price_yen": "39"
-      },
-      {
-        "label": ".",
-        "price_yen": "960"
-      },
-      {
-        "label": ".",
-        "price_yen": "060"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "*当店は、",
-        "price_yen": "18"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20136",
@@ -7399,7 +7364,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -7529,7 +7493,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -7863,7 +7826,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -8537,7 +8499,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -11536,6 +11497,7 @@
     "karaoke": [],
     "darts": [
       "オンラインダーツ",
+      "DARTSLIVE3",
       "DARTSLIVE2 EX",
       "VSPHOENIX S4"
     ],
@@ -12824,7 +12786,6 @@
       "アルコール販売",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -13569,7 +13530,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -14166,171 +14126,6 @@
     "price_rows": []
   },
   {
-    "store_code": "20924",
-    "store_name": "越谷蒲生店",
-    "name_kana": "こしがやがもう",
-    "pref": "埼玉県",
-    "city": "越谷市",
-    "tel": "048-961-5788",
-    "address": "埼玉県越谷市蒲生南町16-11",
-    "access": [],
-    "lat": 35.855923,
-    "lng": 139.807327,
-    "service": [
-      "鍵付完全個室",
-      "鍵付完全個室 WEB予約",
-      "飲み放題カフェ",
-      "100円モーニング",
-      "ソフトクリーム",
-      "アルコール販売",
-      "駐車場",
-      "シャワー（無料）",
-      "セルフレジ",
-      "コインランドリー（有料）",
-      "加熱式たばこ専用エリア"
-    ],
-    "roomtype": [
-      "レギュラールーム（多機能）",
-      "レギュラールーム（フラット）",
-      "ワイドルーム",
-      "リクライニングシート",
-      "フルフラットシート",
-      "マッサージシート"
-    ],
-    "karaoke": [
-      "カラオケ",
-      "LIVE DAM Ai",
-      "JOYSOUND MAX GO"
-    ],
-    "darts": [],
-    "billiards": [],
-    "detail_url": "https://www.kaikatsu.jp/shop/detail/20924.html",
-    "price_source": "json",
-    "price": {
-      "categories": [
-        {
-          "category": "open",
-          "label": "オープンシート",
-          "weekday_basic_taxfee": 250,
-          "weekend_basic_taxfee": 250,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 710,
-            "6": 1140,
-            "9": 1500,
-            "12": 1790,
-            "15": 2250,
-            "18": 2690,
-            "21": 2890,
-            "24": 3070
-          },
-          "weekend_hourly_taxfee": {
-            "3": 930,
-            "6": 1360,
-            "9": 1720,
-            "12": 2010,
-            "15": 2470,
-            "18": 2910,
-            "21": 3110,
-            "24": 3290
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 1140,
-              "weekend_taxfee": 1360
-            }
-          ]
-        },
-        {
-          "category": "booth",
-          "label": "ブース",
-          "weekday_basic_taxfee": 330,
-          "weekend_basic_taxfee": 330,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1200,
-            "6": 1980,
-            "9": 2640,
-            "12": 3190,
-            "15": 3960,
-            "18": 4730,
-            "21": 5060,
-            "24": 5290
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1420,
-            "6": 2200,
-            "9": 2860,
-            "12": 3410,
-            "15": 4180,
-            "18": 4950,
-            "21": 5280,
-            "24": 5510
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 2000,
-              "weekend_taxfee": 2220
-            }
-          ]
-        },
-        {
-          "category": "private",
-          "label": "個室",
-          "weekday_basic_taxfee": 420,
-          "weekend_basic_taxfee": 420,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1540,
-            "6": 2570,
-            "9": 3430,
-            "12": 4150,
-            "15": 5170,
-            "18": 5990,
-            "21": 6680,
-            "24": 6880
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1760,
-            "6": 2790,
-            "9": 3650,
-            "12": 4370,
-            "15": 5390,
-            "18": 6210,
-            "21": 6900,
-            "24": 7100
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 2570,
-              "weekend_taxfee": 2790
-            }
-          ]
-        }
-      ],
-      "available_night_pack_hours": [
-        8
-      ],
-      "night_pack_start_time": "PM8:00",
-      "night_pack_end_time": "AM4:00",
-      "min_basic_taxfee": 250,
-      "min_night_pack_taxfee": 1140,
-      "min_24h_taxfee": 3070
-    },
-    "price_image_url": null,
-    "price_ocr_text": "",
-    "price_rows": []
-  },
-  {
     "store_code": "20252",
     "store_name": "幸手店",
     "name_kana": "さって",
@@ -14522,7 +14317,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -15587,7 +15381,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -16045,7 +15838,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -21256,10 +21048,10 @@
   {
     "store_code": "20900",
     "store_name": "松戸駅東口店",
-    "name_kana": "まつどえきひがしぐちてん",
+    "name_kana": "まつどえきひがしぐち",
     "pref": "千葉県",
     "city": "松戸市",
-    "tel": "",
+    "tel": "047-712-0315",
     "address": "千葉県松戸市松戸1231<br>アステシオビル2F",
     "access": [],
     "lat": 35.783581,
@@ -22508,99 +22300,49 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20888.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
           "category": "private",
           "label": "個室",
-          "weekday_basic_taxfee": 340,
-          "weekend_basic_taxfee": 340,
+          "weekday_basic_taxfee": 430,
+          "weekend_basic_taxfee": 430,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 1250,
-            "6": 1980,
-            "9": 2640,
-            "12": 3190,
-            "15": 3960,
-            "18": 4730,
-            "21": 5060,
-            "24": 5290
+            "3": 1560,
+            "6": 2570,
+            "9": 3430,
+            "12": 4150,
+            "15": 5170,
+            "18": 5990,
+            "21": 6680,
+            "24": 6880
           },
           "weekend_hourly_taxfee": {
-            "3": 1470,
-            "6": 2200,
-            "9": 2860,
-            "12": 3410,
-            "15": 4180,
-            "18": 4950,
-            "21": 5280,
-            "24": 5510
+            "3": 1780,
+            "6": 2790,
+            "9": 3650,
+            "12": 4370,
+            "15": 5390,
+            "18": 6210,
+            "21": 6900,
+            "24": 7100
           },
-          "night_packs": [
-            {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 2640,
-              "weekend_taxfee": 2860
-            }
-          ]
+          "night_packs": []
         }
       ],
-      "available_night_pack_hours": [
-        12
-      ],
+      "available_night_pack_hours": [],
       "night_pack_start_time": null,
       "night_pack_end_time": null,
-      "min_basic_taxfee": 340,
-      "min_night_pack_taxfee": 2640,
-      "min_24h_taxfee": 5290
+      "min_basic_taxfee": 430,
+      "min_night_pack_taxfee": null,
+      "min_24h_taxfee": 6880
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2025/20888_20251119.png",
-    "price_ocr_text": "も\n 料金のご案内\nCLUB                        Cs\n\na Sy\n会具制                                                    ※価格は1名様あたりの料金(税込)です\nご利用時間                鍵付完全個室\n6時間パック                                  1.980Um\n9時間パック                 2,6405\n12時間パック                 3.190n\n15時間パック                 S.96Um\n18時間パック                 4,7305\n2 1時間パック                 5.0605\n24時間パック                 5.2905\nナイト12時間パック                 2 640\noe               ’\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n・当店は、18歳未満および高校生の方はご利用いただけません。\n",
-    "price_rows": [
-      {
-        "label": ".",
-        "price_yen": "980"
-      },
-      {
-        "label": ",",
-        "price_yen": "6405"
-      },
-      {
-        "label": ".",
-        "price_yen": "190"
-      },
-      {
-        "label": "ク                 S.",
-        "price_yen": "96"
-      },
-      {
-        "label": ",",
-        "price_yen": "7305"
-      },
-      {
-        "label": ".",
-        "price_yen": "0605"
-      },
-      {
-        "label": ".",
-        "price_yen": "2905"
-      },
-      {
-        "label": "ナイト",
-        "price_yen": "12"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "・当店は、",
-        "price_yen": "18"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20979",
@@ -24190,7 +23932,7 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20988.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
@@ -24238,42 +23980,42 @@
         {
           "category": "private",
           "label": "個室",
-          "weekday_basic_taxfee": 340,
-          "weekend_basic_taxfee": 340,
+          "weekday_basic_taxfee": 380,
+          "weekend_basic_taxfee": 380,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 1250,
-            "6": 1980,
-            "9": 2640,
-            "12": 3190,
-            "15": 3960,
-            "18": 4730,
-            "21": 5060,
-            "24": 5290
+            "3": 1420,
+            "6": 2570,
+            "9": 3430,
+            "12": 4150,
+            "15": 5170,
+            "18": 5990,
+            "21": 6680,
+            "24": 6880
           },
           "weekend_hourly_taxfee": {
-            "3": 1470,
-            "6": 2200,
-            "9": 2860,
-            "12": 3410,
-            "15": 4180,
-            "18": 4950,
-            "21": 5280,
-            "24": 5510
+            "3": 1640,
+            "6": 2790,
+            "9": 3650,
+            "12": 4370,
+            "15": 5390,
+            "18": 6210,
+            "21": 6900,
+            "24": 7100
           },
           "night_packs": [
             {
               "key": "8",
               "hours": 8,
-              "weekday_taxfee": 2000,
-              "weekend_taxfee": 2220
+              "weekday_taxfee": 2570,
+              "weekend_taxfee": 2790
             },
             {
               "key": "A",
               "hours": 12,
-              "weekday_taxfee": 2640,
-              "weekend_taxfee": 2860
+              "weekday_taxfee": 3430,
+              "weekend_taxfee": 3650
             }
           ]
         }
@@ -24282,60 +24024,15 @@
         8,
         12
       ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
+      "night_pack_start_time": "PM6:00",
+      "night_pack_end_time": "AM4:00",
       "min_basic_taxfee": 250,
       "min_night_pack_taxfee": 1140,
       "min_24h_taxfee": 3070
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2025/20988_20251007.png",
-    "price_ocr_text": "も\n 料金のご案内\nCLUB\n\n会員制  ご本人様確認証のご提示をお願いいたします。                 ※価格は1名様あたりの料金 (税込) です\nご利用時間       飲み放題カフェ        鍵付完全個室\nFamosos | 250m ) 340m\n6時間パック                 1.140a                     1.960a\n9時間パック                 1.500n                     2,640\n12時間パック                1.790a                     3,190\n18時間パック        2,690           4,7305\n2 1時間パック        2,890           5.0605\n24時間パック        3,070           5.2905\nTO              1,140m                     2,000m\nae              1.500m                     2,640n\n・ご入店から24時間で一度ご精算をお願いいたします。・表示人金額とお会計額に1円の差が生じる場合がございます。\n・18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n・鍵付完全個室人@他のお席のご移動は、一度ご精算をお願いいたします。\n",
-    "price_rows": [
-      {
-        "label": "Famosos |",
-        "price_yen": "250"
-      },
-      {
-        "label": ".",
-        "price_yen": "140"
-      },
-      {
-        "label": ".",
-        "price_yen": "500"
-      },
-      {
-        "label": ".",
-        "price_yen": "790"
-      },
-      {
-        "label": ",",
-        "price_yen": "690"
-      },
-      {
-        "label": ",",
-        "price_yen": "890"
-      },
-      {
-        "label": ",",
-        "price_yen": "070"
-      },
-      {
-        "label": ",",
-        "price_yen": "140"
-      },
-      {
-        "label": ".",
-        "price_yen": "500"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "・",
-        "price_yen": "18"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20940",
@@ -26072,42 +25769,42 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20964.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
           "category": "private",
           "label": "個室",
-          "weekday_basic_taxfee": 290,
-          "weekend_basic_taxfee": 340,
+          "weekday_basic_taxfee": 380,
+          "weekend_basic_taxfee": 380,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 1290,
-            "6": 1890,
-            "9": 2490,
-            "12": 2990,
-            "15": 3390,
-            "18": 3990,
-            "21": 4590,
-            "24": 5190
+            "3": 1490,
+            "6": 2390,
+            "9": 3290,
+            "12": 3890,
+            "15": 4590,
+            "18": 5190,
+            "21": 5690,
+            "24": 6390
           },
           "weekend_hourly_taxfee": {
-            "3": 1540,
-            "6": 2260,
-            "9": 2980,
-            "12": 3580,
-            "15": 4060,
-            "18": 4780,
-            "21": 5500,
-            "24": 6220
+            "3": 1710,
+            "6": 2610,
+            "9": 3510,
+            "12": 4110,
+            "15": 4810,
+            "18": 5410,
+            "21": 5910,
+            "24": 6610
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
-              "weekday_taxfee": 2490,
-              "weekend_taxfee": 2980
+              "weekday_taxfee": 3290,
+              "weekend_taxfee": 3510
             }
           ]
         }
@@ -26115,64 +25812,15 @@
       "available_night_pack_hours": [
         12
       ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
-      "min_basic_taxfee": 290,
-      "min_night_pack_taxfee": 2490,
-      "min_24h_taxfee": 5190
+      "night_pack_start_time": "PM6:00",
+      "night_pack_end_time": "AM4:00",
+      "min_basic_taxfee": 380,
+      "min_night_pack_taxfee": 3290,
+      "min_24h_taxfee": 6390
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20964_20260126.png",
-    "price_ocr_text": ".    る          ue\n快活 四\nCLUB              ns\n会貞制  ご本人様確認証のご提示をお願いいたします。                ※価格は1名様あたりの料金 (税込) です\n鍵付完全個室\nご利用時間\n平日          休日\n以降10分ごと                       1105                 [                 1305\n3時間パック      1.290m    1,540\n6時間パック                  1,8905            |            2.260n\n9時間パック      2,490m    2.980m\n12時間パック      2.990n    3    3,580\n15時間パック      3.390n    |    4.060n\n18時間パック      3,990    4.7805\n2 1時間パック      4.590m    |    5,500n\n24時間パック      51908:    6.220m\na nl he     2.490m 2.980m\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n・当店は、18歳未満および高校生の方はご利用いただけません。\n",
-    "price_rows": [
-      {
-        "label": "以降",
-        "price_yen": "10"
-      },
-      {
-        "label": ".",
-        "price_yen": "290"
-      },
-      {
-        "label": ",",
-        "price_yen": "8905"
-      },
-      {
-        "label": ",",
-        "price_yen": "490"
-      },
-      {
-        "label": ".",
-        "price_yen": "990"
-      },
-      {
-        "label": ".",
-        "price_yen": "390"
-      },
-      {
-        "label": ",",
-        "price_yen": "990"
-      },
-      {
-        "label": ".",
-        "price_yen": "590"
-      },
-      {
-        "label": "時間パック",
-        "price_yen": "51908"
-      },
-      {
-        "label": ".",
-        "price_yen": "490"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "・当店は、",
-        "price_yen": "18"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20321",
@@ -28324,7 +27972,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -29197,6 +28844,113 @@
     "price_image_url": null,
     "price_ocr_text": "",
     "price_rows": []
+  },
+  {
+    "store_code": "20706",
+    "store_name": "六本木店",
+    "name_kana": "ろっぽんぎ",
+    "pref": "東京都",
+    "city": "港区",
+    "tel": "03-6455-5032",
+    "address": "東京都港区六本木7-14-7<br>トリニティビル5階",
+    "access": [],
+    "lat": 35.663563,
+    "lng": 139.731369,
+    "service": [
+      "鍵付完全個室",
+      "鍵付完全個室 WEB予約",
+      "ソフトクリーム",
+      "シャワー（有料）",
+      "セルフレジ"
+    ],
+    "roomtype": [
+      "レギュラールーム（多機能）",
+      "レギュラールーム（フラット）"
+    ],
+    "karaoke": [],
+    "darts": [],
+    "billiards": [],
+    "detail_url": "https://www.kaikatsu.jp/shop/detail/20706.html",
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 470,
+          "weekend_basic_taxfee": 610,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1680,
+            "6": 2700,
+            "9": 4130,
+            "12": 5170,
+            "15": 5980,
+            "18": 6150,
+            "21": 6600,
+            "24": 7020
+          },
+          "weekend_hourly_taxfee": {
+            "3": 2180,
+            "6": 3510,
+            "9": 5360,
+            "12": 6720,
+            "15": 7770,
+            "18": 7990,
+            "21": 8580,
+            "24": 9120
+          },
+          "night_packs": []
+        }
+      ],
+      "available_night_pack_hours": [],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 470,
+      "min_night_pack_taxfee": null,
+      "min_24h_taxfee": 7020
+    },
+    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20706_20260914.png",
+    "price_ocr_text": "hs    々          |\n快活 }\nCLUB\n会員制  ご本人様確認証のご提示をお願いいたします。                 ※価格は1名様あたりの料金 (税込) です\n鍵付完全個室\nご利用時間\n平日            休日\n3時間パック        1,680            2,180\n9時間パック      4 130n         5.360\n12時間パック      5.1705         6,720\n15時間パック      5.9805         7,770\n18時間パック      6,150         7,9905\n2 1時間パック      5.600n         8.580\n24時間パック      7,0205         9.1205\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n*当店は、18歳未満および高校生の方はご利用いただけません。\n・ご予約利用時は、ご利用料金に330円(税込)が加算されます。\n",
+    "price_rows": [
+      {
+        "label": ",",
+        "price_yen": "680"
+      },
+      {
+        "label": ".",
+        "price_yen": "1705"
+      },
+      {
+        "label": ".",
+        "price_yen": "9805"
+      },
+      {
+        "label": ",",
+        "price_yen": "150"
+      },
+      {
+        "label": ".",
+        "price_yen": "600"
+      },
+      {
+        "label": ",",
+        "price_yen": "0205"
+      },
+      {
+        "label": "・ご入店から",
+        "price_yen": "24"
+      },
+      {
+        "label": "*当店は、",
+        "price_yen": "18"
+      },
+      {
+        "label": "・ご予約利用時は、ご利用料金に",
+        "price_yen": "330"
+      }
+    ]
   },
   {
     "store_code": "20337",
@@ -30269,7 +30023,7 @@
     "pref": "神奈川県",
     "city": "横浜市",
     "tel": "",
-    "address": "神奈川県横浜市金沢区釜利谷東2丁目5-5",
+    "address": "神奈川県横浜市金沢区釜利谷東2丁目5-5 2F",
     "access": [],
     "lat": 35.344048,
     "lng": 139.61528,
@@ -30277,6 +30031,7 @@
       "鍵付完全個室",
       "鍵付完全個室 WEB予約",
       "飲み放題カフェ",
+      "100円モーニング",
       "ソフトクリーム",
       "シャワー（無料）",
       "セルフレジ",
@@ -30860,7 +30615,6 @@
       "ソフトクリーム",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -31177,7 +30931,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -31496,125 +31249,6 @@
     "price_rows": []
   },
   {
-    "store_code": "20346",
-    "store_name": "湘南台駅前店",
-    "name_kana": "しょうなんだいえきまえ",
-    "pref": "神奈川県",
-    "city": "藤沢市",
-    "tel": "0466-41-0188",
-    "address": "神奈川県藤沢市湘南台2-2-4湘南台トーセイビル 1～2F（受付1F）<br>※湘南台駅C(西口エレベーター)出口より徒歩1分",
-    "access": [
-      "湘南台駅C(西口エレベーター)出口より徒歩1分"
-    ],
-    "lat": 35.39669,
-    "lng": 139.466019,
-    "service": [
-      "飲み放題カフェ",
-      "ソフトクリーム",
-      "シャワー（無料）",
-      "セルフレジ"
-    ],
-    "roomtype": [
-      "リクライニングシート",
-      "フルフラットシート",
-      "マッサージシート",
-      "ペアフラットシート",
-      "ファミリールーム"
-    ],
-    "karaoke": [],
-    "darts": [],
-    "billiards": [],
-    "detail_url": "https://www.kaikatsu.jp/shop/detail/20346.html",
-    "price_source": "json",
-    "price": {
-      "categories": [
-        {
-          "category": "open",
-          "label": "オープンシート",
-          "weekday_basic_taxfee": 250,
-          "weekend_basic_taxfee": 250,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 710,
-            "6": 1140,
-            "9": 1500,
-            "12": 1790,
-            "15": 2250,
-            "18": 2690,
-            "21": 2890,
-            "24": 3070
-          },
-          "weekend_hourly_taxfee": {
-            "3": 930,
-            "6": 1360,
-            "9": 1720,
-            "12": 2010,
-            "15": 2470,
-            "18": 2910,
-            "21": 3110,
-            "24": 3290
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 1140,
-              "weekend_taxfee": 1360
-            }
-          ]
-        },
-        {
-          "category": "booth",
-          "label": "ブース",
-          "weekday_basic_taxfee": 330,
-          "weekend_basic_taxfee": 330,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1200,
-            "6": 1980,
-            "9": 2640,
-            "12": 3190,
-            "15": 3960,
-            "18": 4730,
-            "21": 5060,
-            "24": 5290
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1420,
-            "6": 2200,
-            "9": 2860,
-            "12": 3410,
-            "15": 4180,
-            "18": 4950,
-            "21": 5280,
-            "24": 5510
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 2000,
-              "weekend_taxfee": 2220
-            }
-          ]
-        }
-      ],
-      "available_night_pack_hours": [
-        8
-      ],
-      "night_pack_start_time": "PM8:00",
-      "night_pack_end_time": "AM4:00",
-      "min_basic_taxfee": 250,
-      "min_night_pack_taxfee": 1140,
-      "min_24h_taxfee": 3070
-    },
-    "price_image_url": null,
-    "price_ocr_text": "",
-    "price_rows": []
-  },
-  {
     "store_code": "20901",
     "store_name": "新横浜店",
     "name_kana": "しんよこはまてん",
@@ -31854,7 +31488,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -35222,7 +34855,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -35545,7 +35177,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -35836,7 +35467,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -35983,158 +35613,6 @@
     "price_rows": []
   },
   {
-    "store_code": "20369",
-    "store_name": "新潟寺尾店",
-    "name_kana": "にいがたてらお",
-    "pref": "新潟県",
-    "city": "新潟市",
-    "tel": "025-264-7188",
-    "address": "新潟県新潟市西区寺尾西1-1-5",
-    "access": [],
-    "lat": 37.879467,
-    "lng": 138.970978,
-    "service": [
-      "飲み放題カフェ",
-      "100円モーニング",
-      "ソフトクリーム",
-      "アルコール販売",
-      "駐車場",
-      "シャワー（無料）"
-    ],
-    "roomtype": [
-      "リクライニングシート",
-      "フルフラットシート",
-      "マッサージシート"
-    ],
-    "karaoke": [
-      "カラオケ",
-      "1&2 カラオケ",
-      "LIVE DAM Ai"
-    ],
-    "darts": [
-      "オンラインダーツ",
-      "DARTSLIVE3",
-      "VSPHOENIX S4"
-    ],
-    "billiards": [
-      "ビリヤード"
-    ],
-    "detail_url": "https://www.kaikatsu.jp/shop/detail/20369.html",
-    "price_source": "vision_ai",
-    "price": {
-      "categories": [
-        {
-          "category": "open",
-          "label": "オープンシート",
-          "weekday_basic_taxfee": 210,
-          "weekend_basic_taxfee": 430,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 590,
-            "6": 950,
-            "9": 1250,
-            "12": 1490,
-            "15": 1850,
-            "18": 2150,
-            "21": 2480,
-            "24": 2560
-          },
-          "weekend_hourly_taxfee": {
-            "3": 810,
-            "6": 1170,
-            "9": 1470,
-            "12": 1710,
-            "15": 2070,
-            "18": 2370,
-            "21": 2700,
-            "24": 2780
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 950,
-              "weekend_taxfee": 1170
-            }
-          ]
-        },
-        {
-          "category": "amuse",
-          "label": "アミューズシート",
-          "weekday_basic_taxfee": 290,
-          "weekend_basic_taxfee": 510,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 990,
-            "6": 990,
-            "9": 1980,
-            "12": 1980,
-            "18": 2970,
-            "21": 2970,
-            "24": 2970,
-            "15": 2970
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1210,
-            "6": 1210,
-            "9": 2200,
-            "12": 2200,
-            "18": 3190,
-            "21": 3190,
-            "24": 3190,
-            "15": 3190
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 1100,
-              "weekend_taxfee": 1320
-            }
-          ]
-        }
-      ],
-      "available_night_pack_hours": [
-        8
-      ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
-      "min_basic_taxfee": 210,
-      "min_night_pack_taxfee": 950,
-      "min_24h_taxfee": 2560
-    },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20369_20260226.png",
-    "price_ocr_text": "いい\n 平日料金のご案内\nCLUB                        En\n会員制                       |\nご本人様確認証のご提示をお願いいたします。                                          ※価格は1名様あたりの料金 (税込) です\nブース・ダーツ\nご利用時間       オープンシート       ビリヤード・カラオケ\nワンツーカラオケ\n基本 T=\n9905\n1,980\n12時間パック               1,490\n15時間パック               1,850\n2,970\n2 1時間パック        2,480\n24時間パック        2 560m\nte\nご入店から8時間\n・ご入店から24時間で一度ご精算をお願いいたします。\n・表示金額とお会計額に1円の差が生じる場合がございます。\n以下の場合は加算料金を頂戴いたします。\n【金*祝前日PM6:00てと土日・祝日】 1名様でカラオケ(ワンツーカラオケは除く)をご利用の場合、2 名様分のご利用料金\n",
-    "price_rows": [
-      {
-        "label": ",",
-        "price_yen": "980"
-      },
-      {
-        "label": ",",
-        "price_yen": "490"
-      },
-      {
-        "label": ",",
-        "price_yen": "850"
-      },
-      {
-        "label": ",",
-        "price_yen": "970"
-      },
-      {
-        "label": ",",
-        "price_yen": "480"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      }
-    ]
-  },
-  {
     "store_code": "20370",
     "store_name": "新津程島店",
     "name_kana": "にいつほどしま",
@@ -36155,7 +35633,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -36174,7 +35651,6 @@
     "darts": [
       "オンラインダーツ",
       "DARTSLIVE3",
-      "DARTSLIVE2 EX",
       "VSPHOENIX S4"
     ],
     "billiards": [
@@ -36326,7 +35802,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -36536,7 +36011,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -36702,7 +36176,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -37669,7 +37142,6 @@
     "darts": [
       "オンラインダーツ",
       "DARTSLIVE3",
-      "DARTSLIVE2 EX",
       "VSPHOENIX S4"
     ],
     "billiards": [
@@ -37976,38 +37448,98 @@
     "price": {
       "categories": [
         {
-          "category": "amuse",
-          "label": "アミューズシート",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": 250,
+          "weekend_basic_taxfee": 470,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 990,
             "6": 990,
             "9": 1980,
             "12": 1980,
             "18": 2970,
-            "21": 2970,
-            "24": 2970,
-            "15": 2970
+            "21": 2970
           },
           "weekend_hourly_taxfee": {
-            "3": 1320,
-            "6": 1320,
-            "9": 2310,
-            "12": 2310,
-            "18": 3300,
-            "21": 3300,
-            "24": 3300,
-            "15": 3300
+            "3": 1210,
+            "6": 1210,
+            "9": 2200,
+            "12": 2200,
+            "18": 3190,
+            "21": 3190
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 1500,
-              "weekend_taxfee": 1830
+              "weekend_taxfee": 1720
+            }
+          ]
+        },
+        {
+          "category": "amuse",
+          "label": "アミューズシート",
+          "weekday_basic_taxfee": 310,
+          "weekend_basic_taxfee": 530,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1150,
+            "6": 1150,
+            "9": 2300,
+            "12": 2300,
+            "18": 3450,
+            "21": 3450
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1370,
+            "6": 1370,
+            "9": 2520,
+            "12": 2520,
+            "18": 3670,
+            "21": 3670
+          },
+          "night_packs": [
+            {
+              "key": "A",
+              "hours": 12,
+              "weekday_taxfee": 2220,
+              "weekend_taxfee": 2440
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 310,
+          "weekend_basic_taxfee": 530,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1310,
+            "6": 1310,
+            "9": 2620,
+            "12": 2620,
+            "18": 3780,
+            "21": 3780
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1530,
+            "6": 1530,
+            "9": 2840,
+            "12": 2840,
+            "18": 4000,
+            "21": 4000
+          },
+          "night_packs": [
+            {
+              "key": "A",
+              "hours": 12,
+              "weekday_taxfee": 2420,
+              "weekend_taxfee": 2640
             }
           ]
         }
@@ -38017,24 +37549,24 @@
       ],
       "night_pack_start_time": null,
       "night_pack_end_time": null,
-      "min_basic_taxfee": null,
+      "min_basic_taxfee": 250,
       "min_night_pack_taxfee": 1500,
-      "min_24h_taxfee": 2970
+      "min_24h_taxfee": null
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20423_20260224.png",
-    "price_ocr_text": "る\n快活 Hine 日    .         —\nCLUB        “fe                                                      es\n金・祝前日PM6:00-と土日祝日はパック料金に330円が加算されます。\nao\n< 員制                                                                                                 、         、\nご本人様確認証のご提示をお願いいたします。                                                       ※価格は1名様あ たり の料金 (税込) です\nー利用時間        飲み放題カフェ・ブース\n|                                                           —\nDIAT - KAKLBZ=\n3時間パック\n990m\n6時間パック\n9時間パック\n1.990a\n12時間パック\n15時間パック\n18時間パック\n2,9/05\n21時間パック\n24時間パック\nナイト+2時間パック        1,500:\nご入店から12時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n*18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n・鍵付完全個室怠他のお席のご移動は、一度ご精算をお願いいたします。\n*以下の場合は加算料金を頂戴いたします。\n【金*祝前日PM6:00てと土日・祝日】 1 名様でカラオケをご利用の場合、2 名様分のご利用料金\n",
+    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20423_20260907.png",
+    "price_ocr_text": "も\nPGE  7 z 口    .         el\nCLUB                                                                   as\naoa\n< 員制                                                                                                  、         、\nご本人様確認証のご提示をお願いいたします。                                                      ※価格は1名様あたりの料金(税込) です\nご利用時間         飲み放題カフェエ ブース・カラオケ 鍵付完全個室\n3時間パック\n990\n6時間パック\n9時間パック\n1,980               2,300               2,620\n12時間パック\n15時間パック\n18時間パック\n2,970        3,450       3,/80R\n21時間パック\n24時間パック\nナイト12時間パック\nPM6:00~AM4:00% TO                 1 0005                                                     2 4205\nご入店から12時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n・鍵付完全個室信他のお席のご移動は、一度ご精算をお願いいたします。\n・以下の場合は加算料金を頂戴いたします。\n【土日・祝日】 1 名様でカラオケをご利用の場合、2 名様分のご利用料金\n",
     "price_rows": [
       {
-        "label": ".",
-        "price_yen": "990"
-      },
-      {
-        "label": "/",
-        "price_yen": "05"
+        "label": ",",
+        "price_yen": "980"
       },
       {
         "label": ",",
-        "price_yen": "500"
+        "price_yen": "970"
+      },
+      {
+        "label": "ナイト",
+        "price_yen": "12"
       },
       {
         "label": "ご入店から",
@@ -38043,10 +37575,6 @@
       {
         "label": "・ご入店から",
         "price_yen": "24"
-      },
-      {
-        "label": "*",
-        "price_yen": "18"
       }
     ]
   },
@@ -38945,7 +38473,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -40646,7 +40173,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -42471,7 +41997,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -42492,7 +42017,6 @@
     "darts": [
       "オンラインダーツ",
       "DARTSLIVE3",
-      "DARTSLIVE2 EX",
       "VSPHOENIX S4"
     ],
     "billiards": [
@@ -42644,7 +42168,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -42811,9 +42334,8 @@
       "100円モーニング",
       "ソフトクリーム",
       "駐車場",
-      "シャワー（有料）",
-      "コインランドリー（有料）",
-      "加熱式たばこ専用エリア"
+      "シャワー（無料）",
+      "コインランドリー（有料）"
     ],
     "roomtype": [
       "レギュラールーム（多機能）",
@@ -43271,7 +42793,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -43525,7 +43046,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -43854,7 +43374,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -44470,7 +43989,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -45051,7 +44569,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -45222,7 +44739,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -45841,7 +45357,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -48022,7 +47537,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -48546,7 +48060,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -48707,7 +48220,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -49029,7 +48541,7 @@
       "無料トースト",
       "ソフトクリーム",
       "駐車場",
-      "シャワー（有料）",
+      "シャワー（無料）",
       "セルフレジ",
       "フィットネスジム"
     ],
@@ -49292,7 +48804,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -49457,7 +48968,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -50175,6 +49685,7 @@
     ],
     "darts": [
       "オンラインダーツ",
+      "DARTSLIVE3",
       "DARTSLIVE2 EX"
     ],
     "billiards": [
@@ -53221,227 +52732,6 @@
     "price_image_url": null,
     "price_ocr_text": "",
     "price_rows": []
-  },
-  {
-    "store_code": "20715",
-    "store_name": "近鉄八尾駅前店",
-    "name_kana": "きんてつやおえきまえ",
-    "pref": "大阪府",
-    "city": "八尾市",
-    "tel": "072-992-0788",
-    "address": "大阪府八尾市北本町2-15-1<br>近鉄八尾アロービル 4F<br>※近鉄八尾駅中央北出口より徒歩3分",
-    "access": [
-      "近鉄八尾駅中央北出口より徒歩3分"
-    ],
-    "lat": 34.630642,
-    "lng": 135.602722,
-    "service": [
-      "鍵付完全個室",
-      "鍵付完全個室 WEB予約",
-      "飲み放題カフェ",
-      "ソフトクリーム",
-      "シャワー（無料）",
-      "コインランドリー（有料）",
-      "加熱式たばこ専用エリア"
-    ],
-    "roomtype": [
-      "VIPフラットルーム",
-      "リクライニングシート",
-      "フルフラットシート"
-    ],
-    "karaoke": [],
-    "darts": [],
-    "billiards": [],
-    "detail_url": "https://www.kaikatsu.jp/shop/detail/20715.html",
-    "price_source": "vision_ai",
-    "price": {
-      "categories": [
-        {
-          "category": "open",
-          "label": "オープンシート",
-          "weekday_basic_taxfee": 290,
-          "weekend_basic_taxfee": 290,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 990,
-            "6": 1210,
-            "9": 1980,
-            "12": 2200,
-            "15": 2420,
-            "18": 3270,
-            "21": 3490,
-            "24": 3710
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1210,
-            "6": 1430,
-            "9": 2200,
-            "12": 2420,
-            "15": 2640,
-            "18": 3490,
-            "21": 3710,
-            "24": 3930
-          },
-          "night_packs": [
-            {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 1500,
-              "weekend_taxfee": 1720
-            }
-          ]
-        },
-        {
-          "category": "booth",
-          "label": "ブース",
-          "weekday_basic_taxfee": 310,
-          "weekend_basic_taxfee": 310,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1150,
-            "6": 1370,
-            "9": 2300,
-            "12": 2520,
-            "15": 2740,
-            "18": 3450,
-            "21": 3670,
-            "24": 3890
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1370,
-            "6": 1590,
-            "9": 2520,
-            "12": 2740,
-            "15": 2960,
-            "18": 3670,
-            "21": 3890,
-            "24": 4110
-          },
-          "night_packs": [
-            {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 1850,
-              "weekend_taxfee": 2070
-            }
-          ]
-        },
-        {
-          "category": "private",
-          "label": "個室",
-          "weekday_basic_taxfee": 380,
-          "weekend_basic_taxfee": 380,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1420,
-            "6": 2570,
-            "9": 3430,
-            "12": 4150,
-            "15": 5170,
-            "18": 5990,
-            "21": 6680,
-            "24": 6880
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1640,
-            "6": 2790,
-            "9": 3650,
-            "12": 4370,
-            "15": 5390,
-            "18": 6210,
-            "21": 6900,
-            "24": 7100
-          },
-          "night_packs": [
-            {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 3430,
-              "weekend_taxfee": 3650
-            }
-          ]
-        }
-      ],
-      "available_night_pack_hours": [
-        12
-      ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
-      "min_basic_taxfee": 290,
-      "min_night_pack_taxfee": 1500,
-      "min_24h_taxfee": 3710
-    },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2025/20715_20251125.png",
-    "price_ocr_text": "も\n快活        ‘17                   NM                            —\n   料金のご案内\n会員制                                                        |                             on\nご本人様確認証のご提示をお願いいたします。                                                      ※価格は1名様あた り の料金 (税込) です\nご利用時間          飲み放題カフェ              ブース               鍵付完全個室\n基本\n3時間パック                                                                       1,420\n990                 1,150\n6時間パック                                                                       2,570\n9時間パック                                                                       3,430\n1,980                 2,300\n12時間パック                                                                       4,150\n15時間パック                                                                       5.170\n18時間パック                                                                          5,990\n3,2/0%                 3,450\n21時間パック                                                                          6,680\n24時間パック                                                                       6,880\nナイト12時間パック| 1 500a     1.850n     3.430n\nご入店から12時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n・18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n",
-    "price_rows": [
-      {
-        "label": "快活        ‘",
-        "price_yen": "17"
-      },
-      {
-        "label": ",",
-        "price_yen": "420"
-      },
-      {
-        "label": ",",
-        "price_yen": "150"
-      },
-      {
-        "label": ",",
-        "price_yen": "570"
-      },
-      {
-        "label": ",",
-        "price_yen": "430"
-      },
-      {
-        "label": ",",
-        "price_yen": "980"
-      },
-      {
-        "label": ",",
-        "price_yen": "150"
-      },
-      {
-        "label": ".",
-        "price_yen": "170"
-      },
-      {
-        "label": ",",
-        "price_yen": "990"
-      },
-      {
-        "label": ",",
-        "price_yen": "450"
-      },
-      {
-        "label": ",",
-        "price_yen": "680"
-      },
-      {
-        "label": ",",
-        "price_yen": "880"
-      },
-      {
-        "label": "ナイト",
-        "price_yen": "12"
-      },
-      {
-        "label": "ご入店から",
-        "price_yen": "12"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "・",
-        "price_yen": "18"
-      }
-    ]
   },
   {
     "store_code": "20549",
@@ -58011,7 +57301,6 @@
       "100円モーニング",
       "ソフトクリーム",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -58202,7 +57491,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -59518,76 +58806,68 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20567.html",
-    "price_source": "json",
+    "price_source": "vision_ai",
     "price": {
       "categories": [
         {
           "category": "open",
           "label": "オープンシート",
-          "weekday_basic_taxfee": 280,
-          "weekend_basic_taxfee": 280,
+          "weekday_basic_taxfee": 290,
+          "weekend_basic_taxfee": 510,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 840,
-            "6": 1340,
-            "9": 1730,
-            "12": 1790,
-            "15": 2250,
-            "18": 2690,
-            "21": 2890,
-            "24": 3070
+            "3": 990,
+            "6": 990,
+            "9": 1980,
+            "12": 1980,
+            "18": 3270,
+            "21": 3270
           },
           "weekend_hourly_taxfee": {
-            "3": 1060,
-            "6": 1560,
-            "9": 1950,
-            "12": 2010,
-            "15": 2470,
-            "18": 2910,
-            "21": 3110,
-            "24": 3290
+            "3": 1210,
+            "6": 1210,
+            "9": 2200,
+            "12": 2200,
+            "18": 3490,
+            "21": 3490
           },
           "night_packs": [
             {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 1340,
-              "weekend_taxfee": 1560
+              "key": "A",
+              "hours": 12,
+              "weekday_taxfee": 1500,
+              "weekend_taxfee": 1720
             }
           ]
         },
         {
           "category": "booth",
           "label": "ブース",
-          "weekday_basic_taxfee": 330,
-          "weekend_basic_taxfee": 330,
+          "weekday_basic_taxfee": 310,
+          "weekend_basic_taxfee": 530,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 1200,
-            "6": 1980,
-            "9": 2640,
-            "12": 3190,
-            "15": 3960,
-            "18": 4730,
-            "21": 5060,
-            "24": 5290
+            "3": 1150,
+            "6": 1150,
+            "9": 2300,
+            "12": 2300,
+            "18": 3450,
+            "21": 3450
           },
           "weekend_hourly_taxfee": {
-            "3": 1420,
-            "6": 2200,
-            "9": 2860,
-            "12": 3410,
-            "15": 4180,
-            "18": 4950,
-            "21": 5280,
-            "24": 5510
+            "3": 1370,
+            "6": 1370,
+            "9": 2520,
+            "12": 2520,
+            "18": 3670,
+            "21": 3670
           },
           "night_packs": [
             {
-              "key": "8",
-              "hours": 8,
+              "key": "A",
+              "hours": 12,
               "weekday_taxfee": 2000,
               "weekend_taxfee": 2220
             }
@@ -59595,17 +58875,42 @@
         }
       ],
       "available_night_pack_hours": [
-        8
+        12
       ],
-      "night_pack_start_time": "PM8:00",
-      "night_pack_end_time": "AM5:00",
-      "min_basic_taxfee": 280,
-      "min_night_pack_taxfee": 1340,
-      "min_24h_taxfee": 3070
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 290,
+      "min_night_pack_taxfee": 1500,
+      "min_24h_taxfee": null
     },
-    "price_image_url": null,
-    "price_ocr_text": "",
-    "price_rows": []
+    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20567_20260907_2.png",
+    "price_ocr_text": "も\n  料金のご案内\nCLUB                                                       as\n会員制                                                  |                          vn an\nご本人様確認証のご提示をお願いいたします。                                                      ※価格は1名様あたりの料金(税込) です\n—_                                         々                              ブース\n|                            —    ヘレノーニー\n  mo09| 205 | 310m\nwoと | 10m | 10m\n3時間パック\n9905\n6時間パック\n9時間パック\n1,9805                          2,300\n12時間パック\n15時間パック\n18時間パック\n3,2/05                          93,4505\n2 1時間パック\n24時間パック\n7    1,500:       2,000:\n・ご入店から24時間で一度ご精算をお願いいたします。\n・表示金額とお会計額に1円の差が生じる場合がございます。\n*以下の場合は加算料金を頂戴いたします。\n【全日】1名様でファミリールームをご利用の場合、2 名様分のご利用料金\n",
+    "price_rows": [
+      {
+        "label": "mo",
+        "price_yen": "09"
+      },
+      {
+        "label": "woと |",
+        "price_yen": "10"
+      },
+      {
+        "label": ",",
+        "price_yen": "9805"
+      },
+      {
+        "label": "/",
+        "price_yen": "05"
+      },
+      {
+        "label": ",",
+        "price_yen": "500"
+      },
+      {
+        "label": "・ご入店から",
+        "price_yen": "24"
+      }
+    ]
   },
   {
     "store_code": "20569",
@@ -60260,7 +59565,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -60791,7 +60095,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -61353,170 +60656,6 @@
     "price_rows": []
   },
   {
-    "store_code": "20581",
-    "store_name": "和歌山国体道路店",
-    "name_kana": "わかやまこくたいどうろ",
-    "pref": "和歌山県",
-    "city": "和歌山市",
-    "tel": "073-402-6088",
-    "address": "和歌山県和歌山市小雑賀770-3",
-    "access": [],
-    "lat": 34.197655,
-    "lng": 135.184052,
-    "service": [
-      "鍵付完全個室",
-      "鍵付完全個室 WEB予約",
-      "飲み放題カフェ",
-      "100円モーニング",
-      "ソフトクリーム",
-      "アルコール販売",
-      "駐車場",
-      "シャワー（無料）",
-      "タオル使い放題",
-      "コインランドリー（有料）"
-    ],
-    "roomtype": [
-      "レギュラールーム（多機能）",
-      "レギュラールーム（フラット）",
-      "リクライニングシート",
-      "フルフラットシート",
-      "マッサージシート"
-    ],
-    "karaoke": [
-      "カラオケ",
-      "1&2 カラオケ",
-      "LIVE DAM Ai",
-      "JOYSOUND MAX GO"
-    ],
-    "darts": [],
-    "billiards": [],
-    "detail_url": "https://www.kaikatsu.jp/shop/detail/20581.html",
-    "price_source": "json",
-    "price": {
-      "categories": [
-        {
-          "category": "open",
-          "label": "オープンシート",
-          "weekday_basic_taxfee": 230,
-          "weekend_basic_taxfee": 230,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 650,
-            "6": 1050,
-            "9": 1380,
-            "12": 1640,
-            "15": 2040,
-            "18": 2400,
-            "21": 2700,
-            "24": 2820
-          },
-          "weekend_hourly_taxfee": {
-            "3": 870,
-            "6": 1270,
-            "9": 1600,
-            "12": 1860,
-            "15": 2260,
-            "18": 2620,
-            "21": 2920,
-            "24": 3040
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 1050,
-              "weekend_taxfee": 1270
-            }
-          ]
-        },
-        {
-          "category": "booth",
-          "label": "ブース",
-          "weekday_basic_taxfee": 310,
-          "weekend_basic_taxfee": 310,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2310,
-            "12": 2750,
-            "15": 3410,
-            "18": 4070,
-            "21": 4510,
-            "24": 4730
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1370,
-            "6": 1980,
-            "9": 2530,
-            "12": 2970,
-            "15": 3630,
-            "18": 4290,
-            "21": 4730,
-            "24": 4950
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 1800,
-              "weekend_taxfee": 2020
-            }
-          ]
-        },
-        {
-          "category": "private",
-          "label": "個室",
-          "weekday_basic_taxfee": 420,
-          "weekend_basic_taxfee": 420,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1540,
-            "6": 2570,
-            "9": 3430,
-            "12": 4150,
-            "15": 5170,
-            "18": 5990,
-            "21": 6680,
-            "24": 6880
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1760,
-            "6": 2790,
-            "9": 3650,
-            "12": 4370,
-            "15": 5390,
-            "18": 6210,
-            "21": 6900,
-            "24": 7100
-          },
-          "night_packs": [
-            {
-              "key": "8",
-              "hours": 8,
-              "weekday_taxfee": 2570,
-              "weekend_taxfee": 2790
-            }
-          ]
-        }
-      ],
-      "available_night_pack_hours": [
-        8
-      ],
-      "night_pack_start_time": "PM8:00",
-      "night_pack_end_time": "AM4:00",
-      "min_basic_taxfee": 230,
-      "min_night_pack_taxfee": 1050,
-      "min_24h_taxfee": 2820
-    },
-    "price_image_url": null,
-    "price_ocr_text": "",
-    "price_rows": []
-  },
-  {
     "store_code": "20602",
     "store_name": "鳥取吉成店",
     "name_kana": "とっとりよしなり",
@@ -61536,7 +60675,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -62305,7 +61443,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -62869,7 +62006,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -62888,7 +62024,7 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20625.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
@@ -62909,21 +62045,21 @@
             "24": 3070
           },
           "weekend_hourly_taxfee": {
-            "3": 710,
-            "6": 1140,
-            "9": 1500,
-            "12": 1790,
-            "15": 2250,
-            "18": 2690,
-            "21": 2890,
-            "24": 3070
+            "3": 930,
+            "6": 1360,
+            "9": 1720,
+            "12": 2010,
+            "15": 2470,
+            "18": 2910,
+            "21": 3110,
+            "24": 3290
           },
           "night_packs": [
             {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 1500,
-              "weekend_taxfee": 1500
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 1140,
+              "weekend_taxfee": 1360
             }
           ]
         },
@@ -62945,53 +62081,21 @@
             "24": 4730
           },
           "weekend_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2310,
-            "12": 2750,
-            "15": 3410,
-            "18": 4070,
-            "21": 4510,
-            "24": 4730
+            "3": 1370,
+            "6": 1980,
+            "9": 2530,
+            "12": 2970,
+            "15": 3630,
+            "18": 4290,
+            "21": 4730,
+            "24": 4950
           },
           "night_packs": [
             {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 2310,
-              "weekend_taxfee": 2310
-            }
-          ]
-        },
-        {
-          "category": "amuse",
-          "label": "アミューズシート",
-          "weekday_basic_taxfee": 310,
-          "weekend_basic_taxfee": 310,
-          "weekday_basic_time": 30,
-          "weekend_basic_time": 30,
-          "weekday_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2300,
-            "12": 2750,
-            "15": 3410,
-            "18": 3450
-          },
-          "weekend_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2300,
-            "12": 2750,
-            "15": 3410,
-            "18": 3450
-          },
-          "night_packs": [
-            {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 2000,
-              "weekend_taxfee": 2000
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 1800,
+              "weekend_taxfee": 2020
             }
           ]
         },
@@ -63013,86 +62117,37 @@
             "24": 5680
           },
           "weekend_hourly_taxfee": {
-            "3": 1420,
-            "6": 2110,
-            "9": 2770,
-            "12": 3300,
-            "15": 4100,
-            "18": 4880,
-            "21": 5390,
-            "24": 5680
+            "3": 1640,
+            "6": 2330,
+            "9": 2990,
+            "12": 3520,
+            "15": 4320,
+            "18": 5100,
+            "21": 5610,
+            "24": 5900
           },
           "night_packs": [
             {
-              "key": "A",
-              "hours": 12,
-              "weekday_taxfee": 2770,
-              "weekend_taxfee": 2770
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 2110,
+              "weekend_taxfee": 2330
             }
           ]
         }
       ],
       "available_night_pack_hours": [
-        12
+        8
       ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
+      "night_pack_start_time": "PM8:00",
+      "night_pack_end_time": "AM4:00",
       "min_basic_taxfee": 250,
-      "min_night_pack_taxfee": 1500,
+      "min_night_pack_taxfee": 1140,
       "min_24h_taxfee": 3070
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/0af74e9063417b0d62552de1f9e94d5d.png",
-    "price_ocr_text": "る\n快活 Bibo 日  N     ーー\nCLUB “te         as\ndamn\n会員制       、\nご本人欄確認証のご提示をお願いいたします。                                                     ※価格は1名様あたりの料金(税込)です\nご利用時間         飲み放題カフェ              ブース                    カラオケ             鍵付完全個室\n9時間パック| 1,5005 | 2310m      2,/705\n2,300\n12時間パック| 1,7905  2.750n       3,3005\n15mmyク| 2250m 3,410       4,100\n18時間パック| 2.690n  4.070n       4,880\n3,450\n21時間パック| 2,8905  4,510-       95,3905\n24時間パック| 3,0705  4,730       5,680\n7イト12時リック| 4 500n 2810m 2.000m | 2.770m\nご入店から12時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n・18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n・鍵付完全個室人@他のお席のご移動は、一度ご精算をお願いいたします。\n・以下の場合は加算料金を頂戴いたします。\n【土日・祝日】 1 名様でカラオケをご利用の場合、 2 名様分のご利用料金\n",
-    "price_rows": [
-      {
-        "label": ",",
-        "price_yen": "5005"
-      },
-      {
-        "label": ",",
-        "price_yen": "300"
-      },
-      {
-        "label": ",",
-        "price_yen": "7905"
-      },
-      {
-        "label": "mmyク|",
-        "price_yen": "2250"
-      },
-      {
-        "label": ".",
-        "price_yen": "690"
-      },
-      {
-        "label": ",",
-        "price_yen": "450"
-      },
-      {
-        "label": ",",
-        "price_yen": "8905"
-      },
-      {
-        "label": ",",
-        "price_yen": "0705"
-      },
-      {
-        "label": "イト",
-        "price_yen": "12"
-      },
-      {
-        "label": "ご入店から",
-        "price_yen": "12"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "・",
-        "price_yen": "18"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20626",
@@ -63283,7 +62338,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -64499,29 +63553,31 @@
     "lat": 34.493252,
     "lng": 133.393753,
     "service": [
+      "鍵付完全個室",
+      "鍵付完全個室 WEB予約",
       "飲み放題カフェ",
       "100円モーニング",
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "セルフレジ"
+      "セルフレジ",
+      "コインランドリー（有料）"
     ],
     "roomtype": [
+      "レギュラールーム（多機能）",
+      "レギュラールーム（フラット）",
       "リクライニングシート",
       "フルフラットシート",
-      "マッサージシート",
-      "ペアフラットシート"
+      "マッサージシート"
     ],
     "karaoke": [
       "カラオケ",
-      "1&2 カラオケ",
-      "LIVE DAM Ai",
-      "JOYSOUND MAX GO"
+      "LIVE DAM Ai"
     ],
     "darts": [
       "オンラインダーツ",
-      "DARTSLIVE2 EX",
-      "VSPHOENIX S4"
+      "DARTSLIVE3",
+      "VSPHOENIX X"
     ],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20633.html",
@@ -64531,72 +63587,108 @@
         {
           "category": "open",
           "label": "オープンシート",
-          "weekday_basic_taxfee": 210,
-          "weekend_basic_taxfee": 210,
+          "weekday_basic_taxfee": 220,
+          "weekend_basic_taxfee": 220,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 590,
-            "6": 950,
-            "9": 1250,
-            "12": 1490,
-            "15": 1850,
-            "18": 2150,
-            "21": 2480,
-            "24": 2560
+            "3": 600,
+            "6": 960,
+            "9": 1260,
+            "12": 1500,
+            "15": 1860,
+            "18": 2160,
+            "21": 2490,
+            "24": 2570
           },
           "weekend_hourly_taxfee": {
-            "3": 810,
-            "6": 1170,
-            "9": 1470,
-            "12": 1710,
-            "15": 2070,
-            "18": 2370,
-            "21": 2700,
-            "24": 2780
+            "3": 820,
+            "6": 1180,
+            "9": 1480,
+            "12": 1720,
+            "15": 2080,
+            "18": 2380,
+            "21": 2710,
+            "24": 2790
           },
           "night_packs": [
             {
               "key": "8",
               "hours": 8,
-              "weekday_taxfee": 950,
-              "weekend_taxfee": 1170
+              "weekday_taxfee": 960,
+              "weekend_taxfee": 1180
             }
           ]
         },
         {
           "category": "booth",
           "label": "ブース",
-          "weekday_basic_taxfee": 310,
-          "weekend_basic_taxfee": 310,
+          "weekday_basic_taxfee": 320,
+          "weekend_basic_taxfee": 320,
           "weekday_basic_time": 30,
           "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2310,
-            "12": 2750,
-            "15": 3410,
-            "18": 4070,
-            "21": 4510,
-            "24": 4730
+            "3": 1160,
+            "6": 1770,
+            "9": 2320,
+            "12": 2760,
+            "15": 3420,
+            "18": 4080,
+            "21": 4520,
+            "24": 4740
           },
           "weekend_hourly_taxfee": {
-            "3": 1370,
-            "6": 1980,
-            "9": 2530,
-            "12": 2970,
-            "15": 3630,
-            "18": 4290,
-            "21": 4730,
-            "24": 4950
+            "3": 1380,
+            "6": 1990,
+            "9": 2540,
+            "12": 2980,
+            "15": 3640,
+            "18": 4300,
+            "21": 4740,
+            "24": 4960
           },
           "night_packs": [
             {
               "key": "8",
               "hours": 8,
-              "weekday_taxfee": 1800,
-              "weekend_taxfee": 2020
+              "weekday_taxfee": 1810,
+              "weekend_taxfee": 2030
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 430,
+          "weekend_basic_taxfee": 430,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1550,
+            "6": 2570,
+            "9": 3440,
+            "12": 4160,
+            "15": 5180,
+            "18": 6000,
+            "21": 6690,
+            "24": 6890
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1770,
+            "6": 2790,
+            "9": 3660,
+            "12": 4380,
+            "15": 5400,
+            "18": 6220,
+            "21": 6910,
+            "24": 7110
+          },
+          "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 2580,
+              "weekend_taxfee": 2800
             }
           ]
         }
@@ -64606,9 +63698,9 @@
       ],
       "night_pack_start_time": "PM6:00",
       "night_pack_end_time": "AM4:00",
-      "min_basic_taxfee": 210,
-      "min_night_pack_taxfee": 950,
-      "min_24h_taxfee": 2560
+      "min_basic_taxfee": 220,
+      "min_night_pack_taxfee": 960,
+      "min_24h_taxfee": 2570
     },
     "price_image_url": null,
     "price_ocr_text": "",
@@ -64633,7 +63725,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -64793,8 +63884,7 @@
       "100円モーニング",
       "ソフトクリーム",
       "駐車場",
-      "シャワー（無料）",
-      "タオル使い放題"
+      "シャワー（無料）"
     ],
     "roomtype": [
       "リクライニングシート",
@@ -64922,7 +64012,6 @@
       "駐車場",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -65093,7 +64182,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -65404,6 +64492,17 @@
               "weekend_taxfee": 2530
             }
           ]
+        },
+        {
+          "category": "amuse",
+          "label": "アミューズシート",
+          "weekday_basic_taxfee": 310,
+          "weekend_basic_taxfee": 310,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {},
+          "weekend_hourly_taxfee": {},
+          "night_packs": []
         },
         {
           "category": "private",
@@ -65894,7 +64993,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -65919,16 +65017,16 @@
       "ビリヤード"
     ],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20643.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
           "category": "open",
           "label": "オープンシート",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 230,
+          "weekend_basic_taxfee": 230,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 650,
             "6": 1050,
@@ -65940,31 +65038,31 @@
             "24": 2820
           },
           "weekend_hourly_taxfee": {
-            "3": 650,
-            "6": 1050,
-            "9": 1380,
-            "12": 1640,
-            "15": 2040,
-            "18": 2400,
-            "21": 2700,
-            "24": 2820
+            "3": 870,
+            "6": 1270,
+            "9": 1600,
+            "12": 1860,
+            "15": 2260,
+            "18": 2620,
+            "21": 2920,
+            "24": 3040
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 1380,
-              "weekend_taxfee": 1380
+              "weekend_taxfee": 1600
             }
           ]
         },
         {
           "category": "booth",
           "label": "ブース",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 310,
+          "weekend_basic_taxfee": 310,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 1150,
             "6": 1760,
@@ -65976,31 +65074,31 @@
             "24": 4730
           },
           "weekend_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2310,
-            "12": 2750,
-            "15": 3410,
-            "18": 4070,
-            "21": 4510,
-            "24": 4730
+            "3": 1370,
+            "6": 1980,
+            "9": 2530,
+            "12": 2970,
+            "15": 3630,
+            "18": 4290,
+            "21": 4730,
+            "24": 4950
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 2310,
-              "weekend_taxfee": 2310
+              "weekend_taxfee": 2530
             }
           ]
         },
         {
           "category": "private",
           "label": "個室",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 380,
+          "weekend_basic_taxfee": 380,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 1420,
             "6": 2110,
@@ -66012,21 +65110,21 @@
             "24": 5680
           },
           "weekend_hourly_taxfee": {
-            "3": 1420,
-            "6": 2110,
-            "9": 2770,
-            "12": 3300,
-            "15": 4100,
-            "18": 4880,
-            "21": 5390,
-            "24": 5680
+            "3": 1640,
+            "6": 2330,
+            "9": 2990,
+            "12": 3520,
+            "15": 4320,
+            "18": 5100,
+            "21": 5610,
+            "24": 5900
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 2770,
-              "weekend_taxfee": 2770
+              "weekend_taxfee": 2990
             }
           ]
         }
@@ -66034,60 +65132,15 @@
       "available_night_pack_hours": [
         12
       ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
-      "min_basic_taxfee": null,
+      "night_pack_start_time": "PM6:00",
+      "night_pack_end_time": "AM4:00",
+      "min_basic_taxfee": 230,
       "min_night_pack_taxfee": 1380,
       "min_24h_taxfee": 2820
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/2c76adbbdbdef317fff71b7caa7f9bfa.png",
-    "price_ocr_text": "も\n快活 Hine 日  NM     ーー\nCLUB aa         Cs\nae — |\nご本人様確認証のご提示をお願いいたします。                                                     ※価格は1名様あたりの料金(税込) です\nダーツ・ビリヤード・\nご利用時間 飲み放題カフェ  ブース  カラオケ・ワンツー 鍵付完全個室\nカラオケ\nen [ime | | are |\n ere.\n2,300\n12時間パック| 1,6405  2,/505       3,300\n15時間パック| 2,0405  S,410n       4,100\n18時間パック| 2,400  4,070n       4,880n\n3,450\n21時間パック| 2,7005  4,.510m       5,390m\n24時間パック| 2.820n  4,730       5,680\n7ト12時7パック) 4 3805 | 2810m 2.0008 | 2.770m\nご入店から12時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n・18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n・鍵付完全個室人@他のお席のご移動は、一度ご精算をお願いいたします。\n*・以下の場合は加算料金を頂戴いたします。\n【土日・祝日】 1 名様でカラオケ(ワンツーカラオケは除く)をご利用の場合、 2 名様分のご利用料金\n",
-    "price_rows": [
-      {
-        "label": ",",
-        "price_yen": "300"
-      },
-      {
-        "label": ",",
-        "price_yen": "6405"
-      },
-      {
-        "label": ",",
-        "price_yen": "0405"
-      },
-      {
-        "label": ",",
-        "price_yen": "400"
-      },
-      {
-        "label": ",",
-        "price_yen": "450"
-      },
-      {
-        "label": ",",
-        "price_yen": "7005"
-      },
-      {
-        "label": ".",
-        "price_yen": "820"
-      },
-      {
-        "label": "ト",
-        "price_yen": "12"
-      },
-      {
-        "label": "ご入店から",
-        "price_yen": "12"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "・",
-        "price_yen": "18"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20645",
@@ -66109,7 +65162,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -66135,16 +65187,16 @@
       "ビリヤード"
     ],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20645.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
           "category": "open",
           "label": "オープンシート",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 230,
+          "weekend_basic_taxfee": 230,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 650,
             "6": 1050,
@@ -66156,31 +65208,31 @@
             "24": 2820
           },
           "weekend_hourly_taxfee": {
-            "3": 650,
-            "6": 1050,
-            "9": 1380,
-            "12": 1640,
-            "15": 2040,
-            "18": 2400,
-            "21": 2700,
-            "24": 2820
+            "3": 870,
+            "6": 1270,
+            "9": 1600,
+            "12": 1860,
+            "15": 2260,
+            "18": 2620,
+            "21": 2920,
+            "24": 3040
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 1380,
-              "weekend_taxfee": 1380
+              "weekend_taxfee": 1600
             }
           ]
         },
         {
           "category": "booth",
           "label": "ブース",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 310,
+          "weekend_basic_taxfee": 310,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 1150,
             "6": 1760,
@@ -66192,31 +65244,31 @@
             "24": 4730
           },
           "weekend_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2310,
-            "12": 2750,
-            "15": 3410,
-            "18": 4070,
-            "21": 4510,
-            "24": 4730
+            "3": 1370,
+            "6": 1980,
+            "9": 2530,
+            "12": 2970,
+            "15": 3630,
+            "18": 4290,
+            "21": 4730,
+            "24": 4950
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 2310,
-              "weekend_taxfee": 2310
+              "weekend_taxfee": 2530
             }
           ]
         },
         {
           "category": "private",
           "label": "個室",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 380,
+          "weekend_basic_taxfee": 380,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 1420,
             "6": 2110,
@@ -66228,21 +65280,21 @@
             "24": 5680
           },
           "weekend_hourly_taxfee": {
-            "3": 1420,
-            "6": 2110,
-            "9": 2770,
-            "12": 3300,
-            "15": 4100,
-            "18": 4880,
-            "21": 5390,
-            "24": 5680
+            "3": 1640,
+            "6": 2330,
+            "9": 2990,
+            "12": 3520,
+            "15": 4320,
+            "18": 5100,
+            "21": 5610,
+            "24": 5900
           },
           "night_packs": [
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 2770,
-              "weekend_taxfee": 2770
+              "weekend_taxfee": 2990
             }
           ]
         }
@@ -66250,68 +65302,15 @@
       "available_night_pack_hours": [
         12
       ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
-      "min_basic_taxfee": null,
+      "night_pack_start_time": "PM6:00",
+      "night_pack_end_time": "AM4:00",
+      "min_basic_taxfee": 230,
       "min_night_pack_taxfee": 1380,
       "min_24h_taxfee": 2820
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/1a225ff088d3657bdd30208211d65a57.png",
-    "price_ocr_text": "いい\nis og =         .                        =a\nCLUB                                                     -\nっのSS 一 」\nご本人様確認証のご提示をお願いいたします。                                                      ※価格は1名様あたりの料金(税込)です\nご利用時間 飲み放題カカフェ ブース 2? とッ/ | 鍵付完全個室\n6時間パック| 1,050-          1.760m                           | 2ft0a\n9時間パック| 1,3805     | 2310m                         2,770n\n2,3005\n12時間パック| 1,6405          2,750n                               3,300\n15時間パック| 2,0405     3,4105               4,1005\n18時間パック| 2,4005         4,0705                             4,880\n3,450\n21時間パック| 2,700     4.510n               5,390n\n24時間パック| 2,8205         4,730n                             5,660n\n77トは4222| 4 3800  | 2310m 2.000m | 2,770m\nご入店から12時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n*18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n・鍵付完全個室信他のお席のご移動は、一度ご精算をお願いいたします。\n・以下の場合は加算料金を頂戴いたします。\n【土日・祝日】 1 名様でカラオケをご利用の場合、2 名様分のご利用料金\n",
-    "price_rows": [
-      {
-        "label": ",",
-        "price_yen": "050"
-      },
-      {
-        "label": ",",
-        "price_yen": "3805"
-      },
-      {
-        "label": ",",
-        "price_yen": "3005"
-      },
-      {
-        "label": ",",
-        "price_yen": "6405"
-      },
-      {
-        "label": ",",
-        "price_yen": "0405"
-      },
-      {
-        "label": ",",
-        "price_yen": "4005"
-      },
-      {
-        "label": ",",
-        "price_yen": "450"
-      },
-      {
-        "label": ",",
-        "price_yen": "700"
-      },
-      {
-        "label": ",",
-        "price_yen": "8205"
-      },
-      {
-        "label": "トは",
-        "price_yen": "4222"
-      },
-      {
-        "label": "ご入店から",
-        "price_yen": "12"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      },
-      {
-        "label": "*",
-        "price_yen": "18"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20653",
@@ -66333,7 +65332,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -66581,7 +65579,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -66747,7 +65744,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -67044,7 +66040,6 @@
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -67232,16 +66227,16 @@
       "ビリヤード"
     ],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20663.html",
-    "price_source": "vision_ai",
+    "price_source": "json",
     "price": {
       "categories": [
         {
           "category": "open",
           "label": "オープンシート",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 230,
+          "weekend_basic_taxfee": 230,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 650,
             "6": 1050,
@@ -67253,31 +66248,37 @@
             "24": 2820
           },
           "weekend_hourly_taxfee": {
-            "3": 650,
-            "6": 1050,
-            "9": 1380,
-            "12": 1640,
-            "15": 2040,
-            "18": 2400,
-            "21": 2700,
-            "24": 2820
+            "3": 870,
+            "6": 1270,
+            "9": 1600,
+            "12": 1860,
+            "15": 2260,
+            "18": 2620,
+            "21": 2920,
+            "24": 3040
           },
           "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 1050,
+              "weekend_taxfee": 1270
+            },
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 1380,
-              "weekend_taxfee": 1380
+              "weekend_taxfee": 1600
             }
           ]
         },
         {
           "category": "booth",
           "label": "ブース",
-          "weekday_basic_taxfee": null,
-          "weekend_basic_taxfee": null,
-          "weekday_basic_time": null,
-          "weekend_basic_time": null,
+          "weekday_basic_taxfee": 310,
+          "weekend_basic_taxfee": 310,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
           "weekday_hourly_taxfee": {
             "3": 1150,
             "6": 1760,
@@ -67289,86 +66290,44 @@
             "24": 4730
           },
           "weekend_hourly_taxfee": {
-            "3": 1150,
-            "6": 1760,
-            "9": 2310,
-            "12": 2750,
-            "15": 3410,
-            "18": 4070,
-            "21": 4510,
-            "24": 4730
+            "3": 1370,
+            "6": 1980,
+            "9": 2530,
+            "12": 2970,
+            "15": 3630,
+            "18": 4290,
+            "21": 4730,
+            "24": 4950
           },
           "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 1800,
+              "weekend_taxfee": 2020
+            },
             {
               "key": "A",
               "hours": 12,
               "weekday_taxfee": 2310,
-              "weekend_taxfee": 2310
+              "weekend_taxfee": 2530
             }
           ]
         }
       ],
       "available_night_pack_hours": [
+        8,
         12
       ],
-      "night_pack_start_time": null,
-      "night_pack_end_time": null,
-      "min_basic_taxfee": null,
-      "min_night_pack_taxfee": 1380,
+      "night_pack_start_time": "PM6:00",
+      "night_pack_end_time": "AM6:00",
+      "min_basic_taxfee": 230,
+      "min_night_pack_taxfee": 1050,
       "min_24h_taxfee": 2820
     },
-    "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/a35cc0feafa13d4141779f07980abb31.png",
-    "price_ocr_text": "も\n  料金のご案内\nCLUB                                                     Gas\n会貞制                                                        |\nご本人様確認証のご提示をお願いいたします。                                                        ※価格は1名様あたりの料金(税込)です\n=     ダーツ・ビリヤード・\nご利用時間         飲み放題カフェ      es   前 上  イイ カラオケ・ワンツー\nカラオケ\nSmit? | 650m | 1150m\n6時間パック           1,050               1,760\n9時間パック          1.360       | 2810m\n2.300n\n12時間パック           1,6405               2,150\n15時間パック            2.040n                S,410\n18時間パック          2 400n              4,070\n3,450\n2 1時間パック            2,/005                4,510\n24時間パック          2,8205              4,730\n77H12Wy2| 4.380, | 2.310m | 2,000»\nご入店から12時間\n・ご入店から24時間で一度ご精算をお願いいたします。\n・表示金額とお会計額に1円の差が生じる場合がございます。\n・以下の場合は加算料金を頂戴いたします。\n【金*祝前日PM6:00~-と土日・祝日】 1 名様でパーティールーム・カラオケ(ワンツーカラオケは除く)をご利用の場合、2 名\n様分のご利用料金\n",
-    "price_rows": [
-      {
-        "label": "Smit? |",
-        "price_yen": "650"
-      },
-      {
-        "label": ",",
-        "price_yen": "050"
-      },
-      {
-        "label": ".",
-        "price_yen": "360"
-      },
-      {
-        "label": ".",
-        "price_yen": "300"
-      },
-      {
-        "label": ",",
-        "price_yen": "6405"
-      },
-      {
-        "label": ".",
-        "price_yen": "040"
-      },
-      {
-        "label": ",",
-        "price_yen": "450"
-      },
-      {
-        "label": ",/",
-        "price_yen": "005"
-      },
-      {
-        "label": ",",
-        "price_yen": "8205"
-      },
-      {
-        "label": "H",
-        "price_yen": "12"
-      },
-      {
-        "label": "ご入店から",
-        "price_yen": "12"
-      },
-      {
-        "label": "・ご入店から",
-        "price_yen": "24"
-      }
-    ]
+    "price_image_url": null,
+    "price_ocr_text": "",
+    "price_rows": []
   },
   {
     "store_code": "20666",
@@ -67713,7 +66672,6 @@
       "アルコール販売",
       "シャワー（無料）",
       "セルフレジ",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -67868,8 +66826,7 @@
     ],
     "darts": [
       "オンラインダーツ",
-      "DARTSLIVE3",
-      "DARTSLIVE2 EX"
+      "DARTSLIVE3"
     ],
     "billiards": [
       "ビリヤード"
@@ -68883,6 +67840,7 @@
       "鍵付完全個室",
       "鍵付完全個室 WEB予約",
       "飲み放題カフェ",
+      "100円モーニング",
       "ソフトクリーム",
       "駐車場",
       "シャワー（無料）",
@@ -70040,7 +68998,8 @@
       "シャワー（有料）",
       "セルフレジ",
       "コインランドリー（有料）",
-      "加熱式たばこ専用エリア"
+      "加熱式たばこ専用エリア",
+      "フィットネスジム"
     ],
     "roomtype": [
       "レギュラールーム（多機能）",
@@ -70211,7 +69170,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -70382,7 +69340,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
@@ -71097,7 +70054,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）",
       "加熱式たばこ専用エリア"
     ],
@@ -71857,8 +70813,7 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "コインランドリー（有料）",
-      "加熱式たばこ専用エリア"
+      "コインランドリー（有料）"
     ],
     "roomtype": [
       "レギュラールーム（多機能）",
@@ -73457,7 +72412,6 @@
       "アルコール販売",
       "駐車場",
       "シャワー（無料）",
-      "タオル使い放題",
       "コインランドリー（有料）"
     ],
     "roomtype": [
