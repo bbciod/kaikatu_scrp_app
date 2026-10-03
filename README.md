@@ -28,8 +28,11 @@
   さらに `--max-requests`（デフォルト15）に達したら安全に中断して `docs/data/stores.json` を
   保存する設計にしている。既に `vision_ai` 化済みの店舗は次回実行時にスキップされるため、
   日をまたいで何度か実行すれば未処理分から順に処理が進む。
-- `.github/workflows/scrape.yml` — `workflow_dispatch`（手動実行）で通常のスクレイピングを行う
-  ワークフロー（Gemini呼び出しは行わない）。定期実行は行わない。
+- `.github/workflows/scrape.yml` — `workflow_dispatch`（手動実行）で全件スクレイピングを行う
+  ワークフロー。定期実行は行わない。前回データの座標・AI補完料金は引き継ぎ（料金画像URLが
+  変わった店舗のAI補完は引き継がず再処理対象にする）、続けて**新店のジオコーディング**と
+  **画像のみの店舗のAI補完**を自動実行して、新店や料金画像の差し替えで生じた穴を埋める。
+  AI補完は `GEMINI_API_KEY` のSecretが登録されている場合のみ動き、未登録ならスキップする。
 - `.github/workflows/vision_backfill.yml` — `workflow_dispatch`（手動実行）で上記の
   `--vision-backfill` を実行するワークフロー。無料枠の日次上限に応じて`batch_size`/`max_requests`
   を調整しながら、必要なら複数日に分けて手動実行する想定。
