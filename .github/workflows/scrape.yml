@@ -30,16 +30,33 @@ jobs:
         run: pip install -r scraper/requirements.txt
 
       - name: Run scraper
-        env:
-          # 任意。設定すると、料金画像のみの店舗をGemini Vision APIで数値化する。
-          # 未設定の場合はOCRテキストのみ（数値検索の対象外）にフォールバックする。
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # スクレイプ本体はGeminiを呼ばない（AI補完は後段のステップで行う）。
+        # 前回データの座標・AI補完料金は scrape.py 側で引き継がれる。
         run: |
           if [ -n "${{ github.event.inputs.limit }}" ]; then
             python scraper/scrape.py --limit "${{ github.event.inputs.limit }}"
           else
             python scraper/scrape.py
           fi
+
+      # 以下2ステップは全件実行時のみ。新店や料金画像の差し替えで生じた「穴」を自動で埋める。
+      # 前回からの引き継ぎで処理済みの店舗はスキップされるため、通常は数件分しか動かない。
+      - name: Geocode new stores
+        if: github.event.inputs.limit == ''
+        run: python scraper/scrape.py --geocode-backfill
+
+      - name: Vision backfill for image-only stores
+        if: github.event.inputs.limit == ''
+        # 無料枠の日次上限に達しても、スクレイプ結果のコミットは止めない。
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "GEMINI_API_KEY が未登録のためAI補完をスキップします（画像のみの店舗はOCR参考表示のまま）"
+            exit 0
+          fi
+          python scraper/scrape.py --vision-backfill
 
       - name: Commit updated data
         run: |
