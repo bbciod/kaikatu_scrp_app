@@ -213,6 +213,17 @@ tr:hover td { background: #fff7ef; }
 .price-pin-plan { font-size: 0.6rem; font-weight: 500; opacity: 0.85; }
 .price-pin-yen { font-weight: 700; }
 
+/* クラスタのバブル（件数＋最安値）。個別ピンと区別するため濃い色の角丸にする。 */
+.price-cluster-wrap { background: none; border: none; }
+.price-cluster {
+  display: inline-flex; flex-direction: column; align-items: center; white-space: nowrap;
+  background: #333; color: #fff; font-size: 0.72rem; line-height: 1.2;
+  padding: 3px 8px; border-radius: 12px; border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.45); transform: translate(-50%, -50%); cursor: pointer;
+}
+.price-cluster-count { font-size: 0.62rem; opacity: 0.85; }
+.price-cluster-yen { font-weight: 700; color: #ffd27a; }
+
 .map-popup { font-size: 0.85rem; min-width: 140px; }
 .map-popup strong { font-size: 0.95rem; }
 .map-popup-sub { color: #666; font-size: 0.75rem; margin: 2px 0 6px; }

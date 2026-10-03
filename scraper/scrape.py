@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timedelta, timezone
 import os
 import re
 import shutil
@@ -67,6 +68,10 @@ SEAT_CATEGORIES = {
 }
 HOUR_KEYS = [str(h) for h in range(1, 25)]
 NIGHT_PACK_KEYS = ["8", "A", "B", "C"]
+# 時間数 → 公式APIのナイトパックキー。公式は12時間パックを "12" ではなく "A" で持つ。
+# AI画像読取(vision_ai)の結果もこの命名に揃え、データ内でキーの揺れを作らない。
+# 対応が不明な時間数は str(hours) をキーにする（フロントは key ではなく hours で照合している）。
+NIGHT_PACK_KEY_BY_HOURS = {8: "8", 12: "A"}
 
 
 def fetch_text(url: str) -> str:
@@ -443,7 +448,7 @@ def genai_result_to_categories(genai_result: dict[str, Any]) -> list[dict[str, A
             if hours is None:
                 continue
             night_packs.append({
-                "key": str(hours),
+                "key": NIGHT_PACK_KEY_BY_HOURS.get(hours, str(hours)),
                 "hours": hours,
                 "weekday_taxfee": _genai_num(np.get("weekday_taxfee")),
                 "weekend_taxfee": _genai_num(np.get("weekend_taxfee")),
@@ -847,6 +852,37 @@ def backfill_geocode(stores_path: Path, max_requests: int | None = None) -> None
     print(f"ジオコーディング完了: 座標あり {geocoded} 件 / 全 {len(data)} 件", file=sys.stderr)
 
 
+def carry_over_backfills(data: list[dict[str, Any]], prev: list[dict[str, Any]]) -> None:
+    """全件スクレイプの新データ(data)へ、前回データ(prev)のbackfill結果を引き継ぐ。
+
+    - 緯度経度: 再スクレイプのたびにジオコーディングをやり直さずに済むように。
+    - AI補完料金(vision_ai): 全件スクレイプは料金画像のみの店舗を price_source="image" で
+      作り直すため、引き継がないとGeminiで数値化した結果が消えて料金検索の対象から外れる
+      （2026-08-02のスクレイプで実際に61店舗が消えた）。ただし料金画像URL（ファイル名に
+      日付を含む）が変わっていれば料金改定の可能性があるので引き継がず、再補完の対象に残す。
+      新データ側で公式JSONが取れるようになった店舗は、より正確なのでそちらを優先する。
+    """
+    prev_by_code = {s.get("store_code"): s for s in prev}
+    carried_vision = 0
+    for s in data:
+        old = prev_by_code.get(s.get("store_code"))
+        if old is None:
+            continue
+        if old.get("lat") is not None and old.get("lng") is not None:
+            s["lat"], s["lng"] = old["lat"], old["lng"]
+        if (
+            s.get("price_source") == "image"
+            and old.get("price_source") == "vision_ai"
+            and old.get("price")
+            and s.get("price_image_url")
+            and s.get("price_image_url") == old.get("price_image_url")
+        ):
+            s["price_source"] = "vision_ai"
+            s["price"] = old["price"]
+            carried_vision += 1
+    print(f"AI補完料金を引き継ぎ: {carried_vision} 店舗", file=sys.stderr)
+
+
 def main() -> None:
     import argparse
 
@@ -887,21 +923,24 @@ def main() -> None:
 
     data = collect(limit=args.limit)
 
-    # 既存出力があれば、ジオコーディング済みの緯度経度を引き継ぐ（再スクレイプのたびに
-    # 8分かけたジオコーディングをやり直さずに済むように）。
+    # 既存出力があれば、過去のbackfill結果（座標・AI補完料金）を引き継ぐ。
     if args.out.exists():
         try:
             prev = json.loads(args.out.read_text(encoding="utf-8"))
-            prev_coords = {s.get("store_code"): (s.get("lat"), s.get("lng")) for s in prev}
-            for s in data:
-                lat, lng = prev_coords.get(s.get("store_code"), (None, None))
-                if lat is not None and lng is not None:
-                    s["lat"], s["lng"] = lat, lng
+            carry_over_backfills(data, prev)
         except (ValueError, OSError) as exc:
-            print(f"警告: 既存の緯度経度の引き継ぎに失敗しました ({exc})", file=sys.stderr)
+            print(f"警告: 既存データからの引き継ぎに失敗しました ({exc})", file=sys.stderr)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 料金データの取得日時を別ファイルに記録する（フッターの「料金データ取得日」に表示）。
+    # stores.json は配列のまま保ちたいので、メタ情報は meta.json に分ける。
+    # backfill（AI補完・ジオコーディング）は料金の取得日を変えないため、ここ（全件スクレイプ）でのみ更新する。
+    if args.limit is None:
+        meta_path = args.out.parent / "meta.json"
+        meta = {"scraped_at": datetime.now(timezone(timedelta(hours=9))).isoformat(timespec="seconds")}
+        meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
     json_count = sum(1 for s in data if s["price_source"] == "json")
     vision_count = sum(1 for s in data if s["price_source"] == "vision_ai")
