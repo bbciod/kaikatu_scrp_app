@@ -10229,8 +10229,127 @@
       "ビリヤード"
     ],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20212.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": 240,
+          "weekend_basic_taxfee": 240,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 660,
+            "6": 1060,
+            "9": 1390,
+            "12": 1650,
+            "15": 2050,
+            "18": 2410,
+            "21": 2710,
+            "24": 2830
+          },
+          "weekend_hourly_taxfee": {
+            "3": 880,
+            "6": 1280,
+            "9": 1610,
+            "12": 1870,
+            "15": 2270,
+            "18": 2630,
+            "21": 2930,
+            "24": 3050
+          },
+          "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 1060,
+              "weekend_taxfee": 1280
+            }
+          ]
+        },
+        {
+          "category": "amuse",
+          "label": "アミューズシート",
+          "weekday_basic_taxfee": 340,
+          "weekend_basic_taxfee": 340,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1210,
+            "6": 1990,
+            "9": 2650,
+            "12": 3200,
+            "15": 3970,
+            "18": 4740,
+            "21": 5070,
+            "24": 5300
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1430,
+            "6": 2210,
+            "9": 2870,
+            "12": 3420,
+            "15": 4190,
+            "18": 4960,
+            "21": 5290,
+            "24": 5520
+          },
+          "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 2010,
+              "weekend_taxfee": 2230
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 430,
+          "weekend_basic_taxfee": 430,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1550,
+            "6": 2580,
+            "9": 3440,
+            "12": 4160,
+            "15": 5180,
+            "18": 6000,
+            "21": 6690,
+            "24": 6890
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1770,
+            "6": 2800,
+            "9": 3660,
+            "12": 4380,
+            "15": 5400,
+            "18": 6220,
+            "21": 6910,
+            "24": 7110
+          },
+          "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 2580,
+              "weekend_taxfee": 2800
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        8
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 240,
+      "min_night_pack_taxfee": 1060,
+      "min_24h_taxfee": 2830
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20212_202600721.png",
     "price_ocr_text": "いい\n  料金のご案内\nCLUB                                                   as\n会員制                                               |\nご本人様確認証のご提示をお願いいたします。                                                        ※価格は1名様あたりの料金(税込) です\n_                                      ブース・ダーツ・ビ       <i\n=i 2 2 ESE\n22ク| 660» | 1.210n 1.5808\n6時間パック           1,060               1,990               2.5805\n9時間パック           1,3905               2,650               3,440\n12時間パック            1,650                 3,2005                 4,160\n15時間パック            2,050                 3.970ロ                 5.1805\n18時間パック            2,4105                 4,7405                 6,000\n2 1時間パック            2,710                 5,070                 6,690-\n24時間パック          2.630n              5,300n              5,690n\nナイト9時間パック| 1] 0605     2.010p     2.580n\nご入店から8時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n*18歳未満および高校生の方は、完全個室をご利用いただけません。\n*完全個室人@他のお席のご移動は、一度ご精算をお願いいたします。\n*以下の場合は加算料金を頂戴いたします。\n【土日・祝日】 1 名様でカラオケご利用時、 2 名様分のご利用料金\n",
     "price_rows": [
@@ -21161,8 +21280,91 @@
     "darts": [],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20900.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": 250,
+          "weekend_basic_taxfee": 250,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 710,
+            "6": 1140,
+            "9": 1500,
+            "12": 1790,
+            "15": 2250,
+            "18": 2690,
+            "21": 2890,
+            "24": 3070
+          },
+          "weekend_hourly_taxfee": {
+            "3": 930,
+            "6": 1360,
+            "9": 1720,
+            "12": 2010,
+            "15": 2470,
+            "18": 2910,
+            "21": 3110,
+            "24": 3290
+          },
+          "night_packs": [
+            {
+              "key": "A",
+              "hours": 12,
+              "weekday_taxfee": 1500,
+              "weekend_taxfee": 1720
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 420,
+          "weekend_basic_taxfee": 420,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1540,
+            "6": 2570,
+            "9": 3430,
+            "12": 4150,
+            "15": 5170,
+            "18": 5990,
+            "21": 6680,
+            "24": 6880
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1760,
+            "6": 2790,
+            "9": 3650,
+            "12": 4370,
+            "15": 5390,
+            "18": 6210,
+            "21": 6900,
+            "24": 7100
+          },
+          "night_packs": [
+            {
+              "key": "A",
+              "hours": 12,
+              "weekday_taxfee": 3430,
+              "weekend_taxfee": 3650
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        12
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 250,
+      "min_night_pack_taxfee": 1500,
+      "min_24h_taxfee": 3070
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20900_20260903.png",
     "price_ocr_text": "も\n 料金のご案内\nCLUB\n\n会員制                     |           veg\nご本人様確認証のご提示をお願いいたします。                                                        ※価格は1名様あたりの料金(税込) です\nご利用時間      飲み放題カフェ        鍵付完全個室\n6時間パック                1,1405                         2.570n\n9時間パック                1,5005                        3,4305\n12時間パック                1,7905                        4,1505\n18時間パック       2.690m           5,990n\n21時間パック       2,8905           5,660m\n24時間パック       S,070m           6,880-\na cia hd    1,500:       3,430\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n*18歳未満および高校生の方は、鍵付完全個室をご利用いただけません。\n・鍵付完全個室信他のお席のご移動は、一度ご精算をお願いいたします。\n",
     "price_rows": [
@@ -30094,8 +30296,127 @@
     ],
     "billiards": [],
     "detail_url": "https://www.kaikatsu.jp/shop/detail/20705.html",
-    "price_source": "image",
-    "price": null,
+    "price_source": "vision_ai",
+    "price": {
+      "categories": [
+        {
+          "category": "open",
+          "label": "オープンシート",
+          "weekday_basic_taxfee": 250,
+          "weekend_basic_taxfee": 250,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 710,
+            "6": 1140,
+            "9": 1500,
+            "12": 1790,
+            "15": 2250,
+            "18": 2690,
+            "21": 2890,
+            "24": 3070
+          },
+          "weekend_hourly_taxfee": {
+            "3": 930,
+            "6": 1360,
+            "9": 1720,
+            "12": 2010,
+            "15": 2470,
+            "18": 2910,
+            "21": 3110,
+            "24": 3290
+          },
+          "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 1140,
+              "weekend_taxfee": 1360
+            }
+          ]
+        },
+        {
+          "category": "amuse",
+          "label": "アミューズシート",
+          "weekday_basic_taxfee": 290,
+          "weekend_basic_taxfee": 290,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1130,
+            "6": 1870,
+            "9": 2310,
+            "12": 2750,
+            "15": 3410,
+            "18": 4070,
+            "21": 4510,
+            "24": 4730
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1350,
+            "6": 2090,
+            "9": 2530,
+            "12": 2970,
+            "15": 3630,
+            "18": 4290,
+            "21": 4730,
+            "24": 4950
+          },
+          "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 1870,
+              "weekend_taxfee": 2090
+            }
+          ]
+        },
+        {
+          "category": "private",
+          "label": "個室",
+          "weekday_basic_taxfee": 380,
+          "weekend_basic_taxfee": 380,
+          "weekday_basic_time": 30,
+          "weekend_basic_time": 30,
+          "weekday_hourly_taxfee": {
+            "3": 1480,
+            "6": 2650,
+            "9": 3430,
+            "12": 4150,
+            "15": 5170,
+            "18": 5990,
+            "21": 6680,
+            "24": 6880
+          },
+          "weekend_hourly_taxfee": {
+            "3": 1700,
+            "6": 2870,
+            "9": 3650,
+            "12": 4370,
+            "15": 5390,
+            "18": 6210,
+            "21": 6900,
+            "24": 7100
+          },
+          "night_packs": [
+            {
+              "key": "8",
+              "hours": 8,
+              "weekday_taxfee": 2650,
+              "weekend_taxfee": 2870
+            }
+          ]
+        }
+      ],
+      "available_night_pack_hours": [
+        8
+      ],
+      "night_pack_start_time": null,
+      "night_pack_end_time": null,
+      "min_basic_taxfee": 250,
+      "min_night_pack_taxfee": 1140,
+      "min_24h_taxfee": 3070
+    },
     "price_image_url": "https://www.kaikatsu.jp/shop/images/2026/20705_20260731.png",
     "price_ocr_text": "~                                 uu\n快活\n 料金のご案内\n会員制                   、\nご本人様確認証のご提示をお願いいたします。                                                            ※価格は1名様あたりの料金(税込)です\neaten      rts          鍵付完全個室\nこ笠用     カフェ      カラオケ ソラファールーム ViPルーム\nmone 80m| 100m 130m| 150m\n6時間パック| 1,140     1.870ロ     2,650     2,/00\n9時間パック| 1,500  23108   3,430     4,130\n12時間パバック| 1,790     2,/505     4,150     5.170\n15時間パック | 2.250m    3,410       5,170       5, 980m\n18時間パック| 2,6905     4,070     5.990     6,150\n21時間パック| 2,890     4,510     6,680     6,600\n24時間パック| 3,070     4,7305     6,8805     7,0205\n7イト9時間パツク| 4 440m | 1.870m | 2.650m | 2.700n\nご入店から8時間\n・ご入店から24時間で一度ご精算をお願いいたします。・表示金額とお会計額に1円の差が生じる場合がございます。\n・18歳未満および高校生の方は、紹付完全個室をご利用いただけません。\n・鍵付完全個室@他のお席のご移動は、一度ご精算をお願いいたします。\n・以下の場合は加算料金を頂戴いたします。\n【金・祝前日PM6:00ンと土日・祝日】 1 名様でカラオケをご利用の場合、 2 名様分のご利用料金\n",
     "price_rows": [
