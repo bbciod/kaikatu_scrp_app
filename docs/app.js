@@ -30,6 +30,7 @@ const SEAT_OPTIONS = [
 ];
 
 // ナイトパックは8時間("8"キー)と12時間("A"キー)の2種類が別プランとして存在する。
+// 照合は key ではなく hours で行う（キー体系が将来変わっても壊れないように。scraper の NIGHT_PACK_KEY_BY_HOURS 参照）。
 const PLAN_OPTIONS = [
   { value: "night_pack_8", label: "ナイトパック(8時間)", shortLabel: "ナイト8h", type: "night_pack", hours: 8 },
   { value: "night_pack_12", label: "ナイトパック(12時間)", shortLabel: "ナイト12h", type: "night_pack", hours: 12 },
@@ -53,11 +54,25 @@ let mapMarkerLayer = null; // マーカーをまとめるレイヤ（再描画�
 
 // ===== データ読み込み・フラット化 =====
 
+// フッターに料金データの取得日を表示する（scraper が全件スクレイプ時に meta.json へ記録）。
+// 閲覧日ではなくデータの鮮度を示すためのもの。取得できなければ「不明」と出す。
+async function showScrapedAt() {
+  const el = document.getElementById("updatedAt");
+  try {
+    const res = await fetch("data/meta.json", { cache: "no-cache" });
+    const meta = await res.json();
+    const d = new Date(meta.scraped_at);
+    el.textContent = isNaN(d) ? "不明" : d.toLocaleDateString("ja-JP");
+  } catch {
+    el.textContent = "不明";
+  }
+}
+
 async function init() {
   const res = await fetch("data/stores.json");
   allStores = await res.json();
 
-  document.getElementById("updatedAt").textContent = new Date().toLocaleDateString("ja-JP");
+  showScrapedAt();
 
   flatRows = buildFlatRows(allStores);
 
@@ -510,7 +525,16 @@ function renderMapResults(rows) {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(leafletMap);
-    mapMarkerLayer = L.layerGroup().addTo(leafletMap);
+    // 都市部でピンが重ならないよう、近い店舗はクラスタ（件数＋最安値のバブル）にまとめる。
+    // 拡大すると自然にほどけて縦積みピンになり、最大ズームでも重なる店舗はクリックで放射状に展開する。
+    mapMarkerLayer = L.markerClusterGroup({
+      // 縦積みピンは幅が約100pxあるため、既定(80px)より広く取る。実測で70pxだと都市部で重なりが残り、
+      // 110pxで東京・大阪・名古屋の主要ズームで重なり0になった。
+      maxClusterRadius: 110,
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: true,
+      iconCreateFunction: createPriceClusterIcon,
+    }).addTo(leafletMap);
   }
   // 非表示中にリサイズされているとタイルがずれるため、表示直後にサイズ再計算する。
   setTimeout(() => leafletMap.invalidateSize(), 0);
@@ -563,13 +587,28 @@ function renderMapResults(rows) {
       </div>
     `;
 
-    L.marker([s.lat, s.lng], { icon }).bindPopup(popupHtml).addTo(mapMarkerLayer);
+    // クラスタのバブルに最安値を出すため、店舗の最安値をマーカーに持たせておく。
+    const minPrice = priceEntries.length ? Math.min(...priceEntries.map(e => e.price)) : null;
+    L.marker([s.lat, s.lng], { icon, minPrice }).bindPopup(popupHtml).addTo(mapMarkerLayer);
     bounds.push([s.lat, s.lng]);
   }
 
   if (bounds.length) {
     leafletMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
   }
+}
+
+// クラスタのバブル: 店舗数と、含まれる店舗の選択中プランの最安値（「¥950〜」）を表示する。
+function createPriceClusterIcon(cluster) {
+  const prices = cluster.getAllChildMarkers().map(m => m.options.minPrice).filter(p => p != null);
+  const count = cluster.getChildCount();
+  const priceText = prices.length ? `¥${Math.min(...prices).toLocaleString()}〜` : "";
+  return L.divIcon({
+    className: "price-cluster-wrap",
+    html: `<span class="price-cluster"><span class="price-cluster-count">${count}店</span>` +
+          (priceText ? `<span class="price-cluster-yen">${priceText}</span>` : "") + `</span>`,
+    iconSize: null,
+  });
 }
 
 function renderStatusBadge(status) {

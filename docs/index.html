@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>快活CLUB 店舗比較</title>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -103,11 +104,12 @@
   <p>
     データは <a href="https://www.kaikatsu.jp/" target="_blank" rel="noopener">快活CLUB公式サイト</a>
     から取得した公開情報を元にした非公式の参考情報です。料金画像はAI（Gemini）またはOCRによる自動読み取りのため
-    誤りを含む場合があります。正確な情報は必ず公式サイト・各店舗にご確認ください。最終更新: <span id="updatedAt"></span>
+    誤りを含む場合があります。正確な情報は必ず公式サイト・各店舗にご確認ください。料金データ取得日: <span id="updatedAt"></span>
   </p>
 </footer>
 
 <script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/leaflet.markercluster/leaflet.markercluster.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
