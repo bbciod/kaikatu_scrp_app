@@ -239,8 +239,11 @@ def ocr_price_image(image_bytes: bytes) -> str:
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_MODEL = "gemini-2.5-flash"
+# APIキーはURLのクエリ(?key=)ではなく x-goog-api-key ヘッダーで送る。クエリに入れると、
+# requests の HTTPError メッセージ（"... for url: ...?key=..."）経由で警告ログにキーが出てしまう
+# （公開リポジトリのActionsログは誰でも読める。Secretのマスクに頼らない）。
 GEMINI_URL_TMPL = (
-    "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+    "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 )
 GEMINI_HOUR_KEYS = ["3", "6", "9", "12", "15", "18", "21", "24"]
 GEMINI_RETRY_COUNT = 3
@@ -303,11 +306,12 @@ def _gemini_request(body: dict[str, Any]) -> dict[str, Any] | None:
     429（クォータ超過）はリトライしない。1日のリクエスト数上限に達している場合、
     リトライは成功する見込みがなく、かえって貴重な残りクォータを消費するだけだから。
     """
-    url = GEMINI_URL_TMPL.format(model=GEMINI_MODEL, key=GEMINI_API_KEY)
+    url = GEMINI_URL_TMPL.format(model=GEMINI_MODEL)
+    headers = {"x-goog-api-key": GEMINI_API_KEY or ""}
     last_exc: Exception | None = None
     for attempt in range(GEMINI_RETRY_COUNT):
         try:
-            res = requests.post(url, json=body, timeout=120)
+            res = requests.post(url, json=body, headers=headers, timeout=120)
             if res.status_code == 429:
                 raise GeminiQuotaExhausted(res.text[:300])
             res.raise_for_status()
