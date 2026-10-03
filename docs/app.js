@@ -440,7 +440,7 @@ function buildStoreDetailHtml(storeCode) {
   }
 
   const aiNotice = store.price_source === "vision_ai"
-    ? '<p class="price-note ai-notice">⚠ 料金はAI（Gemini）が料金画像から自動で読み取った参考値です。誤りを含む可能性があります。</p>'
+    ? '<p class="price-note ai-notice">⚠ 料金は料金画像から文字認識（OCR）で自動的に読み取った参考値です。誤りを含む可能性があります。</p>'
     : "";
 
   return `
@@ -576,7 +576,7 @@ function renderMapResults(rows) {
       ? `<ul class="map-popup-prices">${priceEntries.map(e =>
           `<li>${escapeHtml(e.label)}: ¥${e.price.toLocaleString()}</li>`).join("")}</ul>`
       : '<p class="map-popup-noprice">選択中プランの料金情報なし</p>';
-    const aiBadge = s.price_source === "vision_ai" ? '<span class="ai-badge" title="AI画像読み取り（参考値）">AI</span>' : "";
+    const aiBadge = s.price_source === "vision_ai" ? '<span class="ai-badge" title="料金画像からの文字認識（OCR）による参考値">OCR</span>' : "";
     const popupHtml = `
       <div class="map-popup">
         <strong>${escapeHtml(s.store_name)}</strong>${aiBadge}
@@ -612,7 +612,7 @@ function createPriceClusterIcon(cluster) {
 }
 
 function renderStatusBadge(status) {
-  if (status === "vision_ai") return ' <span class="ai-badge" title="AI画像読み取り（参考値）">AI</span>';
+  if (status === "vision_ai") return ' <span class="ai-badge" title="料金画像からの文字認識（OCR）による参考値">OCR</span>';
   return "";
 }
 
