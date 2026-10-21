@@ -399,7 +399,7 @@ function renderCardResults(rows) {
         <div class="card-price">
           <div class="price-main">¥${r.weekday_price.toLocaleString()}</div>
           ${r.weekend_surcharge != null && r.weekend_surcharge !== 0 ? `<div class="price-sub">休日 +¥${r.weekend_surcharge.toLocaleString()}</div>` : ""}
-          <a href="${r.detail_url}" target="_blank" rel="noopener">公式サイト</a>
+          <a href="${escapeHtml(r.detail_url)}" target="_blank" rel="noopener">公式サイト</a>
         </div>
       </div>
       <details class="card-detail">
@@ -472,7 +472,7 @@ function renderTableResults(rows) {
   html += "</tr></thead><tbody>";
 
   for (const s of stores) {
-    html += `<tr><th class="row-store-name"><a href="${s.detail_url}" target="_blank" rel="noopener">${escapeHtml(s.store_name)}</a>${renderStatusBadge(s.price_source)}<br><small>${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</small></th>`;
+    html += `<tr><th class="row-store-name"><a href="${escapeHtml(s.detail_url)}" target="_blank" rel="noopener">${escapeHtml(s.store_name)}</a>${renderStatusBadge(s.price_source)}<br><small>${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</small></th>`;
     for (const col of columns) {
       const cls = col.selected ? "col-selected" : "";
       if (col.isPrice) {
@@ -583,7 +583,7 @@ function renderMapResults(rows) {
         <div class="map-popup-sub">${escapeHtml(s.pref)}${escapeHtml(s.city || "")}</div>
         ${s.access && s.access.length ? `<div class="map-popup-access">🚶 ${s.access.map(a => escapeHtml(a)).join("／")}</div>` : ""}
         ${priceHtml}
-        <a href="${s.detail_url}" target="_blank" rel="noopener">公式サイト</a>
+        <a href="${escapeHtml(s.detail_url)}" target="_blank" rel="noopener">公式サイト</a>
       </div>
     `;
 
