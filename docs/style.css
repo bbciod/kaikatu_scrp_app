@@ -198,31 +198,22 @@ tr:hover td { background: #fff7ef; }
 /* ===== 地図モード ===== */
 #leafletMap { height: 70vh; min-height: 360px; width: 100%; border-radius: 6px; z-index: 0; }
 
-/* 料金ラベル付きのカスタムピン。選択中の全プランを1ピン内に縦積みで表示する。 */
+/* 料金ラベル。選択中の全プランを縦積みで表示する。重ならない分だけ表示される（app.js layoutMapLabels）。 */
 .price-pin-wrap { background: none; border: none; }
 .price-pin {
   display: inline-flex; flex-direction: column; gap: 1px;
   white-space: nowrap;
   background: #c8391e; color: #fff; font-weight: 700; font-size: 0.72rem;
   padding: 2px 6px; border-radius: 8px; border: 1.5px solid #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.4); transform: translate(-50%, -50%);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  /* 店舗の位置は別の点で示すので、ラベルは点を隠さないよう真上に置く（app.js の LABEL_GAP_PX と揃える） */
+  transform: translate(-50%, calc(-100% - 6px));
 }
 /* 各行は「プラン名 … 料金」。プラン名は控えめ、料金を主役にする。 */
 .price-pin-row { display: flex; align-items: baseline; gap: 4px; justify-content: space-between; }
 .price-pin-row + .price-pin-row { border-top: 1px solid rgba(255,255,255,0.35); padding-top: 1px; }
 .price-pin-plan { font-size: 0.6rem; font-weight: 500; opacity: 0.85; }
 .price-pin-yen { font-weight: 700; }
-
-/* クラスタのバブル（件数＋最安値）。個別ピンと区別するため濃い色の角丸にする。 */
-.price-cluster-wrap { background: none; border: none; }
-.price-cluster {
-  display: inline-flex; flex-direction: column; align-items: center; white-space: nowrap;
-  background: #333; color: #fff; font-size: 0.72rem; line-height: 1.2;
-  padding: 3px 8px; border-radius: 12px; border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.45); transform: translate(-50%, -50%); cursor: pointer;
-}
-.price-cluster-count { font-size: 0.62rem; opacity: 0.85; }
-.price-cluster-yen { font-weight: 700; color: #ffd27a; }
 
 .map-popup { font-size: 0.85rem; min-width: 140px; }
 .map-popup strong { font-size: 0.95rem; }
