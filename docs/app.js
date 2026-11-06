@@ -50,7 +50,18 @@ let allStores = [];
 let flatRows = []; // ロング形式: 1行 = 店舗×座席タイプ×プラン
 let viewMode = "card"; // "card" | "table" | "map"
 let leafletMap = null; // Leafletマップインスタンス（地図モード初回表示時に遅延生成）
-let mapMarkerLayer = null; // マーカーをまとめるレイヤ（再描画時にまとめて差し替える）
+let mapDotLayer = null;   // 全店舗の位置を示す小さな点（常に全件表示）
+let mapLabelLayer = null; // 料金ラベル（重ならない分だけ表示。ズームのたびに配置し直す）
+let mapStoreMarkers = []; // 現在の検索結果の店舗（{ latlng, minPrice, rows, icon, popupHtml }）
+
+// 料金ラベルの配置。以前は近接店舗を件数バブルに「まとめ」ていたが、東北などを俯瞰すると
+// バブルばかりになり、拡大しないと店舗の場所が分からなかった（件数しきい値を10店に上げる案も
+// 試したが、東京・九州で数十か所ピンが重なり、まとめを入れた元の問題が戻った）。
+// そこで位置と料金を分け、位置は全店舗を点で必ず見せ、料金ラベルは重ならない分だけ
+// 安い店舗から順に載せる。拡大して間隔が空くほどラベルが増える。
+const LABEL_WIDTH_PX = 100;      // ラベルの横幅（実測で最大約98px）
+const LABEL_ROW_HEIGHT_PX = 20;  // ラベル1行（1プラン）ぶんの高さ（実測: 1行23px/2行44px/3行64px）
+const LABEL_GAP_PX = 6;          // 点とラベルの間隔（ラベルは点の真上に置く）
 
 // ===== データ読み込み・フラット化 =====
 
@@ -525,21 +536,15 @@ function renderMapResults(rows) {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(leafletMap);
-    // 都市部でピンが重ならないよう、近い店舗はクラスタ（件数＋最安値のバブル）にまとめる。
-    // 拡大すると自然にほどけて縦積みピンになり、最大ズームでも重なる店舗はクリックで放射状に展開する。
-    mapMarkerLayer = L.markerClusterGroup({
-      // 縦積みピンは幅が約100pxあるため、既定(80px)より広く取る。実測で70pxだと都市部で重なりが残り、
-      // 110pxで東京・大阪・名古屋の主要ズームで重なり0になった。
-      maxClusterRadius: 110,
-      showCoverageOnHover: false,
-      spiderfyOnMaxZoom: true,
-      iconCreateFunction: createPriceClusterIcon,
-    }).addTo(leafletMap);
+    mapDotLayer = L.layerGroup().addTo(leafletMap);
+    mapLabelLayer = L.layerGroup().addTo(leafletMap);
+    // ラベルの重なりは画面上の距離（ピクセル）で決まるため、ズームが変わるたびに配置し直す。
+    leafletMap.on("zoomend", layoutMapLabels);
   }
   // 非表示中にリサイズされているとタイルがずれるため、表示直後にサイズ再計算する。
   setTimeout(() => leafletMap.invalidateSize(), 0);
 
-  mapMarkerLayer.clearLayers();
+  mapStoreMarkers = [];
 
   const plans = getPlansForMap();
   const seats = getSelectedValues("seatFilters");
@@ -587,28 +592,48 @@ function renderMapResults(rows) {
       </div>
     `;
 
-    // クラスタのバブルに最安値を出すため、店舗の最安値をマーカーに持たせておく。
+    // ラベルは安い店舗から優先して載せるため、店舗の最安値を一緒に持っておく。
     const minPrice = priceEntries.length ? Math.min(...priceEntries.map(e => e.price)) : null;
-    L.marker([s.lat, s.lng], { icon, minPrice }).bindPopup(popupHtml).addTo(mapMarkerLayer);
+    const latlng = L.latLng(s.lat, s.lng);
+    mapStoreMarkers.push({ latlng, minPrice, rows: Math.max(priceEntries.length, 1), icon, popupHtml });
     bounds.push([s.lat, s.lng]);
   }
 
   if (bounds.length) {
+    // fitBounds でズームが変わると zoomend で配置し直される。変わらない場合に備えて直接も呼ぶ。
     leafletMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+  }
+  drawMapDots();
+  layoutMapLabels();
+}
+
+// 全店舗の位置を小さな点で描く。点はズームしても間引かないので、どの縮尺でも店舗の場所が分かる。
+function drawMapDots() {
+  mapDotLayer.clearLayers();
+  for (const m of mapStoreMarkers) {
+    L.circleMarker(m.latlng, {
+      radius: 4, color: "#fff", weight: 1.5, fillColor: "#c8391e", fillOpacity: 1,
+    }).bindPopup(m.popupHtml).addTo(mapDotLayer);
   }
 }
 
-// クラスタのバブル: 店舗数と、含まれる店舗の選択中プランの最安値（「¥950〜」）を表示する。
-function createPriceClusterIcon(cluster) {
-  const prices = cluster.getAllChildMarkers().map(m => m.options.minPrice).filter(p => p != null);
-  const count = cluster.getChildCount();
-  const priceText = prices.length ? `¥${Math.min(...prices).toLocaleString()}〜` : "";
-  return L.divIcon({
-    className: "price-cluster-wrap",
-    html: `<span class="price-cluster"><span class="price-cluster-count">${count}店</span>` +
-          (priceText ? `<span class="price-cluster-yen">${priceText}</span>` : "") + `</span>`,
-    iconSize: null,
-  });
+// 料金ラベルを、他のラベルと重ならない範囲で安い店舗から順に置く（貪欲法）。
+// 置けなかった店舗も点は出ているので、拡大するかクリックすれば料金が見られる。
+// 判定は世界座標のピクセルで行うので、パンでは変わらずズームのときだけやり直せばよい。
+function layoutMapLabels() {
+  if (!leafletMap || !mapLabelLayer) return;
+  mapLabelLayer.clearLayers();
+  const zoom = leafletMap.getZoom();
+  const placed = [];
+  const byPrice = [...mapStoreMarkers].sort((a, b) => (a.minPrice ?? Infinity) - (b.minPrice ?? Infinity));
+  for (const m of byPrice) {
+    const p = leafletMap.project(m.latlng, zoom);
+    const h = m.rows * LABEL_ROW_HEIGHT_PX + 4;
+    const box = { l: p.x - LABEL_WIDTH_PX / 2, r: p.x + LABEL_WIDTH_PX / 2, t: p.y - LABEL_GAP_PX - h, b: p.y - LABEL_GAP_PX };
+    if (placed.some(q => box.l < q.r && q.l < box.r && box.t < q.b && q.t < box.b)) continue;
+    placed.push(box);
+    L.marker(m.latlng, { icon: m.icon }).bindPopup(m.popupHtml).addTo(mapLabelLayer);
+  }
 }
 
 function renderStatusBadge(status) {

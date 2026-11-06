@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>快活CLUB 店舗比較</title>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -94,7 +93,7 @@
     </div>
 
     <div id="mapResults" class="hidden">
-      <p class="select-all-hint">条件に合う店舗を地図上のピンで表示しています。ピンをクリックすると選択中プランの料金が表示されます。</p>
+      <p class="select-all-hint">条件に合う全店舗を赤い点で示し、重ならない範囲で安い店舗から料金を表示しています。拡大すると料金表示が増えます。点や料金をクリックすると詳細が開きます。</p>
       <div id="leafletMap"></div>
     </div>
   </section>
@@ -109,7 +108,6 @@
 </footer>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="vendor/leaflet.markercluster/leaflet.markercluster.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
