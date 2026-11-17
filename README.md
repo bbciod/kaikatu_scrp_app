@@ -119,7 +119,6 @@ python -m http.server 8080 -d docs   # http://localhost:8080 で確認
 `docs/index.html` を `file://` で直接ブラウザやプレビューパネルで開くと、
 ブラウザのセキュリティ制限で `fetch("data/stores.json")` が失敗し画面が真っ白になります。
 必ず上記のように簡易HTTPサーバー経由（`http://localhost:8080`）で開いてください。
-（Claude Codeのプレビューパネルを使う場合は `.claude/launch.json` に登録済みのサーバー設定を利用できます）
 
 ## 注意事項・スクレイピング方針
 
