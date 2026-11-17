@@ -4,3 +4,4 @@ __pycache__/
 .tessdata/
 .env
 price_image_review/
+.claude/
